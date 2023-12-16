@@ -12,11 +12,6 @@ public class CameraController : MonoBehaviour
     [SerializeField] DebugCamera _debug;
     [SerializeField] bool IsInputDisabled;
 
-    [SerializeField] LayerMask m_LayerMask;
-
-    [SerializeField] float m_MinDistance = 1.0F;
-    [SerializeField] float m_MaxDistance = 4.0F;
-
     Dictionary<CamType, CameraSetting> camSetDic = new();
 
     public static event Action DebugFreeCamEnabled;
@@ -26,7 +21,6 @@ public class CameraController : MonoBehaviour
     float lastRecordedPitch;
     float lastRecordedYaw;
     float fovVel;
-    float correctedDistance;
 
     new Camera camera;
 
@@ -127,12 +121,7 @@ public class CameraController : MonoBehaviour
 
         camera.transform.localPosition = Vector3.Lerp(camera.transform.localPosition, isAiming ? camSetDic[CamType.AIMING].offset : camSetDic[CamType.NORMAL].offset, Time.deltaTime * 1.5F);
 
-        if (Physics.Linecast(transform.position + transform.position + (transform.forward * -distanceFromTarget), target.position, m_LayerMask))
-            correctedDistance = m_MinDistance;
-        else
-            correctedDistance = Mathf.Lerp(correctedDistance, distanceFromTarget, Time.deltaTime * 8);
-
-        Vector3 desiredCamPos = target.position - transform.forward * correctedDistance;
+        Vector3 desiredCamPos = target.position - transform.forward * distanceFromTarget;
 
         transform.position = desiredCamPos;
 

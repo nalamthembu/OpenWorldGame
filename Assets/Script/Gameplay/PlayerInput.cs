@@ -21,7 +21,9 @@ public class PlayerInput : MonoBehaviour
     public bool IsShooting_HOLD { get; private set; }
     public bool IsShooting_PRESS { get; private set; }
 
-
+    public bool EquipSideArm { get; private set; }
+    public bool EquipLongArm { get; private set; }
+    public bool HolsterAllWeapons { get; private set; }
 
     private void Awake()
     {
@@ -53,10 +55,6 @@ public class PlayerInput : MonoBehaviour
         IsHoldingInventoryKey = Input.GetKey(KeyCode.Tab);
         TappedInventoryKey = Input.GetKeyDown(KeyCode.Tab);
 
-        IsAiming = Input.GetMouseButton(1) || _debug.debug_Aim;
-        IsShooting_HOLD = Input.GetMouseButton(0) || _debug.debug_Shoot_hold;
-        IsShooting_PRESS = Input.GetMouseButtonDown(0) || _debug.debug_Shoot_press;
-
         if (Input.GetKeyDown(KeyCode.Escape))
             GameStateMachine.Instance.SetGameIsPaused(!GameStateMachine.Instance.IsGamePaused);
 
@@ -66,6 +64,14 @@ public class PlayerInput : MonoBehaviour
             EnterVehicle = true;
 
         _debug.UpdateDebugControls();
+
+        //Weapon Controls
+        IsAiming = Input.GetMouseButton(1) || _debug.debug_Aim;
+        IsShooting_HOLD = Input.GetMouseButton(0) || _debug.debug_Shoot_hold;
+        IsShooting_PRESS = Input.GetMouseButtonDown(0) || _debug.debug_Shoot_press;
+        EquipLongArm = Input.GetKeyDown(KeyCode.Alpha2);
+        EquipSideArm = Input.GetKeyDown(KeyCode.Alpha1);
+        HolsterAllWeapons = Input.GetKeyDown(KeyCode.Alpha0);
     }
 
     public float GetMouseX(float mouseSensitivity)

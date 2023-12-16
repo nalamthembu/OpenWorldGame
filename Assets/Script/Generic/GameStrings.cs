@@ -17,13 +17,15 @@
         IS_SHOOTING = "IS_SHOOTING",
         CAMERA_X = "CAMERA_X",
         CAMERA_Y = "CAMERA_Y",
-        IS_RIFLE = "IS_RIFLE",
+        IS_RIFLE_EQUIPPED = "IS_RIFLE_EQUIPPED",
         IDLE_INDEX = "IDLE_INDEX",
         FALLING = "FALLING",
         LAND_LU = "LAND_LU",
         LAND_RU = "LAND_RU",
         JUMP_RU = "JUMP_RU",
         JUMP_LU = "JUMP_LU",
-        IDLE_BLEND_TREE = "IDLE_BLEND_TREE";
+        IDLE_BLEND_TREE = "IDLE_BLEND_TREE",
+        EQUIP_LONG_ARM = "EQUIP_LONG_ARM",
+        EMPTY_STATE = "EMPTY_STATE";
 
 }

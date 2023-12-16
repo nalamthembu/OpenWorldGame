@@ -2,6 +2,6 @@
 {
     void OnStateEnter();
     void OnStateExit();
-    void HandleInput();
+    void OnAnimate();
     void UpdateState();
 }

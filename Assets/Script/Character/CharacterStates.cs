@@ -5,14 +5,28 @@ public class OnFootState : ICharacterState
 {
     CharacterStateMachine stateMachine;
 
-    bool IsPlayer;
-
     public OnFootState(CharacterStateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
     }
 
-    public void HandleInput() { }
+    public void OnAnimate()
+    {
+        if (stateMachine.Character is PlayerController player)
+        {
+            if (PlayerInput.Instance.EquipLongArm && player.WeaponInventory.TryEquipWeapon(WeaponType.LONG_ARM))
+            {
+                player.Animator.SetBool(GameStrings.IS_RIFLE_EQUIPPED, true);
+                player.Animator.CrossFadeInFixedTime(GameStrings.EQUIP_LONG_ARM, 0.25F, 1);
+                player.Animator.CrossFadeInFixedTime(GameStrings.EMPTY_STATE, 0.25F, 0);
+            }
+
+            if (!player.WeaponInventory.HasWeaponEquipped && !player.Animator.IsCurrentStateName(GameStrings.EMPTY_STATE, 1))
+            {
+                player.Animator.CrossFadeInFixedTime(GameStrings.EMPTY_STATE, 0.25F, 1);
+            }
+        }
+    }
 
     public void OnStateEnter() { }
 
@@ -62,7 +76,7 @@ public class InVehicleState : ICharacterState
         this.stateMachine = stateMachine;
     }
 
-    public void HandleInput()
+    public void OnAnimate()
     {
     }
 

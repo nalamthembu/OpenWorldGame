@@ -38,6 +38,11 @@ public class Character : MonoBehaviour
     private Vehicle m_Vehicle;
 
     private LayerMask m_VehicleLayer;
+
+    protected WeaponInventory m_WeaponInventory;
+
+    public WeaponInventory WeaponInventory { get { return m_WeaponInventory; } }
+
     public bool IsAiming { get; private set; }
 
     public bool IsFiring { get; private set; }
@@ -45,12 +50,15 @@ public class Character : MonoBehaviour
     protected virtual void Awake()
     {
         Animator = GetComponent<Animator>();
+
+        InitialiseCharacter(100, 0);
     }
 
     public virtual void InitialiseCharacter(float health, float armour)
     {
         m_Health = health;
         m_Armour = armour;
+        m_WeaponInventory = GetComponent<WeaponInventory>();
     }
 
     public bool IsGrounded()

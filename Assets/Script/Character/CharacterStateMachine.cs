@@ -5,6 +5,8 @@ public class CharacterStateMachine : MonoBehaviour
     private ICharacter characterController;
     public Character Character { get; private set; }
 
+    public Animator Animator { get { return Character.Animator; } }
+
     [SerializeField] CharacterStateDebug debug;
 
     [SerializeField] LayerMask m_VehicleLayer;
@@ -16,6 +18,12 @@ public class CharacterStateMachine : MonoBehaviour
     public InVehicleState inVehicleState;
 
     private ICharacterState currentState;
+
+    private void Awake()
+    {
+        characterController = GetComponent<ICharacter>();
+        Character = GetComponent<Character>();
+    }
 
     void Start()
     {
@@ -33,14 +41,8 @@ public class CharacterStateMachine : MonoBehaviour
     void Update()
     {
         // Check for input and update the current state
-        currentState.HandleInput();
+        currentState.OnAnimate();
         currentState.UpdateState();
-    }
-
-    public void SetCharacterController(ICharacter controller)
-    {
-        characterController = controller;
-        Character = GetComponent<Character>();
     }
 
     public void TransitionToState(ICharacterState state)

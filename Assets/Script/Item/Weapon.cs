@@ -19,7 +19,7 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public WeaponData WeaponData { get { return m_WeaponData; } }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         InitialiseWeapon();
     }

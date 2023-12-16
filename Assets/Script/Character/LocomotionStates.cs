@@ -31,7 +31,7 @@ public class IdleState : ILocomotionState
     {
         m_SeekTime += Time.deltaTime;
 
-        if (m_SeekTime > MAX_TIME)
+        if (m_SeekTime >= MAX_TIME)
         {
             m_CurrentIdleIndex = Random.Range(0, stateMachine.IdleAnimationCount);
 

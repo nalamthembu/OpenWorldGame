@@ -8,11 +8,16 @@ public class WeaponInventory : MonoBehaviour
     [SerializeField] Transform m_LongArmHolster;
     [SerializeField] Transform m_SideArmHolster;
 
-    private Dictionary<string, Weapon> m_Weapons;
+    public Transform LongArmHolster { get { return m_LongArmHolster; } }
+    public Transform SideArmHolster { get { return m_SideArmHolster; } }
+
+    private Dictionary<WeaponType, Weapon> m_Weapons;
 
     public static event Action AddedWeaponToInventory;
 
     private Weapon currentWeapon;
+
+    public bool HasWeaponEquipped { get; private set; }
 
     private void Awake()
     {
@@ -28,7 +33,7 @@ public class WeaponInventory : MonoBehaviour
     {
         string weaponName = weapon.WeaponData.weaponName;
 
-        bool addingWeaponWasSuccessful = m_Weapons.TryAdd(weaponName, weapon);
+        bool addingWeaponWasSuccessful = m_Weapons.TryAdd(weapon.WeaponData.weaponType, weapon);
 
         //Trigger event for all listeners.
         if (addingWeaponWasSuccessful)
@@ -48,20 +53,31 @@ public class WeaponInventory : MonoBehaviour
             currentWeapon.transform.localEulerAngles *= 0;
             currentWeapon.transform.localPosition *= 0;
 
-            EquipWeapon(weaponName);
+            currentWeapon.SetEquipStatus(false);
         }
 
         //Tell me if I was successful.
         return addingWeaponWasSuccessful;
     }
 
-    public void EquipWeapon(string weaponName)
+    public bool TryEquipWeapon(WeaponType weaponType)
     {
-        if (m_Weapons.TryGetValue(weaponName, out var weapon))
+        if (m_Weapons.TryGetValue(weaponType, out var weapon))
         {
-            weapon.gameObject.SetActive(true);
+            if (currentWeapon != null)
+            {
+                currentWeapon.SetEquipStatus(false);
+            }
 
             weapon.SetEquipStatus(true);
+
+            HasWeaponEquipped = true;
+
+            return true;
         }
+
+        Debug.Log("Could not equip " + weaponType);
+
+        return false;
     }
 }
