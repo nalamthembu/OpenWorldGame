@@ -91,14 +91,22 @@ public struct HUDMiniMap
 
     public void SetMiniMap(float angle, float height)
     {
+        //Follow Player Position.
         miniMapCam.transform.position = Vector3.up * height + PlayerController.Instance.transform.position;
-        miniMapCam.transform.eulerAngles = Vector3.right * angle + Vector3.forward * -PlayerController.Instance.transform.eulerAngles.y;
+
+        //Rotate with camera Y Rotation (controlled by mouse, joystick, whatever)
+        miniMapCam.transform.eulerAngles = Vector3.right * angle + Vector3.forward * -CameraController.Instance.transform.eulerAngles.y;
+
+        //Zoom out to see the world and player
         miniMapCam.orthographicSize = Mathf.Lerp(miniMapCam.orthographicSize, cameraSize, Time.deltaTime);
 
+        //Make sure the player sprite icon follows the player
         playerIconSpriteInstance.transform.position = PlayerController.Instance.transform.position + PlayerController.Instance.transform.up * (height - 100.0F);
 
+        //Rotate the player icon with the players Y rot, but because its 2D use the Y rot to rotate about the Z Axis (Vector3.forward)
         Quaternion b = Quaternion.Euler(Vector3.right * 90 + -Vector3.forward * PlayerController.Instance.transform.eulerAngles.y);
 
+        //Apply the rotation.
         playerIconSpriteInstance.transform.rotation = Quaternion.Lerp(playerIconSpriteInstance.transform.rotation, b, Time.deltaTime * 4.0F);
     }
 

@@ -1,4 +1,7 @@
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [RequireComponent(typeof(CharacterStateMachine))]
 public class PlayerController : Character, ICharacter
@@ -11,14 +14,16 @@ public class PlayerController : Character, ICharacter
 
     public Transform CameraFocus { get { return m_CameraFocus; } }
 
+    [Header("Debugging")]
+    [SerializeField] public DebugPlayer m_DebugPlayer;
+
     //Movement Values
     private float m_TargetRotation;
+    private float m_DeltaAngle;
     private float m_VelocityY;
     private Vector3 m_Velocity;
     private float m_MoveSpeedVelocity;
     private float m_RotSpeedVelocity;
-    private float m_ControllerSpeed;
-    public float ControllerSpeed { get { return m_ControllerSpeed; } }
     public float TargetRotation { get { return m_TargetRotation; } }
 
     private CharacterController m_CharacterController;
@@ -28,10 +33,10 @@ public class PlayerController : Character, ICharacter
 
     protected override void Awake()
     {
-        if (Instance != null)
-            Destroy(gameObject);
-        else
+        if (Instance is null)
             Instance = this;
+        else
+            Destroy(gameObject);
 
         base.Awake();
 
@@ -53,7 +58,46 @@ public class PlayerController : Character, ICharacter
 
     }
 
-    public void RotateCharacter()
+#if UNITY_EDITOR
+    protected void OnDrawGizmos()
+    {
+        if (m_DebugPlayer.showPlayerRotationValues)
+        {
+            if (PlayerInput.Instance || CameraController.Instance)
+            {
+                // Draw a line for player's forward direction
+                Gizmos.color = Color.blue;
+                Gizmos.DrawLine(transform.position, transform.position + transform.forward);
+
+                // Draw a line for the rotation forward direction
+                Quaternion targetRotation = Quaternion.Euler(0f, m_TargetRotation, 0f);
+                Gizmos.color = Color.red;
+                Gizmos.DrawLine(transform.position, transform.position + targetRotation * Vector3.forward);
+
+
+                // Draw a handle to display the degrees
+                //Clamped target rotation.
+                float targetRot = (m_TargetRotation + 360f) % 360f;
+
+                Vector3 targetGizmoPos = transform.position + (Vector3)m_DebugPlayer.RotationGizmoPos;
+
+
+                Handles.Label(targetGizmoPos, targetRot.ToString("F2") + " °");
+
+                // Calculate the angle difference relative to the player's forward direction
+                float angleDifference = m_DeltaAngle;
+                Handles.Label(targetGizmoPos + Vector3.up * 0.15F, "Angle Difference: " + angleDifference.ToString("F2") + " °");
+            }
+        }
+        if (m_DebugPlayer.showPlayerSpeedValues)
+        {
+            Handles.Label(transform.position + (Vector3) m_DebugPlayer.SpeedGizmoPos, "Player Speed Values : " + CurrentSpeed.ToString("F2"));
+        }
+
+    }
+#endif
+
+    public void CalculateRotation()
     {
         Vector2 dir = PlayerInput.Instance.InputDir;
 
@@ -61,6 +105,27 @@ public class PlayerController : Character, ICharacter
 
         m_TargetRotation = Mathf.Atan2(dir.x, dir.y) * Mathf.Rad2Deg + cameraYAxis;
 
+        m_DeltaAngle = Mathf.DeltaAngle(transform.eulerAngles.y, m_TargetRotation);
+    }
+
+    public void CalculateSpeed()
+    {
+        m_CurrentSpeed = Mathf.SmoothDamp
+        (
+            m_CurrentSpeed,
+            TargetSpeed,
+            ref m_MoveSpeedVelocity,
+            m_SpeedSmoothTime
+        );
+    }
+
+    public float GetAngle()
+    {
+        return m_DeltaAngle;
+    }
+
+    public void RotateCharacter()
+    {
         transform.eulerAngles = Vector3.up *
             Mathf.SmoothDampAngle(
                 transform.eulerAngles.y,
@@ -84,13 +149,6 @@ public class PlayerController : Character, ICharacter
         if (IsGrounded())
             m_VelocityY = 0;
 
-        m_CurrentSpeed = Mathf.SmoothDamp
-           (
-               m_CurrentSpeed,
-               TargetSpeed,
-               ref m_MoveSpeedVelocity,
-               m_SpeedSmoothTime
-           ) * PlayerInput.Instance.InputMagnitude;
 
         if (IsJumping)
             Jump();
@@ -99,4 +157,13 @@ public class PlayerController : Character, ICharacter
 
         m_CharacterController.Move(m_Velocity * Time.deltaTime);
     }
+}
+
+[System.Serializable]
+public struct DebugPlayer
+{
+    public bool showPlayerRotationValues;
+    public bool showPlayerSpeedValues;
+
+    public Vector2 SpeedGizmoPos, RotationGizmoPos;
 }

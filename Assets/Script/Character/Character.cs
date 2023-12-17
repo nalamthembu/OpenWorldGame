@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using RootMotion.FinalIK;
 
 [
@@ -58,7 +59,9 @@ public class Character : MonoBehaviour
     {
         m_Health = health;
         m_Armour = armour;
-        m_WeaponInventory = GetComponent<WeaponInventory>();
+
+        if (m_WeaponInventory is null)
+            m_WeaponInventory = GetComponent<WeaponInventory>();
     }
 
     public bool IsGrounded()
@@ -77,4 +80,10 @@ public class Character : MonoBehaviour
     public void UnFreeze() => Animator.SetAnimatorSpeed(1);
 
     public void SetVehicle(Vehicle vehicle) => this.m_Vehicle = vehicle;
+
+    public void PlayFootStepSound()
+    {
+        //Check surface
+    }
+
 }

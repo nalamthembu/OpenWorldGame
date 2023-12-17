@@ -11,13 +11,13 @@ public class FrontendSoundScriptable : ScriptableObject
 [System.Serializable]
 public struct FESound
 {
-    public string name;
+    public string soundID;
     public AudioClip[] clips;
     public AudioClip GetRandomClip()
     {
         if (clips is null)
         {
-            Debug.LogError("The clip array for " + name + " is null");
+            Debug.LogError("The clip array for " + soundID + " is null");
             return null;
         }
 

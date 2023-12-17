@@ -80,7 +80,7 @@ public class Gun : Weapon
             {
                 SoundManager.Instance.PlayInGameSound
                     (
-                        WeaponData.objectSoundData.CollisionSoundNames,
+                        WeaponData.objectSoundData.CollisionSoundID,
                         transform.position,
                         true
                     );

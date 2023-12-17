@@ -15,18 +15,15 @@ public class IdleState : ILocomotionState
 
     const int MAX_TIME = 10;
 
+    const int ASSIGNED_SPEED = 0;
+
     public IdleState(LocomotionStateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
     }
 
-    public void OnStateEnter()
-    {
-        stateMachine.CheckFeet(out _);
-        
-        stateMachine.Character.TargetSpeed = 0;
-    }
-
+    public void OnStateEnter() => stateMachine.Character.TargetSpeed = ASSIGNED_SPEED;
+    
     public void OnStateUpdate()
     {
         m_SeekTime += Time.deltaTime;
@@ -49,8 +46,13 @@ public class IdleState : ILocomotionState
         if (stateMachine.Character is PlayerController player)
         {
             if (PlayerInput.Instance.InputMagnitude > 0)
-            {
+            { 
                 stateMachine.TransitionTo(PlayerInput.Instance.IsRunning ? stateMachine.runState : stateMachine.walkState);
+            }
+
+            if (Mathf.Floor(player.Animator.velocity.magnitude) > 0.1)
+            {
+                stateMachine.CheckFeet(out _);
             }
         }
 
@@ -76,24 +78,37 @@ public class IdleState : ILocomotionState
 public class WalkState : ILocomotionState
 {
     LocomotionStateMachine stateMachine;
+    readonly float assignedSpeed;
 
-    public WalkState(LocomotionStateMachine stateMachine)
+    public WalkState(LocomotionStateMachine stateMachine, float assignedSpeed)
     {
         this.stateMachine = stateMachine;
+        this.assignedSpeed = assignedSpeed;
     }
 
     public void OnStateEnter()
     {
         stateMachine.ResetFeet();
-        stateMachine.Character.TargetSpeed = stateMachine.Character.WalkSpeed;
+        stateMachine.Character.TargetSpeed = assignedSpeed;
+
+        if (stateMachine.Character is PlayerController player)
+        {
+            player.CalculateRotation();
+        }
     }
 
     public void OnStateUpdate()
     {
         if (stateMachine.Character is PlayerController player)
         {
-            player.MoveCharacter();
-            player.RotateCharacter();
+            player.CalculateSpeed();
+
+            if (player.Animator.IsCurrentStateTag("Loop"))
+            {
+                player.CalculateRotation();
+                player.RotateCharacter();
+                stateMachine.ResetFeet();
+            }
         }
     }
 
@@ -101,7 +116,7 @@ public class WalkState : ILocomotionState
     {
         if (stateMachine.Character is PlayerController player)
         {
-            if (PlayerInput.Instance.InputMagnitude > 0)
+            if (Mathf.Floor(PlayerInput.Instance.InputMagnitude) > 0)
             {
                 if (PlayerInput.Instance.IsRunning)
                 {
@@ -136,7 +151,7 @@ public class WalkState : ILocomotionState
         if (stateMachine.Character is PlayerController player)
         {
             stateMachine.Animator.SetFloat(GameStrings.INPUT_MAGNITUDE, PlayerInput.Instance.InputMagnitude);
-            stateMachine.Animator.SetFloat(GameStrings.TARGET_ROTATION, player.TargetRotation);
+            stateMachine.Animator.SetFloat(GameStrings.TARGET_ROTATION, player.GetAngle());
             stateMachine.Animator.SetFloat(GameStrings.CURRENT_SPEED, player.CurrentSpeed);
         }
     }
@@ -144,24 +159,38 @@ public class WalkState : ILocomotionState
 
 public class RunState : ILocomotionState
 {
-    LocomotionStateMachine stateMachine;
+    readonly LocomotionStateMachine stateMachine;
+    readonly float assignedSpeed;
 
-    public RunState(LocomotionStateMachine stateMachine)
+    public RunState(LocomotionStateMachine stateMachine, float assignedSpeed)
     {
         this.stateMachine = stateMachine;
+        this.assignedSpeed = assignedSpeed;
     }
 
     public void OnStateEnter()
     {
-        stateMachine.Character.TargetSpeed = stateMachine.Character.RunSpeed;
+        stateMachine.ResetFeet();
+
+        if (stateMachine.Character is PlayerController player)
+        {
+            player.CalculateRotation();
+            player.TargetSpeed = assignedSpeed;
+        }
     }
 
     public void OnStateUpdate()
     {
         if (stateMachine.Character is PlayerController player)
         {
-            player.MoveCharacter();
-            player.RotateCharacter();
+            player.CalculateSpeed();
+
+            if (player.Animator.IsCurrentStateTag("Loop"))
+            {
+                player.CalculateRotation();
+                player.RotateCharacter();
+                stateMachine.ResetFeet();
+            }
         }
     }
 
@@ -169,7 +198,7 @@ public class RunState : ILocomotionState
     {
         if (stateMachine.Character is PlayerController player)
         {
-            if (PlayerInput.Instance.InputMagnitude > 0)
+            if (Mathf.Floor(PlayerInput.Instance.InputMagnitude) > 0)
             {
                 if (!PlayerInput.Instance.IsRunning)
                 {
@@ -196,15 +225,16 @@ public class RunState : ILocomotionState
 
     public void OnStateEnd()
     {
-        return;
+        stateMachine.ResetFeet();
     }
 
     public void OnAnimate()
     {
         if (stateMachine.Character is PlayerController player)
         {
+            
             stateMachine.Animator.SetFloat(GameStrings.INPUT_MAGNITUDE, PlayerInput.Instance.InputMagnitude);
-            stateMachine.Animator.SetFloat(GameStrings.TARGET_ROTATION, player.TargetRotation);
+            stateMachine.Animator.SetFloat(GameStrings.TARGET_ROTATION, player.GetAngle());
             stateMachine.Animator.SetFloat(GameStrings.CURRENT_SPEED, player.CurrentSpeed);
         }
     }
@@ -212,32 +242,43 @@ public class RunState : ILocomotionState
 
 public class StopState : ILocomotionState
 {
-    LocomotionStateMachine stateMachine;
-    public StopState(LocomotionStateMachine stateMachine)
+    readonly LocomotionStateMachine stateMachine;
+    readonly float assignedSpeed;
+
+    public StopState(LocomotionStateMachine stateMachine, float assignedSpeed)
     {
         this.stateMachine = stateMachine;
+        this.assignedSpeed = assignedSpeed;
     }
 
     public void OnStateEnter()
     {
         stateMachine.CheckFeet(out _);
-        stateMachine.Character.TargetSpeed = 0;
+        stateMachine.Character.TargetSpeed = assignedSpeed;
     }
 
     public void OnStateUpdate()
     {
         if (stateMachine.Character is PlayerController player)
         {
-            player.MoveCharacter();
-           // player.RotateCharacter();
+            player.CalculateSpeed();
         }
     }
 
     public void OnStateCheck()
     {
-        if (stateMachine.Character.CurrentSpeed <= 0)
+        if (Mathf.Floor(stateMachine.Character.CurrentSpeed) <= 0)
         {
             stateMachine.TransitionTo(stateMachine.idleState);
+        }
+        else
+        if (stateMachine.Character is PlayerController)
+        {
+            if (PlayerInput.Instance.InputMagnitude <= 0)
+            {
+                stateMachine.TransitionTo(stateMachine.idleState);
+
+            }
         }
 
         if (!stateMachine.Character.IsGrounded())

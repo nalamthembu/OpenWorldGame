@@ -14,6 +14,8 @@ public class CameraController : MonoBehaviour
 
     Dictionary<CamType, CameraSetting> camSetDic = new();
 
+    [SerializeField] private LayerMask m_ObstructionLayer = -1;
+
     public static event Action DebugFreeCamEnabled;
 
     float pitch;
@@ -123,9 +125,17 @@ public class CameraController : MonoBehaviour
 
         Vector3 desiredCamPos = target.position - transform.forward * distanceFromTarget;
 
+        // Check for camera collision
+        float obstacleOffset = 0.1f; // Adjust this offset value as needed
+        if (Physics.Raycast(target.position, -transform.forward, out RaycastHit hit, distanceFromTarget + obstacleOffset, m_ObstructionLayer))
+        {
+            // If there is an obstacle, pull the camera in closer with an offset
+            desiredCamPos = hit.point + transform.forward * obstacleOffset;
+        }
+
         transform.position = desiredCamPos;
 
-        camera.fieldOfView = Mathf.SmoothDamp(camera.fieldOfView, isAiming ? camSetDic[CamType.AIMING].fov : camSetDic[CamType.NORMAL].fov, ref fovVel, 0.15F);
+        camera.fieldOfView = Mathf.SmoothDamp(camera.fieldOfView, isAiming ? camSetDic[CamType.AIMING].fov : camSetDic[CamType.NORMAL].fov, ref fovVel, 0.001F);
     }
 
     public Vector2 GetCameraPitchYaw()

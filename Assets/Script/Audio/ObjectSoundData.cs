@@ -1,7 +1,7 @@
 ﻿[System.Serializable]
 public struct ObjectSoundData
 {
-    public string CollisionSoundNames;
-    public string DestructionSoundNames;
-    public string HandlingSoundNames;
+    public string CollisionSoundID;
+    public string DestructionSoundID;
+    public string HandlingSoundID;
 }

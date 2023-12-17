@@ -63,6 +63,11 @@ public class OnFootState : ICharacterState
 
         return true;
     }
+
+    public override string ToString()
+    {
+        return "OnFoot";
+    }
 }
 
 public class InVehicleState : ICharacterState
@@ -91,5 +96,10 @@ public class InVehicleState : ICharacterState
 
     public void UpdateState()
     {
+    }
+
+    public override string ToString()
+    {
+        return "InVehicle";
     }
 }

@@ -9,7 +9,7 @@ public class InGameSoundScriptable : ScriptableObject
 [System.Serializable]
 public struct Sound
 {
-    public string name;
+    public string soundID;
     public AudioClip[] clips;
     public SoundType type;
 
@@ -17,7 +17,7 @@ public struct Sound
     {
         if (clips is null)
         {
-            Debug.LogError("The clip array for " + name + " is null");
+            Debug.LogError("The clip array for " + soundID + " is null");
             return null;
         }
 

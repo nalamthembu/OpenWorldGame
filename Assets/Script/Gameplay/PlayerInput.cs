@@ -39,7 +39,7 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
-        InputDir = new(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        InputDir = new(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         InputMagnitude = InputDir.normalized.magnitude;
         IsRunning = Input.GetKey(KeyCode.LeftShift);
 

@@ -6,7 +6,7 @@ public class PlayerSpawnPoint : MonoBehaviour
 
     public PlayerController Player { get; private set; }
 
-    private void Awake()
+    private void Start()
     {
         if (PlayerController.Instance != null)
             Player = PlayerController.Instance;

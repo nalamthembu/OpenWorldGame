@@ -51,6 +51,18 @@ public static class HelperMethods
         return animState.IsTag(tag);
     }
 
+    public static string GetCurrentAnimStateNames(this Animator targetAnim, int layer = 0)
+    {
+        string names = String.Empty;
+
+        for (int i = 0; i < names.Length; i++)
+        {
+            names += targetAnim.GetCurrentAnimatorClipInfo(0)[i].clip.name + "\n";
+        }
+
+        return names;
+    }
+
     public static bool IsCurrentStateName(this Animator targetAnim, string name, int layer = 0)
     {
         AnimatorStateInfo animState = targetAnim.GetCurrentAnimatorStateInfo(layer);

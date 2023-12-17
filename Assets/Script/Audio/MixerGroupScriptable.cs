@@ -12,13 +12,13 @@ public class MixerGroupScriptable : ScriptableObject
         string lastMixerName = string.Empty;
         for(int i = 0; i < mixers.Length;i++)
         {
-            if (lastMixerName == mixers[i].name)
+            if (lastMixerName == mixers[i].mixerID)
             {
                 Debug.LogWarning("There is already a mixer with the name " + lastMixerName + " defined!");
                 break; // No need to continue checking once a duplicate is found
             }
 
-            lastMixerName = mixers[i].name;
+            lastMixerName = mixers[i].mixerID;
         }
     }
 }
@@ -26,7 +26,7 @@ public class MixerGroupScriptable : ScriptableObject
 [System.Serializable]
 public struct Mixer
 {
-    public string name;
+    public string mixerID;
     public AudioMixerGroup mixerGroup;
     public SoundType type;
 }

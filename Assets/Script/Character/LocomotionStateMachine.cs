@@ -33,9 +33,9 @@ public class LocomotionStateMachine : MonoBehaviour
     void InitialiseStates()
     {
         idleState = new(this);
-        walkState = new(this);
-        runState = new(this);
-        stopState = new(this); 
+        walkState = new(this, Character.WalkSpeed);
+        runState = new(this, Character.RunSpeed);
+        stopState = new(this, 0); 
         inAirState = new(this);
         jumpState = new(this);
         landState = new(this);
@@ -114,6 +114,16 @@ public class LocomotionStateMachine : MonoBehaviour
         Character.Animator.SetBool(GameStrings.LU, lu);
         Character.Animator.SetBool(GameStrings.RU, ru);
     }
+
+    private void OnDrawGizmos()
+    {
+#if UNITY_EDITOR
+        if (debug.debugLocomotionState)
+        {
+            UnityEditor.Handles.Label(transform.position + (Vector3)debug.labelPosition, "Current Locomotion State : " + debug.currentState.ToString());
+        }
+#endif
+    }
 }
 
 #region DEBUG
@@ -121,6 +131,10 @@ public class LocomotionStateMachine : MonoBehaviour
 public struct LocomotionDebug
 {
     public LocomotionState currentState;
+
+    public bool debugLocomotionState;
+
+    public Vector2 labelPosition;
 
     public void SetState(ILocomotionState currentState)
     {

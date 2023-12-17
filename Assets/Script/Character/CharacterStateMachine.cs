@@ -61,6 +61,16 @@ public class CharacterStateMachine : MonoBehaviour
         debug.SetState(state);
     }
 
+#if UNITY_EDITOR
+    public void OnDrawGizmos()
+    {
+        if (debug.debugCharacterState)
+        {
+            UnityEditor.Handles.Label(transform.position + (Vector3) debug.labelPosition, "Current Character State : " + debug.currentState.ToString());
+        }
+    }
+#endif
+
     // Other methods...
 }
 
@@ -69,6 +79,10 @@ public class CharacterStateMachine : MonoBehaviour
 [System.Serializable]
 public struct CharacterStateDebug
 {
+    public bool debugCharacterState;
+
+    public Vector2 labelPosition;
+
     public CharacterState currentState;
     public void SetState(ICharacterState currentState)
     {

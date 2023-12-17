@@ -9,7 +9,7 @@ public class AmbienceScriptable : ScriptableObject
 [System.Serializable]
 public struct Ambience
 {
-    public string name;
+    public string ambienceID;
     public string[] ambienceLoops;
     public string[] clipNames;
     [Range(0, 60)]

@@ -47,12 +47,12 @@ public class SoundManager : MonoBehaviour
     {
         foreach (Sound ingameSound in m_InGameScriptable.sounds)
         {
-            m_InGameSoundDict.Add(ingameSound.name, ingameSound);
+            m_InGameSoundDict.Add(ingameSound.soundID, ingameSound);
         }
 
         foreach (FESound feSound in m_FEScriptable.sounds)
         {
-            m_FESoundDict.Add(feSound.name, feSound);
+            m_FESoundDict.Add(feSound.soundID, feSound);
         }
 
         foreach(Mixer mixer in m_MixerScriptable.mixers)
@@ -62,9 +62,9 @@ public class SoundManager : MonoBehaviour
     }
 
     //Plays in-game Sounds in 3D Space
-    public void PlayInGameSound(string name, Vector3 position, bool randomisePitch)
+    public void PlayInGameSound(string soundID, Vector3 position, bool randomisePitch)
     {
-        if (m_InGameSoundDict.TryGetValue(name, out Sound sound))
+        if (m_InGameSoundDict.TryGetValue(soundID, out Sound sound))
         {
             switch(sound.type)
             {
@@ -100,15 +100,15 @@ public class SoundManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Could not find sound with name : " + name 
+            Debug.LogError("Could not find sound with name : " + soundID 
                 + ", please make sure the spelling is correct or that it exists");
         }
     }
 
     //Play in-game Audio in 3D Space From a source (useful for vehicles, characters, etc.)
-    public void PlayInGameSound(string name, AudioSource source, bool loop, bool randomisePitch = false, bool TwoDSpace = false)
+    public void PlayInGameSound(string soundID, AudioSource source, bool loop, bool randomisePitch = false, bool TwoDSpace = false)
     {
-        if (m_InGameSoundDict.TryGetValue(name, out Sound sound))
+        if (m_InGameSoundDict.TryGetValue(soundID, out Sound sound))
         {
             switch (sound.type)
             {
@@ -136,15 +136,15 @@ public class SoundManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Could not find sound with name : " + name
+            Debug.LogError("Could not find sound with name : " + soundID
                 + ", please make sure the spelling is correct or that it exists");
         }
     }
 
     //Plays frontend sound out of the Frontend AudioSource (UI/Menu Sound essentially)
-    public void PlayFESound(string name)
+    public void PlayFESound(string soundID)
     {
-        if (m_FESoundDict.TryGetValue(name, out FESound sound))
+        if (m_FESoundDict.TryGetValue(soundID, out FESound sound))
         {
             m_FESource.clip = sound.GetRandomClip();
 
@@ -154,7 +154,7 @@ public class SoundManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Could not find sound with name : " + name
+            Debug.LogError("Could not find sound with name : " + soundID
                 + ", please make sure the spelling is correct or that it exists");
         }
     }

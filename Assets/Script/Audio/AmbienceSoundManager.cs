@@ -39,7 +39,7 @@ public class AmbienceSoundManager : MonoBehaviour
         loopSource = gameObject.AddComponent<AudioSource>();
 
         for (int i = 0; i < ambienceLib.ambiences.Length; i++)
-            ambienceDictionary.Add(ambienceLib.ambiences[i].name, ambienceLib.ambiences[i]);
+            ambienceDictionary.Add(ambienceLib.ambiences[i].ambienceID, ambienceLib.ambiences[i]);
 
         SetCurrentAmbience(initialAmbience);
 
@@ -88,17 +88,17 @@ public class AmbienceSoundManager : MonoBehaviour
         }
     }
 
-    public void SetCurrentAmbience(string ambName)
+    public void SetCurrentAmbience(string ambID)
     {
-        if (ambienceDictionary.TryGetValue(ambName, out Ambience ambience))
+        if (ambienceDictionary.TryGetValue(ambID, out Ambience ambience))
             currentAmbience = ambience;
         else
         {
-            Debug.Log("Could not find requested ambience : " + ambName);
+            Debug.Log("Could not find requested ambience : " + ambID);
             return;
         }
 
-        print("playing ambience : " + ambName);
+        print("playing ambience : " + ambID);
 
         if (Initialised)
         {
