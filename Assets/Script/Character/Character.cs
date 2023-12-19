@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEditor;
+using UnityEngine.AI;
 using RootMotion.FinalIK;
 
 [
@@ -14,7 +14,8 @@ using RootMotion.FinalIK;
     RequireComponent
     (
         typeof(LocomotionStateMachine),
-        typeof(CharacterStateMachine)
+        typeof(CharacterStateMachine),
+        typeof(NavMeshAgent)
     )
 ]
 
@@ -31,16 +32,19 @@ public class Character : MonoBehaviour
 
     protected float m_CurrentSpeed;
     public Animator Animator { get; protected set; }
-    public float WalkSpeed { get { return m_WalkSpeed; } }
-    public float RunSpeed { get { return m_RunSpeed; } }
+    public float WalkSpeed => m_WalkSpeed;
+    public float RunSpeed => m_RunSpeed; 
     public float TargetSpeed { get; set; }
-    public float CurrentSpeed { get { return m_CurrentSpeed; } }
+    public float CurrentSpeed => m_CurrentSpeed;
 
     private Vehicle m_Vehicle;
-
-    private LayerMask m_VehicleLayer;
+    public Vehicle CurrentVehicle => m_Vehicle;
 
     protected WeaponInventory m_WeaponInventory;
+
+    private Transform destinationTransform;
+
+    public Vector3 destinationVector;
 
     public WeaponInventory WeaponInventory { get { return m_WeaponInventory; } }
 
@@ -48,9 +52,13 @@ public class Character : MonoBehaviour
 
     public bool IsFiring { get; private set; }
 
+    protected NavMeshAgent m_Agent;
+
     protected virtual void Awake()
     {
         Animator = GetComponent<Animator>();
+
+        m_Agent = GetComponent<NavMeshAgent>();
 
         InitialiseCharacter(100, 0);
     }
@@ -79,6 +87,41 @@ public class Character : MonoBehaviour
 
     public void UnFreeze() => Animator.SetAnimatorSpeed(1);
 
-    public void SetVehicle(Vehicle vehicle) => this.m_Vehicle = vehicle;
+    public void SetVehicle(Vehicle vehicle) => m_Vehicle = vehicle;
 
+    public void Teleport(Vector3 pos)
+    {
+        if (this is PlayerController)
+        {
+            transform.position = pos;
+            Debug.Log("Teleported Player to Location : " + pos);
+            return;
+        }
+        else
+        {
+            m_Agent.Warp(pos);
+
+            string info = string.Format("Teleported {0} to Location : " + pos, gameObject.name);
+
+            Debug.Log(info);
+        }
+    }
+
+    public void GoToPosition(Vector3 pos) 
+    {
+        if (m_Agent.enabled != true)
+            m_Agent.enabled = true;
+
+        m_Agent.SetDestination(pos);
+        destinationVector = pos;
+    }
+
+    public void GoToPosition(Transform target)
+    {
+        if (m_Agent.enabled != true)
+            m_Agent.enabled = true;
+
+        m_Agent.SetDestination(target.position);
+        destinationTransform = target;
+    }
 }

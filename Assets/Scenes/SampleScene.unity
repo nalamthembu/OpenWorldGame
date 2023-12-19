@@ -667,6 +667,11 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!108 &423151624 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 1101213022038185854, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
+  m_PrefabInstance: {fileID: 1429242401}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &440501726 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3325500262122990562, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
@@ -1609,6 +1614,26 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 5302549513330941300, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
+      propertyPath: maxTailLightIntensity
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302549513330941300, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
+      propertyPath: minTailLightIntensity
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302549513330941300, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
+      propertyPath: headLightLightSources.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5302549513330941300, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
+      propertyPath: headLightLightSources.Array.data[0]
+      value: 
+      objectReference: {fileID: 1430535944}
+    - target: {fileID: 5302549513330941300, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
+      propertyPath: headLightLightSources.Array.data[1]
+      value: 
+      objectReference: {fileID: 423151624}
     - target: {fileID: 5359766741076699746, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
       propertyPath: m_SkidParticlePrefab
       value: 
@@ -1621,6 +1646,10 @@ PrefabInstance:
       propertyPath: m_SkidParticlePrefab
       value: 
       objectReference: {fileID: 1685495609958368, guid: ff11d5772cc008948868031f67c6f330, type: 3}
+    - target: {fileID: 6366393755188677104, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
+      propertyPath: engineResponseTime
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 6366393755188677108, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
       propertyPath: Rims
       value: 
@@ -1762,6 +1791,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
+--- !u!108 &1430535944 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 6584055965344197598, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
+  m_PrefabInstance: {fileID: 1429242401}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1438620758
 GameObject:
   m_ObjectHideFlags: 0

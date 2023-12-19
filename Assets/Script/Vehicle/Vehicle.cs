@@ -24,6 +24,8 @@ public class Vehicle : MonoBehaviour
 
     public Axis[] axes;
 
+    public Seat[] seats;
+
     private Rigidbody rigidBody;
 
     private VehicleInput input;
@@ -49,6 +51,8 @@ public class Vehicle : MonoBehaviour
     public float SpeedKMH { get { return rigidBody.velocity.magnitude * 3.5F; } }
     public VehicleEngine Engine { get { return engine; } }
     public VehicleTransmission Transmission { get { return transmission; } }
+
+    public Seat DriversSeat { get; private set; }
 
     //ORIENTATION RESET
     private const float TIME_BEFORE_AUTORESET = 3;
@@ -95,6 +99,21 @@ public class Vehicle : MonoBehaviour
         SetMaxSteerAngle();
 
         IsAIRacer = GetComponent<AIDriver>();
+
+        InitialiseDriversSeat();
+    }
+
+    private void InitialiseDriversSeat()
+    {
+        foreach(Seat s in seats)
+        {
+            if (s.GetSeatType() is SeatType.DRIVER)
+            {
+                DriversSeat = s;
+
+                break;
+            }
+        }
     }
 
     private void SetMaxSteerAngle()
@@ -274,4 +293,54 @@ public struct Axis
                isSteering == axis.isSteering &&
                steerRadius == axis.steerRadius;
     }
+}
+
+[System.Serializable]
+public struct Seat
+{
+    [SerializeField] SeatType seatType;
+
+    [SerializeField] Transform seatTransform;
+
+    [SerializeField] Transform entryPoint;
+
+    [SerializeField] Character characterOccupyingSeat;
+
+    public Transform GetEntryPoint() => entryPoint;
+
+    public bool IsOccupied;
+
+    public SeatType GetSeatType() => seatType;
+
+    public void SetOccupier(Character character)
+    {
+        characterOccupyingSeat = character;
+
+        IsOccupied = true;
+    }
+
+    public void RemoveOccupier()
+    {
+        characterOccupyingSeat = null;
+    }
+
+    public Character GetOccupyingCharacter()
+    {
+        if (characterOccupyingSeat is null)
+        {
+            Debug.LogError("There is no chraracter occupying " + seatType + " seat.");
+
+            return null;
+        }
+
+        return characterOccupyingSeat;
+    }
+}
+
+public enum SeatType
+{
+    LEFT_BACK,
+    RIGHT_BACK,
+    PASSENGER,
+    DRIVER
 }

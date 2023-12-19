@@ -11,10 +11,11 @@ public class VehicleEngine : MonoBehaviour
 
     private float engineRPM;
 
-    [SerializeField] private bool IsStartingEngine;
+    private AudioSource starterSource;
 
-    [SerializeField] private bool IsRunning;
+    [SerializeField] private bool isStartingEngine;
 
+    [SerializeField] private bool isRunning;
 
     [SerializeField][Range(0.001F, 2.0F)] float engineResponseTime;
 
@@ -28,7 +29,9 @@ public class VehicleEngine : MonoBehaviour
 
     public float IdleRPM { get { return transmission.powerData.idleRPM; } }
 
-    private AudioSource starterSource;
+    public bool IsRunning { get { return isRunning; } }
+
+    public bool IsStarting { get { return isStartingEngine; } }
 
     private void Awake()
     {
@@ -50,16 +53,16 @@ public class VehicleEngine : MonoBehaviour
 
     private void Update()
     {
-        if (IsStartingEngine)
+        if (isStartingEngine)
         {
             StartCoroutine(StartEngine());
-            IsStartingEngine = false;
+            isStartingEngine = false;
         }
     }
 
     private void FixedUpdate()
     {
-        if (IsRunning)
+        if (isRunning)
             CalculateEnginePower();
     }
 
@@ -98,26 +101,31 @@ public class VehicleEngine : MonoBehaviour
         if (starterSource.enabled != true)
             starterSource.enabled = true;
 
-        SoundManager.Instance.PlayInGameSound("VehicleFX_StartVehicle", starterSource, false, out float clipLength);
+        SoundManager.Instance.PlayInGameSound("VehicleFX_StartVehicle", starterSource, false, out float startClipLength);
 
-        yield return new WaitForSeconds(clipLength * .5F);
+        yield return new WaitForSeconds(startClipLength * .5F);
 
-        float velocity = 0;
-
-        float revOffTimer = 0;
-
-        while (revOffTimer < .5F)
+        if (Random.Range(0, 100) >= 10)
         {
-            engineRPM = Mathf.SmoothDamp(engineRPM, 1750, ref velocity, engineResponseTime);
+            float velocity = 0;
 
-            revOffTimer += Time.deltaTime;
+            float revOffTimer = 0;
 
-            yield return new WaitForEndOfFrame();
+            while (revOffTimer < .5F)
+            {
+                engineRPM = Mathf.SmoothDamp(engineRPM, 1750, ref velocity, engineResponseTime);
+
+                revOffTimer += Time.deltaTime;
+
+                yield return new WaitForEndOfFrame();
+            }
+
+            isRunning = true;
         }
 
-        SoundManager.Instance.PlayInGameSound("VehicleFX_StartVehicle_Tail", starterSource, false);
+        SoundManager.Instance.PlayInGameSound("VehicleFX_StartVehicle_Tail", starterSource, false, out float tailClipLength);
 
-        IsRunning = true;
+        yield return new WaitForSeconds(tailClipLength);
 
         starterSource.enabled = false;
 

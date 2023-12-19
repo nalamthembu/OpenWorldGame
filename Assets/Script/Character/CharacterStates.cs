@@ -37,13 +37,13 @@ public class OnFootState : ICharacterState
 
     public void UpdateState()
     {
-        if (stateMachine.Character is PlayerController)
+        if (stateMachine.Character is PlayerController player)
         {
             if (PlayerInput.Instance.EnterVehicle)
             {
                 if (HasFoundVehicle())
                 {
-                    stateMachine.TransitionToState(stateMachine.inVehicleState);
+                    //player.GoToPosition(player.CurrentVehicle.DriversSeat.GetEntryPoint());
                 }
             }
         }

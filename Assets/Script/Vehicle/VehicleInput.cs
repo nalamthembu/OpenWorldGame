@@ -14,9 +14,6 @@ public class VehicleInput : MonoBehaviour
 
     private float rawThrottle; //Includes negative numbers if the player/ai decides to reverse.
 
-    float bVel = 0;
-    float tVel = 0;
-
     #region ACCESSORS
     public float Throttle { get { return throttle; } set { throttle = value; } }
     public float RawThrottle { get { return rawThrottle; } set { rawThrottle = value; } }

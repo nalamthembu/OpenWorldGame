@@ -31,6 +31,8 @@ public class PlayerController : Character, ICharacter
 
     public bool IsJumping { get; set; }
 
+    public bool NavMeshAgentIsActive = false;
+
     protected override void Awake()
     {
         if (Instance is null)
@@ -41,6 +43,22 @@ public class PlayerController : Character, ICharacter
         base.Awake();
 
         m_CharacterController = GetComponent<CharacterController>();
+
+        //Disable NavMeshAgent
+        m_Agent.enabled = false;
+    }
+
+    private void Update()
+    {
+        //If nav mesh agent is on, deactivate root motion.
+        if (NavMeshAgentIsActive)
+        {
+            Animator.applyRootMotion = false;
+        }
+        else
+        {
+            Animator.applyRootMotion = true;
+        }
     }
 
     public void EnterVehicle(Vehicle vehicle)

@@ -23,23 +23,13 @@ public class CarAudio : MonoBehaviour
 
     private void Update()
     {
-        simulated = true;
-
         res.transform.gameObject.SetActive(simulated);
 
-        if (!simulated)
-        {
-            res.enabled = false;
-
-            if (res != null)
-                res.engineCurrentRPM = engine.RPM; // set Realistic Engine Sound script's current RPM to slider value
-        }
-        else
+        if (simulated)
         {
             res.engineCurrentRPM = engine.RPM;
             res.gasPedalPressing = engine.Throttle != 0;
             //res.isReversing = transmission.IsInReverse;
         }
-
     }
 }
