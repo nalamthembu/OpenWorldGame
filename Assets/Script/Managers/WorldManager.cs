@@ -10,9 +10,22 @@ public class WorldManager : MonoBehaviour
 
     [SerializeField] SurfaceData m_SurfaceData;
 
+    public Transform SKIDMARK_PARENTOBJ { get; private set; }
+
+    public const float SKIDMARK_LIFETIME = 15;
+
     public SurfaceData SurfaceData { get { return m_SurfaceData; } }
 
     public static WorldManager Instance;
+
+    private void InitialiseSkidMarkParent()
+    {
+        SKIDMARK_PARENTOBJ = new GameObject("SKID_PARENT").transform;
+
+        SKIDMARK_PARENTOBJ.SetParent(transform);
+
+        SKIDMARK_PARENTOBJ.localPosition = SKIDMARK_PARENTOBJ.localEulerAngles *= 0;
+    }
 
     private void Awake()
     {
@@ -20,6 +33,8 @@ public class WorldManager : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+
+        InitialiseSkidMarkParent();
     }
 
     private void Start()

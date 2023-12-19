@@ -68,20 +68,20 @@ public class WheelFX : MonoBehaviour
 
         currentSkidMaxPitch = randomMaxPitch[Random.Range(0, randomMaxPitch.Length)];
 
-        m_RoadNoiseSource.maxDistance = 10.0F;
+        m_RoadNoiseSource.maxDistance = 1;
 
-        m_RoadNoiseSource.minDistance = 2.0F;
-
-        m_RoadNoiseSource.spread = 360.0F;
+        m_RoadNoiseSource.minDistance = 0.5F;
 
         m_RoadNoiseSource.spatialBlend = 1;
 
+        m_RoadNoiseSource.playOnAwake = false;
 
-        m_SkidSource.minDistance = 10.0F;
 
-        m_SkidSource.spread = 360.0F;
+        m_SkidSource.minDistance = 1;
 
-        m_SkidSource.maxDistance = 25.0F/*m*/;
+        m_SkidSource.maxDistance = 2/*m*/;
+
+        m_SkidSource.playOnAwake = false;
 
         InitialiseWheelEffects();
     }
@@ -93,7 +93,7 @@ public class WheelFX : MonoBehaviour
 
     void Update()
     {
-        if (!m_WheelCollider.GetGroundHit(out m_WheelHit) || GameIsPaused() || GameManager.instance.IsInGarage)
+        if (!m_WheelCollider.GetGroundHit(out m_WheelHit) || GameIsPaused())
         {
             if (m_SkidSource.isPlaying)
                 StopAllSounds();
@@ -147,7 +147,7 @@ public class WheelFX : MonoBehaviour
             }
         }
         else
-            SoundManager.instance.PlaySound(wheelRoadNoiseID, m_RoadNoiseSource, true);
+            SoundManager.Instance.PlayInGameSound(wheelRoadNoiseID, m_RoadNoiseSource, true);
 
         m_RoadNoiseSource.pitch = Mathf.Lerp(1, currentMaxRoadNoisePitch, (m_WheelCollider.rpm / minRPMB4RoadNoise));
         m_RoadNoiseSource.volume = Mathf.SmoothStep(0, 1.0F, Mathf.Floor(m_WheelCollider.rpm) / minRPMB4RoadNoise);
@@ -167,13 +167,13 @@ public class WheelFX : MonoBehaviour
             }
         }
         else
-            SoundManager.instance.PlaySound(wheelSkidID, m_SkidSource, true);
+            SoundManager.Instance.PlayInGameSound(wheelSkidID, m_SkidSource, true);
 
         m_SkidSource.pitch = Mathf.Lerp(1, currentSkidMaxPitch, m_CurrentFrictionValue / 1);
         m_SkidSource.volume = Mathf.Lerp(0, 1.0F, m_CurrentFrictionValue / 1);
     }
 
-    bool GameIsPaused() => Time.timeScale <= 0 || Mathf.Floor(m_WheelCollider.rpm) == 0;
+    bool GameIsPaused() => GameStateMachine.Instance.IsGamePaused;
 
     bool IsSkidding()
     {
@@ -263,8 +263,8 @@ public class WheelFX : MonoBehaviour
         markMesh.uv = uvm;
         filter.mesh = markMesh;
         renderer.material = m_SkidMaterial;
-        mark.transform.SetParent(GameManager.instance.SKIDMARK_PARENTOBJ.transform);
-        Destroy(mark, GameManager.SKIDMARK_LIFETIME);
+        mark.transform.SetParent(WorldManager.Instance.SKIDMARK_PARENTOBJ.transform);
+        Destroy(mark, WorldManager.SKIDMARK_LIFETIME);
     }
 
 

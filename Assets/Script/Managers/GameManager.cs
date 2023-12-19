@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
         }
 
         SetCursorState(false, CursorLockMode.Confined);
+
     }
 
     public void SetTimeScale(float timeScale)

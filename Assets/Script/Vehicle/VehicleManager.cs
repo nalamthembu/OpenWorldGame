@@ -97,49 +97,6 @@ public class VehicleManager : MonoBehaviour
         return null;
     }
 
-    //LEFT RIGHT OPTIONS IN VEHICLE SELECT IN GARAGE.
-    public void SpawnNextVehicleInGarage_LEFT()
-    {
-        selectedVehicle--;
-        if (selectedVehicle < 0)
-            selectedVehicle = vehicleCount - 1;
-
-        string vehicleName;
-
-        for (int i = 0; i < vehicleCount; i++)
-        {
-            if (i == selectedVehicle)
-            {
-                vehicleName = vehicleLib.vehicles[i].name;
-
-                GarageManager.instance.SetDisplayVehicle(vehicleName);
-
-                break;
-            }
-        }
-    }
-
-    public void SpawnNextVehicleInGarage_RIGHT()
-    {
-        selectedVehicle++;
-        if (selectedVehicle >= vehicleCount)
-            selectedVehicle = 0;
-
-        string vehicleName;
-
-        for (int i = 0; i < vehicleCount; i++)
-        {
-            if (i == selectedVehicle)
-            {
-                vehicleName = vehicleLib.vehicles[i].name;
-
-                GarageManager.instance.SetDisplayVehicle(vehicleName);
-
-                break;
-            }
-        }
-    }
-
     public void SpawnVehicleWithDriverType(string name, DriverType driverType, Vector3 position, Vector3 rotation)
     {
         Vehicle v =

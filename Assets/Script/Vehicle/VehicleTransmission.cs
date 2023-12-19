@@ -42,16 +42,15 @@ public class VehicleTransmission : MonoBehaviour
 
     private void InitSound()
     {
-        if (GameManager.instance.IsInGarage)
-            return;
-
         source = gameObject.AddComponent<AudioSource>();
         source.playOnAwake = false;
 
         if (GetComponent<PlayerVehicleInput>().enabled)
-            source.minDistance = 5;
+            source.minDistance = 0.15F;
         else
-            source.minDistance = 2;
+            source.minDistance = 0.05F;
+
+        source.maxDistance = 1;
     }
 
     private void LateUpdate()
@@ -166,7 +165,7 @@ public class VehicleTransmission : MonoBehaviour
             {
                 currentGear++;
 
-                SoundManager.instance.PlaySound("VehicleFX_Shifting", source);
+                SoundManager.Instance.PlayInGameSound("VehicleFX_Shifting", source, false);
 
                 gearChangeTimer = 0;
 
@@ -192,7 +191,7 @@ public class VehicleTransmission : MonoBehaviour
 
             if (gearChangeTimer >= powerData.timeToChangeGears)
             {
-                SoundManager.instance.PlaySound("VehicleFX_Shifting", source);
+                SoundManager.Instance.PlayInGameSound("VehicleFX_Shifting", source, false);
 
                 currentGear--;
 
