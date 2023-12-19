@@ -1,5 +1,5 @@
-using UnityEngine;
 using System;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "BodyKit", menuName = "Game/Vehicle Parts/Body Kit")]
 public class VehicleBodyKitScriptable : ScriptableObject
@@ -13,6 +13,7 @@ public class VehicleBodyKitScriptable : ScriptableObject
     public Roofscoop[] roofScoops;
     public Sideskirt[] sideSkirts;
     public Spoiler[] spoilers;
+    public RimScriptable[] rims;
 }
 
 #region ENUMS
@@ -33,7 +34,7 @@ public enum VehiclePart
 
 #region STRUCTS
 [Serializable]
-public struct Bonnet 
+public struct Bonnet
 {
     public string name;
     public GameObject mesh; //Prefab

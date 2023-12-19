@@ -6,17 +6,22 @@ public class VehicleEngine : MonoBehaviour
 
     private VehicleInput input;
 
-    private float totalEnginePower;
+    private float totalPower;
 
     private float engineRPM;
 
-    private const float IDLERPM = 1000;
 
-    [SerializeField][Range(0.5F, 10F)] float rpmSmoothTime;
+    [SerializeField][Range(0.001F, 2.0F)] float engineResponseTime;
 
-    public float EnginePower { get { return totalEnginePower; } }
+    public float EnginePower { get { return totalPower; } }
+
+    public float Throttle { get { return input.Throttle; } }
+
+    public float MaxRPM { get { return transmission.powerData.maxRPM; } }
 
     public float RPM { get { return engineRPM; } }
+
+    public float IdleRPM { get { return transmission.powerData.idleRPM; } }
 
     private void Awake()
     {
@@ -29,22 +34,33 @@ public class VehicleEngine : MonoBehaviour
         CalculateEnginePower();
     }
 
-    private void CalculateEnginePower()
+    protected virtual void CalculateEnginePower()
     {
-        //REV-LIMITER
-        if (engineRPM > transmission.powerData.maxRPM)
-        {
-            engineRPM = transmission.powerData.maxRPM - 1000;
-        }
+        float gearRatio = input.IsInReverse ? transmission.powerData.reverseGearRatio : transmission.powerData.gearRatios[transmission.CurrentGear];
 
-        float gearRatio = transmission.powerData.gearRatios[transmission.CurrentGear];
+        totalPower = transmission.powerData.torqueCurve.Evaluate(engineRPM) * (gearRatio);
 
-        totalEnginePower = transmission.powerData.torqueCurve.Evaluate(engineRPM) * (gearRatio);
+        totalPower *= input.RawThrottle;
 
-        totalEnginePower *= (!transmission.IsChangingGear) ? input.Throttle : 0;
+        if (input.Brake > 0 && Mathf.Floor(transmission.DrivetrainRPM) > 0)
+            totalPower *= input.Throttle;
 
         float velocity = 0;
 
-        engineRPM = Mathf.SmoothDamp(engineRPM, 1000 + (Mathf.Abs(transmission.DrivetrainRPM) * 3.6f * gearRatio), ref velocity, rpmSmoothTime);
+        if (transmission.IsChangingGear)
+        {
+            totalPower *= 0;
+        }
+
+        totalPower *= 2.5F; //multiply by 2.5F because the cars are so damn slow.
+
+
+        //REV_LIMITER
+
+        if (engineRPM >= transmission.powerData.maxRPM)
+            engineRPM -= 100;
+
+        engineRPM = Mathf.SmoothDamp(engineRPM, transmission.powerData.idleRPM + (Mathf.Abs(transmission.DrivetrainRPM) * 3.6f * gearRatio), ref velocity, engineResponseTime);
+
     }
 }

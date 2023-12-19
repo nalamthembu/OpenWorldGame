@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1
+  m_AmbientIntensity: 1.5
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
@@ -402,7 +402,7 @@ Light:
     m_UseCullingMatrixOverride: 0
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
-  m_Flare: {fileID: 0}
+  m_Flare: {fileID: 12100000, guid: 7091daad7a011044db97881a85f242c9, type: 2}
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
@@ -442,14 +442,14 @@ LensFlare:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 186016807}
   m_Enabled: 1
-  m_Flare: {fileID: 0}
+  m_Flare: {fileID: 12100000, guid: 9c55959e9fdb22548a628ac9e244e49b, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_Brightness: 1
   m_FadeSpeed: 3
   m_IgnoreLayers:
     serializedVersion: 2
-    m_Bits: 6
-  m_Directional: 0
+    m_Bits: 2054
+  m_Directional: 1
 --- !u!1001 &322100986
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -996,6 +996,14 @@ PrefabInstance:
       value: -60
       objectReference: {fileID: 0}
     - target: {fileID: 8474664096609814838, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
+      propertyPath: maxDistFromTarget
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474664096609814838, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
+      propertyPath: minDistFromTarget
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474664096609814838, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
       propertyPath: ObstructionLayer.m_Bits
       value: 1
       objectReference: {fileID: 0}
@@ -1497,7 +1505,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1438620759
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1845,6 +1853,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WorldManager
       objectReference: {fileID: 0}
+    - target: {fileID: 1978891208683851622, guid: 3e0c14a5ea3e1644e9532321050ea737, type: 3}
+      propertyPath: m_SurfaceData
+      value: 
+      objectReference: {fileID: 11400000, guid: faf4f5240b1f53d46be2b812a5bb58b9, type: 2}
     - target: {fileID: 1978891208683851622, guid: 3e0c14a5ea3e1644e9532321050ea737, type: 3}
       propertyPath: debug.maxTimeScale
       value: 100

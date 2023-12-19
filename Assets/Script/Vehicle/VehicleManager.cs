@@ -26,6 +26,11 @@ public class VehicleManager : MonoBehaviour
             return;
         }
 
+        InitVehicleManager();
+    }
+
+    private void InitVehicleManager()
+    {
         vehicleDictionary = new();
         rVehicles = new();
         rAIDrivers = new();
@@ -52,8 +57,17 @@ public class VehicleManager : MonoBehaviour
         string vName = vehicleLib.vehicles[Random.Range(0, vehicleLib.vehicles.Length)].name;
         int range = Random.Range(0, 4);
         Vector3 pos = new(Random.Range(-500, 500), 0, Random.Range(-500, 500));
-        
+
         SpawnVehicleWithDriverType(vName, (DriverType)range, pos, pos * 0);
+    }
+
+    public void SpawnRandomRacer(Vector3 position, Vector3 rotation)
+    {
+        string vName = vehicleLib.vehicles[Random.Range(0, vehicleLib.vehicles.Length)].name;
+        
+        int range = Random.Range(0, 1); //0 and 1 are careful and reckless
+
+        SpawnVehicleWithDriverType(vName, (DriverType)range, position, rotation);
     }
 
     public void SpawnVehicle(string name, Vector3 position, Vector3 rotation)
@@ -81,6 +95,49 @@ public class VehicleManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    //LEFT RIGHT OPTIONS IN VEHICLE SELECT IN GARAGE.
+    public void SpawnNextVehicleInGarage_LEFT()
+    {
+        selectedVehicle--;
+        if (selectedVehicle < 0)
+            selectedVehicle = vehicleCount - 1;
+
+        string vehicleName;
+
+        for (int i = 0; i < vehicleCount; i++)
+        {
+            if (i == selectedVehicle)
+            {
+                vehicleName = vehicleLib.vehicles[i].name;
+
+                GarageManager.instance.SetDisplayVehicle(vehicleName);
+
+                break;
+            }
+        }
+    }
+
+    public void SpawnNextVehicleInGarage_RIGHT()
+    {
+        selectedVehicle++;
+        if (selectedVehicle >= vehicleCount)
+            selectedVehicle = 0;
+
+        string vehicleName;
+
+        for (int i = 0; i < vehicleCount; i++)
+        {
+            if (i == selectedVehicle)
+            {
+                vehicleName = vehicleLib.vehicles[i].name;
+
+                GarageManager.instance.SetDisplayVehicle(vehicleName);
+
+                break;
+            }
+        }
     }
 
     public void SpawnVehicleWithDriverType(string name, DriverType driverType, Vector3 position, Vector3 rotation)

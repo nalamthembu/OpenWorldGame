@@ -1,31 +1,43 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WorldManager : MonoBehaviour
 {
     public const int TWENTY_FOUR_MINUTES = 1440; //Seconds
 
-    [SerializeField] TimeOfDay timeOfDay;
+    [SerializeField] TimeOfDay m_TimeOfDay;
 
-    [SerializeField] WorldDebug debug;
+    [SerializeField] WorldDebug m_Debug;
+
+    [SerializeField] SurfaceData m_SurfaceData;
+
+    public SurfaceData SurfaceData { get { return m_SurfaceData; } }
+
+    public static WorldManager Instance;
+
+    private void Awake()
+    {
+        if (Instance is null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
 
     private void Start()
     {
-        debug.Start();
+        m_Debug.Start();
     }
 
     private void Update()
     {
-        timeOfDay.Update();
+        m_TimeOfDay.Update();
 
-        if (debug.enabled)
-            debug.Update();
+        if (m_Debug.enabled)
+            m_Debug.Update();
     }
 
     private void OnValidate()
     {
-        debug.OnValidate();
+        m_Debug.OnValidate();
     }
 }
 

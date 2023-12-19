@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class VehicleBodyKitManager : MonoBehaviour
 {
@@ -10,6 +10,7 @@ public class VehicleBodyKitManager : MonoBehaviour
     public KitIndiceSettings kitIndiceSettings;
     public PaintJobSettings paintJobSettings;
     public NonCustomisableParts nonCustomParts;
+    private Vehicle vehicle;
 
     //"r" prefix means real-time or spawned at runtime
     private GameObject rbodyKit;
@@ -17,6 +18,8 @@ public class VehicleBodyKitManager : MonoBehaviour
 
     private void Awake()
     {
+        vehicle = GetComponent<Vehicle>();
+
         InitialiseBodyKit();
     }
 
@@ -49,6 +52,15 @@ public class VehicleBodyKitManager : MonoBehaviour
         InitialisePart(bodyKit.roofScoops[kitIndiceSettings.roofScoop].mesh, rbodyKit.transform);
         InitialisePart(bodyKit.sideSkirts[kitIndiceSettings.sideSkirt].mesh, rbodyKit.transform);
         InitialisePart(bodyKit.spoilers[kitIndiceSettings.spoiler].mesh, rbodyKit.transform, bodyKit.spoilers[kitIndiceSettings.spoiler].location);
+
+        //Init Rims
+
+        for (int i = 0; i < vehicle.AllWheels.Count; i++)
+        {
+            vehicle.AllWheels[i].Rim = bodyKit.rims[kitIndiceSettings.rims];
+            vehicle.AllWheels[i].SpawnWheelAndRim();
+        }
+
 
         for (int i = 0; i < nonCustomParts.parts.Length; i++)
         {
@@ -93,16 +105,18 @@ public class VehicleBodyKitManager : MonoBehaviour
 
     public KitIndiceSettings RandomKit()
     {
-        KitIndiceSettings kitSet;
-
-        kitSet.bonnet = Random.Range(0, bodyKit.bonnets.Length);
-        kitSet.fender = Random.Range(0, bodyKit.fenders.Length);
-        kitSet.frontBumper = Random.Range(0, bodyKit.frontBumpers.Length);
-        kitSet.rearBumper = Random.Range(0, bodyKit.rearBumpers.Length);
-        kitSet.rollCage = Random.Range(0, bodyKit.rearBumpers.Length);
-        kitSet.roofScoop = Random.Range(0, bodyKit.roofScoops.Length);
-        kitSet.sideSkirt = Random.Range(0, bodyKit.sideSkirts.Length);
-        kitSet.spoiler = Random.Range(0, bodyKit.spoilers.Length);
+        KitIndiceSettings kitSet = new()
+        {
+            bonnet = Random.Range(0, bodyKit.bonnets.Length),
+            fender = Random.Range(0, bodyKit.fenders.Length),
+            frontBumper = Random.Range(0, bodyKit.frontBumpers.Length),
+            rearBumper = Random.Range(0, bodyKit.rearBumpers.Length),
+            rollCage = Random.Range(0, bodyKit.rearBumpers.Length),
+            roofScoop = Random.Range(0, bodyKit.roofScoops.Length),
+            sideSkirt = Random.Range(0, bodyKit.sideSkirts.Length),
+            spoiler = Random.Range(0, bodyKit.spoilers.Length),
+            rims = Random.Range(0, bodyKit.rims.Length)
+        };
 
         return kitSet;
     }
@@ -121,6 +135,7 @@ public struct KitIndiceSettings
     public int roofScoop;
     public int sideSkirt;
     public int spoiler;
+    public int rims;
 }
 
 [System.Serializable]
@@ -132,5 +147,5 @@ public struct PaintJobSettings
 [System.Serializable]
 public struct NonCustomisableParts
 {
-    public GameObject[] parts; 
+    public GameObject[] parts;
 }

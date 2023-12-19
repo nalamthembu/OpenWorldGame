@@ -23,9 +23,12 @@ public class IdleState : ILocomotionState
     }
 
     public void OnStateEnter() => stateMachine.Character.TargetSpeed = ASSIGNED_SPEED;
-    
+
     public void OnStateUpdate()
     {
+        if (GameStateMachine.Instance.currentState is GameStatePaused)
+            return;
+
         m_SeekTime += Time.deltaTime;
 
         if (m_SeekTime >= MAX_TIME)
@@ -36,8 +39,6 @@ public class IdleState : ILocomotionState
         }
 
         m_IdleIndex = Mathf.Lerp(m_IdleIndex, m_CurrentIdleIndex, Time.deltaTime);
-
-        return;
     }
 
     public void OnStateCheck()

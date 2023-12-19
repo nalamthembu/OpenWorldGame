@@ -73,14 +73,25 @@ public struct Pool
     {
         pooledObjects = new();
 
+        //Pool Parent
+        Transform poolParent = new GameObject(name + "s").transform;
+
+        poolParent.parent = poolManagerTransform;
+
+        poolParent.transform.localPosition = poolParent.localEulerAngles *= 0;
+        //End of pool parent initialisation.
+
         for (int i = 0; i < amount; i++)
         {
             GameObject gObj = Object.Instantiate(gameObject, objectPoolManager);
 
             gObj.SetActive(false);
 
-            pooledObjects.Add(gObj);
+            //Set gObj Parent to pool parent (this is just to organise the hierachy a little bit)
 
+            gObj.transform.parent = poolParent;
+
+            pooledObjects.Add(gObj);
         }
     }
 

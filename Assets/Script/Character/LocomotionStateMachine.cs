@@ -115,6 +115,45 @@ public class LocomotionStateMachine : MonoBehaviour
         Character.Animator.SetBool(GameStrings.RU, ru);
     }
 
+
+    public void PlayFootStepSound()
+    {
+        //TO-DO : Check surface 
+        Surface detectedSurface = default;
+
+        if (WorldManager.Instance != null)
+        {
+            switch (currentState)
+            {
+                default:
+                case WalkState:
+                   
+                    if (detectedSurface.walkSoundID is null)
+                    {
+                        if (WorldManager.Instance.SurfaceData.TryGetSurface("DEFAULT_SURFACE", out Surface surface))
+                        {
+                            SoundManager.Instance.PlayInGameSound(surface.walkSoundID, transform.position, true);
+                        }
+                    }
+
+                    break;
+
+                case RunState:
+
+                    if (detectedSurface.runSoundID is null)
+                    {
+                        if (WorldManager.Instance.SurfaceData.TryGetSurface("DEFAULT_SURFACE", out Surface surface))
+                        {
+                            SoundManager.Instance.PlayInGameSound(surface.runSoundID, transform.position, true);
+                        }
+                    }
+
+                    break;
+            }
+        }
+
+    }
+
     private void OnDrawGizmos()
     {
 #if UNITY_EDITOR

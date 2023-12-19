@@ -81,9 +81,4 @@ public class Character : MonoBehaviour
 
     public void SetVehicle(Vehicle vehicle) => this.m_Vehicle = vehicle;
 
-    public void PlayFootStepSound()
-    {
-        //Check surface
-    }
-
 }
