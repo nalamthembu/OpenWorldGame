@@ -141,6 +141,46 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    //Play in-game Audio in 3D Space From a source (useful for vehicles, characters, etc.)
+    public void PlayInGameSound(string soundID, AudioSource source, bool loop, out float clipLength, bool randomisePitch = false, bool TwoDSpace = false)
+    {
+        clipLength = 0;
+
+        if (m_InGameSoundDict.TryGetValue(soundID, out Sound sound))
+        {
+            switch (sound.type)
+            {
+                case SoundType.SPEECH:
+                case SoundType.AMBIENCE:
+                case SoundType.SFX:
+
+                    source.pitch = randomisePitch ? Random.Range(1, 1.25F) : 1;
+
+                    source.clip = sound.GetRandomClip();
+
+                    //Make sure the route the sound to the correct mixer group.
+                    source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
+
+                    //Make sure the sound is in 3D Space
+                    source.spatialBlend = TwoDSpace ? 0 : 1;
+
+                    //Useful for ambient loops (City noise, Music, etc.)
+                    source.loop = loop;
+
+                    clipLength = source.clip.length;
+
+                    source.Play();
+
+                    break;
+            }
+        }
+        else
+        {
+            Debug.LogError("Could not find sound with name : " + soundID
+                + ", please make sure the spelling is correct or that it exists");
+        }
+    }
+
     //Plays frontend sound out of the Frontend AudioSource (UI/Menu Sound essentially)
     public void PlayFESound(string soundID)
     {

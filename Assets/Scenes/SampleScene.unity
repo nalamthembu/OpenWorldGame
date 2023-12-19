@@ -1597,6 +1597,14 @@ PrefabInstance:
       propertyPath: audioMixer
       value: 
       objectReference: {fileID: 6258275273130594865, guid: 445f91598f91dd14990a596822d79acb, type: 2}
+    - target: {fileID: 3807910545819094759, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
+      propertyPath: maxDistance
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3807910545819094759, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
+      propertyPath: minDistance
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3838635861691781981, guid: b573db7ff0a68d44a9c1f481d2f5300e, type: 3}
       propertyPath: m_Layer
       value: 12

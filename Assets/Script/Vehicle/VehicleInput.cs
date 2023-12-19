@@ -8,6 +8,8 @@ public class VehicleInput : MonoBehaviour
     [Range(0, 1)] float handbrake;
     [Range(-1, 1)] float steering;
 
+    [SerializeField] DebugVehicleInput m_Debug;
+
     private bool isInReverse;
 
     private float rawThrottle; //Includes negative numbers if the player/ai decides to reverse.
@@ -26,17 +28,61 @@ public class VehicleInput : MonoBehaviour
 
     private AIDriver aiDriver;
 
-    private void Awake() => aiDriver = GetComponent<AIDriver>();
+    private void Awake()
+    {
+        aiDriver = GetComponent<AIDriver>();
+        m_Debug = new(this);
+    }
 
-    private void Update() => FloorValues();
+    private void Update()
+    {
+        if (m_Debug.enabled)
+            m_Debug.Update();
+
+        FloorValues();
+    }
 
     private void FloorValues()
     {
-        //FLOAT-POINT NUMBERS ARE FUCKING THIS UP.
+        //FLOAT-POINT NUMBERS ARE MESSING THIS UP.
         if (aiDriver)
             throttle = Mathf.Floor(throttle - aiDriver.targetThrottle);
 
         brake = Mathf.Floor(brake);
         Handbrake = Mathf.Floor(Handbrake);
+    }
+}
+
+[System.Serializable]
+public struct DebugVehicleInput
+{
+    [Header("Debugging")]
+    public bool enabled;
+
+    [SerializeField][Range(0, 1)] float throttle;
+    [SerializeField][Range(0, 1)] float brake;
+    [SerializeField][Range(0, 1)] float handbrake;
+    [SerializeField][Range(-1, 1)] float steering;
+
+    private readonly VehicleInput vehicleInput;
+
+    public DebugVehicleInput(VehicleInput vehicleInput)
+    {
+        enabled = false;
+        throttle = 0;
+        brake = 0;
+        handbrake = 0;
+        steering = 0;
+
+        this.vehicleInput = vehicleInput;
+    }
+
+    public void Update()
+    {
+        vehicleInput.Throttle = throttle;
+        vehicleInput.RawThrottle = throttle;
+        vehicleInput.Brake = brake;
+        vehicleInput.Handbrake = handbrake;
+        vehicleInput.Steering = steering;
     }
 }

@@ -10,16 +10,15 @@ public class CarAudio : MonoBehaviour
 
     [SerializeField] bool simulated = true;
 
-    private void Awake()
+    private void Start()
     {
         res = GetComponentInChildren<RealisticEngineSound>();
 
         engine = GetComponent<VehicleEngine>();
 
+        transmission = GetComponent<VehicleTransmission>();
+
         res.maxRPMLimit = engine.MaxRPM;
-
-        transmission = engine.GetComponent<VehicleTransmission>();
-
     }
 
     private void Update()
