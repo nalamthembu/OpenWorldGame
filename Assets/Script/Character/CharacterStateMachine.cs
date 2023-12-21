@@ -79,6 +79,12 @@ public class CharacterStateMachine : MonoBehaviour
 [System.Serializable]
 public struct CharacterStateDebug
 {
+    public enum CharacterState
+    {
+        ON_FOOT,
+        IN_VEHICLE
+    }
+
     public bool debugCharacterState;
 
     public Vector2 labelPosition;
@@ -92,10 +98,4 @@ public struct CharacterStateDebug
             case InVehicleState: this.currentState = CharacterState.IN_VEHICLE; break;
         }
     }
-}
-
-public enum CharacterState
-{
-    ON_FOOT,
-    IN_VEHICLE
 }

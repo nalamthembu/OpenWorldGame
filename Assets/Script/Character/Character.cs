@@ -50,9 +50,13 @@ public class Character : MonoBehaviour
 
     public bool IsAiming { get; private set; }
 
+    public void SetAiming(bool value) => IsAiming = value;
+
     public bool IsFiring { get; private set; }
 
     protected NavMeshAgent m_Agent;
+
+    public NavMeshAgent NavMeshAgent { get { return m_Agent; } }
 
     protected virtual void Awake()
     {
@@ -112,6 +116,11 @@ public class Character : MonoBehaviour
         if (m_Agent.enabled != true)
             m_Agent.enabled = true;
 
+        if (this is PlayerController player)
+        {
+            player.CharacterController.enabled = false;
+        }
+
         m_Agent.SetDestination(pos);
         destinationVector = pos;
     }
@@ -120,6 +129,11 @@ public class Character : MonoBehaviour
     {
         if (m_Agent.enabled != true)
             m_Agent.enabled = true;
+
+        if (this is PlayerController player)
+        {
+            player.CharacterController.enabled = false;
+        }
 
         m_Agent.SetDestination(target.position);
         destinationTransform = target;

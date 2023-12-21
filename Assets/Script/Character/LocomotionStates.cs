@@ -16,13 +16,16 @@ public class IdleState : ILocomotionState
     const int MAX_TIME = 10;
 
     const int ASSIGNED_SPEED = 0;
-
+    
     public IdleState(LocomotionStateMachine stateMachine)
     {
         this.stateMachine = stateMachine;
     }
 
-    public void OnStateEnter() => stateMachine.Character.TargetSpeed = ASSIGNED_SPEED;
+    public void OnStateEnter()
+    {
+        stateMachine.Character.TargetSpeed = ASSIGNED_SPEED;
+    }
 
     public void OnStateUpdate()
     {
@@ -39,6 +42,18 @@ public class IdleState : ILocomotionState
         }
 
         m_IdleIndex = Mathf.Lerp(m_IdleIndex, m_CurrentIdleIndex, Time.deltaTime);
+
+        if (stateMachine.Character is PlayerController player)
+        {
+            if (player.WeaponInventory.HasWeaponEquipped)
+            {
+                if (player.IsAiming)
+                {
+                    player.CalculateRotation();
+                    player.RotateCharacter(0.15F);
+                }
+            }
+        }
     }
 
     public void OnStateCheck()
@@ -73,6 +88,25 @@ public class IdleState : ILocomotionState
         stateMachine.Character.Animator.SetFloat(GameStrings.IDLE_INDEX, m_IdleIndex);
 
         stateMachine.ResetFeet();
+
+        if (stateMachine.Character is PlayerController player)
+        {
+            bool IsAiming = player.WeaponInventory.HasWeaponEquipped && PlayerInput.Instance.IsAiming;
+            player.SetAiming(IsAiming);
+            stateMachine.Animator.SetBool(GameStrings.IS_AIMING, IsAiming);
+            stateMachine.Animator.SetFloat(GameStrings.INPUT_X, 0, 0.5F, Time.deltaTime);
+            stateMachine.Animator.SetFloat(GameStrings.INPUT_Y, 0, 0.5F, Time.deltaTime);
+
+            if (IsAiming)
+            {
+                switch (player.WeaponInventory.CurrentWeapon)
+                {
+                    case TwoHandedWeapon:
+                        stateMachine.Animator.SetFloat(GameStrings.CAMERA_X, CameraController.Instance.GetCameraPitchYaw().x);
+                        break;
+                }
+            }
+        }
     }
 }
 
@@ -104,11 +138,27 @@ public class WalkState : ILocomotionState
         {
             player.CalculateSpeed();
 
-            if (player.Animator.IsCurrentStateTag("Loop"))
+            if (player.Animator.IsCurrentStateTag("Loop", 0) || player.Animator.IsCurrentStateTag("Loop", 1))
             {
                 player.CalculateRotation();
                 player.RotateCharacter();
                 stateMachine.ResetFeet();
+            }
+
+            if (player.WeaponInventory.HasWeaponEquipped)
+            {
+                if (player.IsAiming)
+                {
+                    player.CalculateRotation();
+                    player.RotateCharacter(0.15F);
+
+                    switch (player.WeaponInventory.CurrentWeapon)
+                    {
+                        case TwoHandedWeapon:
+                            stateMachine.Animator.SetFloat(GameStrings.CAMERA_X, CameraController.Instance.GetCameraPitchYaw().x);
+                            break;
+                    }
+                }
             }
         }
     }
@@ -151,9 +201,24 @@ public class WalkState : ILocomotionState
     {
         if (stateMachine.Character is PlayerController player)
         {
+            bool IsAiming = player.WeaponInventory.HasWeaponEquipped && PlayerInput.Instance.IsAiming;
+            player.SetAiming(IsAiming);
+            stateMachine.Animator.SetBool(GameStrings.IS_AIMING, IsAiming);
             stateMachine.Animator.SetFloat(GameStrings.INPUT_MAGNITUDE, PlayerInput.Instance.InputMagnitude);
             stateMachine.Animator.SetFloat(GameStrings.TARGET_ROTATION, player.GetAngle());
             stateMachine.Animator.SetFloat(GameStrings.CURRENT_SPEED, player.CurrentSpeed);
+            stateMachine.Animator.SetFloat(GameStrings.INPUT_X, PlayerInput.Instance.InputDir.x, 0.1F, Time.deltaTime);
+            stateMachine.Animator.SetFloat(GameStrings.INPUT_Y, PlayerInput.Instance.InputDir.y, 0.1F, Time.deltaTime);
+
+            if (IsAiming)
+            {
+                switch (player.WeaponInventory.CurrentWeapon)
+                {
+                    case TwoHandedWeapon:
+                        stateMachine.Animator.SetFloat(GameStrings.CAMERA_X, CameraController.Instance.GetCameraPitchYaw().x);
+                        break;
+                }
+            }
         }
     }
 }
@@ -186,11 +251,27 @@ public class RunState : ILocomotionState
         {
             player.CalculateSpeed();
 
-            if (player.Animator.IsCurrentStateTag("Loop"))
+            if (player.Animator.IsCurrentStateTag("Loop", 0) || player.Animator.IsCurrentStateTag("Loop", 1))
             {
                 player.CalculateRotation();
                 player.RotateCharacter();
                 stateMachine.ResetFeet();
+            }
+
+            if (player.WeaponInventory.HasWeaponEquipped)
+            {
+                if (player.IsAiming)
+                {
+                    player.CalculateRotation();
+                    player.RotateCharacter(0.15F);
+
+                    switch (player.WeaponInventory.CurrentWeapon)
+                    {
+                        case TwoHandedWeapon:
+                            stateMachine.Animator.SetFloat(GameStrings.CAMERA_X, CameraController.Instance.GetCameraPitchYaw().x);
+                            break;
+                    }
+                }
             }
         }
     }
@@ -233,10 +314,24 @@ public class RunState : ILocomotionState
     {
         if (stateMachine.Character is PlayerController player)
         {
-            
+            bool IsAiming = player.WeaponInventory.HasWeaponEquipped && PlayerInput.Instance.IsAiming;
+            player.SetAiming(IsAiming);
+            stateMachine.Animator.SetBool(GameStrings.IS_AIMING, IsAiming);
             stateMachine.Animator.SetFloat(GameStrings.INPUT_MAGNITUDE, PlayerInput.Instance.InputMagnitude);
             stateMachine.Animator.SetFloat(GameStrings.TARGET_ROTATION, player.GetAngle());
             stateMachine.Animator.SetFloat(GameStrings.CURRENT_SPEED, player.CurrentSpeed);
+            stateMachine.Animator.SetFloat(GameStrings.INPUT_X, PlayerInput.Instance.InputDir.x, 0.1F, Time.deltaTime);
+            stateMachine.Animator.SetFloat(GameStrings.INPUT_Y, PlayerInput.Instance.InputDir.y, 0.1F, Time.deltaTime);
+
+            if (IsAiming)
+            {
+                switch (player.WeaponInventory.CurrentWeapon)
+                {
+                    case TwoHandedWeapon:
+                        stateMachine.Animator.SetFloat(GameStrings.CAMERA_X, CameraController.Instance.GetCameraPitchYaw().x);
+                        break;
+                }
+            }
         }
     }
 }
@@ -245,6 +340,9 @@ public class StopState : ILocomotionState
 {
     readonly LocomotionStateMachine stateMachine;
     readonly float assignedSpeed;
+
+    float inputXOnEnter;
+    float inputYOnEnter;
 
     public StopState(LocomotionStateMachine stateMachine, float assignedSpeed)
     {
@@ -256,6 +354,9 @@ public class StopState : ILocomotionState
     {
         stateMachine.CheckFeet(out _);
         stateMachine.Character.TargetSpeed = assignedSpeed;
+
+        inputXOnEnter = stateMachine.Animator.GetFloat(GameStrings.INPUT_X);
+        inputYOnEnter = stateMachine.Animator.GetFloat(GameStrings.INPUT_Y);
     }
 
     public void OnStateUpdate()
@@ -298,9 +399,24 @@ public class StopState : ILocomotionState
     {
         if (stateMachine.Character is PlayerController player)
         {
+            bool IsAiming = player.WeaponInventory.HasWeaponEquipped && PlayerInput.Instance.IsAiming;
+            player.SetAiming(IsAiming);
+            stateMachine.Animator.SetBool(GameStrings.IS_AIMING, IsAiming);
             stateMachine.Animator.SetFloat(GameStrings.INPUT_MAGNITUDE, PlayerInput.Instance.InputMagnitude);
             stateMachine.Animator.SetFloat(GameStrings.TARGET_ROTATION, player.TargetRotation);
             stateMachine.Animator.SetFloat(GameStrings.CURRENT_SPEED, player.CurrentSpeed);
+            stateMachine.Animator.SetFloat(GameStrings.INPUT_X, inputXOnEnter);
+            stateMachine.Animator.SetFloat(GameStrings.INPUT_Y, inputYOnEnter);
+
+            if (IsAiming)
+            {
+                switch (player.WeaponInventory.CurrentWeapon)
+                {
+                    case TwoHandedWeapon:
+                        stateMachine.Animator.SetFloat(GameStrings.CAMERA_X, -CameraController.Instance.GetCameraPitchYaw().x);
+                        break;
+                }
+            }
         }
     }
 }

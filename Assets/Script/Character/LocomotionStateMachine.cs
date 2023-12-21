@@ -169,6 +169,18 @@ public class LocomotionStateMachine : MonoBehaviour
 [System.Serializable]
 public struct LocomotionDebug
 {
+    public enum LocomotionState
+    {
+        IDLE,
+        WALK,
+        RUN,
+        STOP,
+        JUMP,
+        IN_AIR,
+        LAND,
+        ROLL
+    }
+
     public LocomotionState currentState;
 
     public bool debugLocomotionState;
@@ -190,17 +202,4 @@ public struct LocomotionDebug
         }
     }
 }
-
-public enum LocomotionState
-{
-    IDLE,
-    WALK,
-    RUN,
-    STOP,
-    JUMP,
-    IN_AIR,
-    LAND,
-    ROLL
-}
-
 #endregion

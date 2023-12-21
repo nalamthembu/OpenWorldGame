@@ -14,7 +14,8 @@ public class VehicleBodyKitManager : MonoBehaviour
 
     //"r" prefix means real-time or spawned at runtime
     private GameObject rbodyKit;
-    private List<Material> rMaterials;
+    private List<Renderer> rRenderers;
+    //private List<Material> rMaterials;
 
     private void Awake()
     {
@@ -30,9 +31,10 @@ public class VehicleBodyKitManager : MonoBehaviour
             Destroy(rbodyKit);
 
         rbodyKit = new("Body_Kit");
-        rMaterials = new();
+        //rMaterials = new();
+        rRenderers = new();
 
-        AddMaterialToList(transform.GetComponent<Renderer>().material);
+        AddRendererToList(transform.GetComponent<Renderer>());
 
         rbodyKit.transform.SetParent(transform);
         rbodyKit.transform.localPosition = Vector3.zero;
@@ -64,7 +66,12 @@ public class VehicleBodyKitManager : MonoBehaviour
 
         for (int i = 0; i < nonCustomParts.parts.Length; i++)
         {
-            AddMaterialToList(nonCustomParts.parts[i].GetComponent<Renderer>().material);
+            if (nonCustomParts.parts[i].TryGetComponent<Renderer>(out var renderer))
+            {
+                AddRendererToList(renderer);
+            }
+
+            //AddMaterialToList(nonCustomParts.parts[i].GetComponent<Renderer>().material);
         }
 
         PaintAllParts();
@@ -84,23 +91,34 @@ public class VehicleBodyKitManager : MonoBehaviour
 
         if (rPart.TryGetComponent<Renderer>(out var r))
         {
+            AddRendererToList(r);
+
+            /*
             Material realTimeMaterial = new(r.sharedMaterial);
 
-            r.GetComponent<Renderer>().material = realTimeMaterial;
+            r.material = realTimeMaterial;
 
             AddMaterialToList(r.material);
+            */
         }
     }
 
     [ContextMenu("DEBUG_Repaint")]
     public void InitialisePaintJob() => PaintAllParts();
 
-    private void AddMaterialToList(Material mat) => rMaterials.Add(mat);
+    //private void AddMaterialToList(Material mat) => rMaterials.Add(mat);
+
+    private void AddRendererToList(Renderer ren) => rRenderers.Add(ren);
 
     private void PaintAllParts()
     {
+        for (int i = 0; i < rRenderers.Count; i++)
+            rRenderers[i].sharedMaterial.mainTexture = paintJob.paintJobs[paintJobSettings.paintJobIndex].texture;
+
+        /*
         for (int i = 0; i < rMaterials.Count; i++)
             rMaterials[i].mainTexture = paintJob.paintJobs[paintJobSettings.paintJobIndex].texture;
+        */
     }
 
     public KitIndiceSettings RandomKit()

@@ -7,10 +7,10 @@ public class CameraController : MonoBehaviour
     [SerializeField] float mouseSensitivity = 5F;
     [SerializeField] Transform target;
     [SerializeField] Vector2 pitchMinMax = new(-40, 85);
-    [SerializeField] float distanceFromTarget = 2F;
     [SerializeField] CameraSetting[] cameraSettings;
     [SerializeField] DebugCamera _debug;
     [SerializeField] bool IsInputDisabled;
+    [SerializeField] float inActivityTimeout = 5;
 
     Dictionary<CamType, CameraSetting> camSetDic = new();
 
@@ -23,6 +23,8 @@ public class CameraController : MonoBehaviour
     float lastRecordedPitch;
     float lastRecordedYaw;
     float fovVel;
+    float inActivityTimer;
+    Vector3 lastMousePos;
 
     new Camera camera;
 
@@ -119,15 +121,17 @@ public class CameraController : MonoBehaviour
 
         transform.eulerAngles = targetRotation;
 
-        bool isAiming = false;
+        bool isAiming = PlayerController.Instance.IsAiming;
 
         camera.transform.localPosition = Vector3.Lerp(camera.transform.localPosition, isAiming ? camSetDic[CamType.AIMING].offset : camSetDic[CamType.NORMAL].offset, Time.deltaTime * 1.5F);
 
-        Vector3 desiredCamPos = target.position - transform.forward * distanceFromTarget;
+        float desiredDistance = isAiming ? camSetDic[CamType.AIMING].distance : camSetDic[CamType.NORMAL].distance;
+
+        Vector3 desiredCamPos = target.position - transform.forward * desiredDistance;
 
         // Check for camera collision
         float obstacleOffset = 0.1f; // Adjust this offset value as needed
-        if (Physics.Raycast(target.position, -transform.forward, out RaycastHit hit, distanceFromTarget + obstacleOffset, m_ObstructionLayer))
+        if (Physics.Raycast(target.position, -transform.forward, out RaycastHit hit, desiredDistance + obstacleOffset, m_ObstructionLayer))
         {
             // If there is an obstacle, pull the camera in closer with an offset
             desiredCamPos = hit.point + transform.forward * obstacleOffset;
@@ -135,7 +139,7 @@ public class CameraController : MonoBehaviour
 
         transform.position = desiredCamPos;
 
-        camera.fieldOfView = Mathf.SmoothDamp(camera.fieldOfView, isAiming ? camSetDic[CamType.AIMING].fov : camSetDic[CamType.NORMAL].fov, ref fovVel, 0.001F);
+        camera.fieldOfView = Mathf.SmoothDamp(camera.fieldOfView, isAiming ? camSetDic[CamType.AIMING].fov : camSetDic[CamType.NORMAL].fov, ref fovVel, 0.5F);
     }
 
     public Vector2 GetCameraPitchYaw()
@@ -146,8 +150,6 @@ public class CameraController : MonoBehaviour
     private void OnGamePaused()
     {
         IsInputDisabled = true;
-
-        //Keep track of last pitch and yaw.
         lastRecordedPitch = pitch;
         lastRecordedYaw = yaw;
     }
@@ -167,9 +169,40 @@ public class CameraController : MonoBehaviour
         if (PlayerInput.Instance.IsHoldingInventoryKey)
             return;
 
+        bool IsMouseInActive = (Input.mousePosition - lastMousePos).sqrMagnitude == 0;
+
+                                //Don't reset the camera pitch if the player is aiming.
+        if (!IsMouseInActive || PlayerController.Instance != null && PlayerController.Instance.IsAiming) 
+        {
+            lastMousePos = Input.mousePosition;
+            inActivityTimer = 0;
+        }
+
+        if (IsMouseInActive)
+        {
+            inActivityTimer += Time.deltaTime;
+
+            if (inActivityTimer >= inActivityTimeout)
+            {
+                if (pitch != 0)
+                {
+                    float t = Time.deltaTime;
+
+                    pitch = Mathf.Lerp(pitch, 0, t);
+
+                    if (Mathf.Floor(pitch) == 0)
+                    {
+                        pitch = 0;
+                        inActivityTimer = 0;
+                    }
+                }
+            }
+        }
+
         yaw += PlayerInput.Instance.GetMouseX(mouseSensitivity);
         pitch -= PlayerInput.Instance.GetMouseY(mouseSensitivity);
         pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
+
     }
 
     private void OnDrawGizmosSelected()
@@ -208,6 +241,7 @@ public struct CameraSetting
 {
     public CamType cameraType;
     public float fov;
+    public float distance;
     public Vector2 offset;
 
     public void OnValidate()
@@ -215,6 +249,11 @@ public struct CameraSetting
         if (fov <= 0)
         {
             fov = 60.0F;
+        }
+
+        if (distance <= 0)
+        {
+            distance = 1;
         }
     }
 }

@@ -142,14 +142,20 @@ public class PlayerController : Character, ICharacter
         return m_DeltaAngle;
     }
 
-    public void RotateCharacter()
+    public void RotateCharacter(float rotationTime = -1)
     {
+        if (IsAiming)
+        {
+            m_TargetRotation = CameraController.Instance.transform.eulerAngles.y;
+        }
+
         transform.eulerAngles = Vector3.up *
             Mathf.SmoothDampAngle(
                 transform.eulerAngles.y,
                 m_TargetRotation,
                 ref m_RotSpeedVelocity,
-                m_RotSmoothTime);
+                rotationTime > 0 ? rotationTime : m_RotSmoothTime
+                );
     }
 
     private void Jump()
@@ -173,7 +179,8 @@ public class PlayerController : Character, ICharacter
 
         m_Velocity = (transform.forward * m_CurrentSpeed) + Vector3.up * m_VelocityY;
 
-        m_CharacterController.Move(m_Velocity * Time.deltaTime);
+        if (m_CharacterController.enabled)
+            m_CharacterController.Move(m_Velocity * Time.deltaTime);
     }
 }
 

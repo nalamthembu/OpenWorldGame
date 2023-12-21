@@ -70,22 +70,4 @@ public class Gun : Weapon
             }
         }
     }
-
-    //Collision
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.relativeVelocity.magnitude > 2)
-        {
-            if (SoundManager.Instance != null)
-            {
-                SoundManager.Instance.PlayInGameSound
-                    (
-                        WeaponData.objectSoundData.CollisionSoundID,
-                        transform.position,
-                        true
-                    );
-
-            }
-        }
-    }
 }

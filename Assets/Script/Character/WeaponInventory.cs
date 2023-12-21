@@ -19,6 +19,8 @@ public class WeaponInventory : MonoBehaviour
 
     public bool HasWeaponEquipped { get; private set; }
 
+    public Weapon CurrentWeapon { get { return currentWeapon; } }
+
     private void Awake()
     {
         InitialiseWeaponInventory();

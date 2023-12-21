@@ -26,6 +26,10 @@ public class Vehicle : MonoBehaviour
 
     public Seat[] seats;
 
+    public SecuritySystem securitySystem;
+
+    public Horn horn;
+
     private Rigidbody rigidBody;
 
     private VehicleInput input;
@@ -100,6 +104,10 @@ public class Vehicle : MonoBehaviour
 
         IsAIRacer = GetComponent<AIDriver>();
 
+        InitialiseSecuritySystem();
+
+        InitialiseHorn();
+
         InitialiseDriversSeat();
     }
 
@@ -107,15 +115,34 @@ public class Vehicle : MonoBehaviour
     {
         foreach(Seat s in seats)
         {
-            if (s.GetSeatType() is SeatType.DRIVER)
+            if (s.GetSeatType() == SeatType.DRIVER)
             {
                 DriversSeat = s;
-
-                break;
             }
         }
     }
 
+    private void OnValidate()
+    {
+        securitySystem.OnValidate();
+    }
+
+    private void Start()
+    {
+        securitySystem.Start();
+        horn.Start();
+    }
+
+    private void Update()
+    {
+        if (securitySystem.IsEngaged)
+            securitySystem.Update();
+
+        //horn.Update();
+
+        //horn.disturbanceDetected = securitySystem.DetectedDisturbance;
+    }
+   
     private void SetMaxSteerAngle()
     {
         for (int i = 0; i < axes.Length; i++)
@@ -275,6 +302,11 @@ public class Vehicle : MonoBehaviour
         //THIS ASSUMES ALL THE WHEELS ARE TOUCHING THE GROUND.
         return true;
     }
+
+    private void InitialiseSecuritySystem() => securitySystem.Initialise(this);
+
+    private void InitialiseHorn() => horn.Initialise(this);
+
 }
 
 [System.Serializable]
@@ -296,7 +328,7 @@ public struct Axis
 }
 
 [System.Serializable]
-public struct Seat
+public class Seat
 {
     [SerializeField] SeatType seatType;
 
@@ -343,4 +375,188 @@ public enum SeatType
     RIGHT_BACK,
     PASSENGER,
     DRIVER
+}
+
+[System.Serializable]
+public class SecuritySystem
+{
+    [SerializeField] bool disturbanceDetected;
+
+    [SerializeField] float alarmTimeout;
+
+    public bool IsEngaged;
+    public bool DetectedDisturbance => disturbanceDetected;
+
+    private Vehicle vehicle;
+    private AudioSource alarmAudioSource;
+    float currentTime;
+
+    public void Initialise(Vehicle vehicle)
+    {
+        this.vehicle = vehicle;
+
+        currentTime = 0;
+
+        //Random chance of having alarm system engaged.
+        IsEngaged = Random.Range(0, 100) >= 50;
+
+        disturbanceDetected = false;
+
+        //Init AudioSource.
+        alarmAudioSource = vehicle.gameObject.AddComponent<AudioSource>();
+
+        alarmAudioSource.spatialBlend = 1;
+
+        alarmAudioSource.minDistance = 5;
+
+        alarmAudioSource.maxDistance = 20;
+
+        alarmAudioSource.playOnAwake = false;
+
+        alarmAudioSource.dopplerLevel = 0.1F;
+
+        alarmAudioSource.enabled = false;
+    }
+
+    public void NotifySecuritySystemOfDisturbance() => disturbanceDetected = true;
+
+    public void Start()
+    {
+        if (!vehicle)
+        {
+            Debug.LogError("There is no vehicle assigned to this Security system.");
+        }
+    }
+
+    public void OnValidate()
+    {
+        //Alarm will turn off after 15 seconds.
+        if (alarmTimeout <= 0)
+            alarmTimeout = 15.0F;
+    }
+
+    public void Update()
+    {
+        if (disturbanceDetected)
+        {
+            //While alarm is on, count how long its been going off.
+            if (alarmAudioSource.isPlaying)
+            {
+                currentTime += Time.deltaTime;
+
+                //If we reach the timeout, turn off the alarm. Disable the AudioSource (optimisation).
+                if (currentTime >= alarmTimeout)
+                {
+                    alarmAudioSource.Stop();
+                    alarmAudioSource.enabled = false;
+                    disturbanceDetected = false;
+                    currentTime = 0;
+                }
+
+                return;
+            }
+
+
+            //Set off alarm
+            if (!alarmAudioSource.enabled)
+            {
+                alarmAudioSource.enabled = true;
+
+                SoundManager.Instance.PlayInGameSound("VehicleFX_Alarm", alarmAudioSource, true);
+            }
+        }
+    }
+}
+
+[System.Serializable]
+public class Horn
+{
+    [HideInInspector] public bool disturbanceDetected;
+    [SerializeField] float alarmDelay;
+    [SerializeField] float audioLoopPointMS;
+    private Vehicle vehicle;
+    private AudioSource hornAudioSource;
+    float alarmTimer;
+    public bool enabled;
+
+    public void Initialise(Vehicle vehicle)
+    {
+        this.vehicle = vehicle;
+
+        alarmTimer = 0;
+
+        disturbanceDetected = false;
+
+        //Init AudioSource.
+        hornAudioSource = this.vehicle.gameObject.AddComponent<AudioSource>();
+
+        hornAudioSource.spatialBlend = 1;
+
+        hornAudioSource.minDistance = 5;
+
+        hornAudioSource.maxDistance = 20;
+
+        hornAudioSource.playOnAwake = false;
+
+        hornAudioSource.dopplerLevel = 0.1F;
+
+        hornAudioSource.enabled = false;
+
+        hornAudioSource.loop = true;
+    }
+
+    public void Start()
+    {
+        if (SoundManager.Instance.TryGetInGameSound("VehicleFX_Horn", out Sound sound))
+        {
+            hornAudioSource.clip = sound.GetRandomClip();
+        }
+    }
+
+
+    public void Update()
+    {
+        if (disturbanceDetected)
+        {
+            AlarmMode();
+
+            return;
+        }
+
+        if (enabled)
+        {
+            if (!hornAudioSource.enabled)
+                hornAudioSource.enabled = true;
+
+            if (!hornAudioSource.isPlaying)
+            {
+                hornAudioSource.Play();
+            }
+        }
+        else
+        {
+            if (hornAudioSource.enabled)
+                hornAudioSource.enabled = false;
+
+            hornAudioSource.Stop();
+        }
+    }
+
+    private void AlarmMode()
+    {
+        if (!hornAudioSource.enabled)
+            hornAudioSource.enabled = true;
+
+        alarmTimer += Time.deltaTime;
+
+        if (alarmTimer >= alarmDelay)
+        {
+            if (!hornAudioSource.isPlaying)
+                hornAudioSource.Play();
+            else
+                hornAudioSource.Stop();
+
+            alarmTimer = 0;
+        }
+    }
 }

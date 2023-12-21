@@ -1,13 +1,23 @@
 ﻿using System.Collections;
+using UnityEngine.UI;
 using UnityEngine;
+using TMPro;
 
 public class HUDManager : MonoBehaviour
 {
     public static HUDManager instance;
 
-    public HUDMiniMap hudMiniMap;
+    [SerializeField] HUDMiniMap hudMiniMap;
+
+    [SerializeField] HUDNotifications hudNotifications;
+
+    [SerializeField] HUDWeaponSystem hudWeaponSystem;
 
     private PlayerInput input;
+
+    public HUDMiniMap GetMiniMap() => hudMiniMap;
+
+    public HUDNotifications GetNotifications() => hudNotifications;
 
     private void Awake()
     {
@@ -31,6 +41,8 @@ public class HUDManager : MonoBehaviour
     private void OnValidate()
     {
         hudMiniMap.OnValidate();
+        hudWeaponSystem.OnValidate();
+        hudNotifications.OnValidate();
     }
 
     private void Update()
@@ -42,26 +54,38 @@ public class HUDManager : MonoBehaviour
         }
 
         hudMiniMap.Update();
+
+        hudNotifications.Update();
+
+        hudWeaponSystem.Update();
     }
 
-    private IEnumerator SetCanvasGroupVisible(CanvasGroup group, bool isVisible)
+    private IEnumerator SetCanvasGroupVisible(CanvasGroup canvasGroup, bool isVisible, float fadeDuration)
     {
         float velocity = 0;
 
         if (isVisible)
-            group.gameObject.SetActive(isVisible);
-
-            while (group.alpha < 1)
+        {
+            while (canvasGroup.alpha < 1)
             {
-                group.alpha += Mathf.SmoothDamp(group.alpha, 1, ref velocity, 0.25F);
+                canvasGroup.alpha = Mathf.SmoothDamp(canvasGroup.alpha, 1, ref velocity, fadeDuration);
 
                 yield return new WaitForEndOfFrame();
             }
 
-            StopCoroutine(SetCanvasGroupVisible(group, isVisible));
+            yield break;
+        }
+        else
+        {
+            while (canvasGroup.alpha > 0)
+            {
+                canvasGroup.alpha = Mathf.SmoothDamp(canvasGroup.alpha, 0, ref velocity, fadeDuration);
 
-        if (!isVisible)
-            group.gameObject.SetActive(isVisible);
+                yield return new WaitForEndOfFrame();
+            }
+
+            yield break;
+        }
     }
 }
 
@@ -73,8 +97,15 @@ public struct HUDMiniMap
     [SerializeField][Range(1, 1000)] float cameraSize;
     [SerializeField][Range(1, 90)] float cameraAngle;
     [SerializeField] GameObject playerIconPrefab;
+    [SerializeField] CanvasGroup canvasGroup;
+    [SerializeField][Range(0, 2)] float fadeDuration;
 
     GameObject playerIconSpriteInstance;
+
+    public bool IsVisible;
+    public CanvasGroup GetCanvasGroup() => canvasGroup;
+
+    public float GetFadeDuration() => fadeDuration;
 
     public void Start()
     {
@@ -86,6 +117,7 @@ public struct HUDMiniMap
 
     public void Update()
     {
+        miniMapCam.gameObject.SetActive(IsVisible);
         SetMiniMap(cameraAngle, cameraHeight);
     }
 
@@ -131,5 +163,119 @@ public struct HUDMiniMap
         {
             miniMapCam.farClipPlane = cameraHeight + 1;
         }
+    }
+}
+
+[System.Serializable]
+public class HUDNotifications
+{
+    [SerializeField]TMP_Text txtNotificationContent;
+    [SerializeField]CanvasGroup canvasGroup;
+    [SerializeField][Range(0, 2)] float fadeDuration;
+    [SerializeField][Range(1, 10)] float notificationDuration;
+
+    public bool IsVisible { get; set; }
+
+    public CanvasGroup GetCanvasGroup => canvasGroup;
+    public float GetFadeDuration =>  fadeDuration;
+
+    public void ShowNotification(string message, float specifiedDuration = 4)
+    {
+        IsVisible = true;
+
+        txtNotificationContent.text = message;
+
+        notificationDuration = specifiedDuration;
+    }
+
+    float notificationTimer;
+
+    public void Update()
+    {
+        if (IsVisible)
+        {
+            canvasGroup.alpha = 1;
+
+            notificationTimer += Time.deltaTime;
+
+            if (notificationTimer >= notificationDuration)
+            {
+                notificationTimer = 0;
+
+                canvasGroup.alpha = 0;
+
+                IsVisible = false;
+            }
+        }
+    }
+
+    public void OnValidate()
+    {
+        if (txtNotificationContent is null)
+            Debug.LogError("Notification content text is not assigned!");
+
+        if (canvasGroup is null)
+            Debug.LogError("Notification UI Canvas Group is not assigned");
+    }
+}
+
+[System.Serializable]
+public class HUDWeaponSystem
+{
+    [System.Serializable]
+    public class Crosshair
+    {
+        public GameObject root;
+        public GameObject hitIndicator;
+        public float hitIndicatorDelay = 0.4F;
+        public bool hasHitSomething;
+        public bool IsActive;
+
+        private float hitIndTimer = 0;
+
+        public void OnValidate()
+        {
+            if (root is null)
+                Debug.LogError("Crosshair root is not assigned");
+
+            if (hitIndicator is null)
+                Debug.LogError("Crosshair hit indicator is not assigned");
+        }
+
+        public void Update()
+        {
+            IsActive = PlayerController.Instance.IsAiming;
+
+            root.SetActive(IsActive);
+
+            if (hasHitSomething)
+            {
+                hitIndTimer += Time.deltaTime;
+
+                hitIndicator.SetActive(true);
+
+                if (hitIndTimer >= hitIndicatorDelay)
+                {
+                    hitIndicator.SetActive(false);
+
+                    hitIndTimer = 0;
+                }
+            }
+        }
+    }
+
+    public Crosshair crossHair;
+
+    public void Update()
+    {
+        if (PlayerController.Instance != null && PlayerController.Instance.WeaponInventory.HasWeaponEquipped)
+        {
+            crossHair.Update();
+        }
+    }
+
+    public void OnValidate()
+    {
+        crossHair.OnValidate();
     }
 }

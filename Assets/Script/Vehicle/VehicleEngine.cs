@@ -111,9 +111,11 @@ public class VehicleEngine : MonoBehaviour
 
             float revOffTimer = 0;
 
+            float startUpRPM = Random.Range(1750, 2000);
+
             while (revOffTimer < .5F)
             {
-                engineRPM = Mathf.SmoothDamp(engineRPM, 1750, ref velocity, engineResponseTime);
+                engineRPM = Mathf.SmoothDamp(engineRPM, startUpRPM, ref velocity, engineResponseTime);
 
                 revOffTimer += Time.deltaTime;
 

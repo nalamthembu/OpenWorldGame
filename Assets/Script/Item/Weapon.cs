@@ -19,26 +19,17 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public WeaponData WeaponData { get { return m_WeaponData; } }
 
-    protected virtual void Awake()
-    {
-        InitialiseWeapon();
-    }
-
+    protected virtual void Awake() => InitialiseWeapon();
+   
     private void OnValidate()
     {
         if (m_Collider is null)
-        {
             m_Collider = GetComponent<SphereCollider>();
-        }
         else if (m_Collider != null && !m_Collider.isTrigger)
-        {
             m_Collider.isTrigger = true;
-        }
 
         if (m_Rigidbody is null)
-        {
             m_Rigidbody = GetComponent<Rigidbody>();
-        }
     }
 
     public void SetEquipStatus(bool value)
@@ -56,24 +47,36 @@ public class Weapon : MonoBehaviour, IWeapon
         m_Rigidbody = GetComponent<Rigidbody>();
     }
 
-    public virtual void Fire()
+    public virtual void Fire() => Debug.LogError("This is not implemented");
+    
+    //Collision
+    private void OnCollisionEnter(Collision collision)
     {
-        Debug.LogError("This is not implemented");
+        if (collision.relativeVelocity.magnitude > 2)
+        {
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlayInGameSound
+                    (
+                        WeaponData.objectSoundData.CollisionSoundID,
+                        transform.position,
+                        true
+                    );
+
+            }
+        }
     }
 
+    //Pickup logic.
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<PlayerController>(out var player))
         {
-            Debug.Log("Player Found this Weapon");
-
             if (player.TryGetComponent<WeaponInventory>(out var inventory))
             {
                 //If adding the weapon was successful.
                 if (inventory.AddWeapon(this))
                 {
-                    print("added " + transform.name + " to weapon inventory");
-
                     m_Collider.enabled = false;
 
                     m_Rigidbody.isKinematic = true;
