@@ -19,7 +19,7 @@ public class ObjectPoolManager : MonoBehaviour
         InitialisePools();
     }
 
-    public Pool? GetPool(string poolName)
+    public Pool GetPool(string poolName)
     {
         if (poolDictionary.TryGetValue(poolName, out Pool value))
         {
@@ -53,7 +53,7 @@ public class ObjectPoolManager : MonoBehaviour
 }
 
 [System.Serializable]
-public struct Pool
+public class Pool
 {
     public string name;
     [SerializeField] GameObject gameObject;

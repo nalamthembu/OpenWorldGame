@@ -1,9 +1,11 @@
 using UnityEngine;
 
 [RequireComponent(typeof(SphereCollider), typeof(Rigidbody))]
-public class Weapon : MonoBehaviour, IWeapon
+public class Weapon : MonoBehaviour
 {
     protected SphereCollider m_Collider;
+
+    protected Collider[] m_Colliders;
 
     protected Rigidbody m_Rigidbody;
 
@@ -19,7 +21,12 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public WeaponData WeaponData { get { return m_WeaponData; } }
 
-    protected virtual void Awake() => InitialiseWeapon();
+    protected virtual void Awake()
+    {
+        m_Colliders = GetComponents<Collider>();
+
+        InitialiseWeapon();
+    }
    
     private void OnValidate()
     {
@@ -46,8 +53,6 @@ public class Weapon : MonoBehaviour, IWeapon
 
         m_Rigidbody = GetComponent<Rigidbody>();
     }
-
-    public virtual void Fire() => Debug.LogError("This is not implemented");
     
     //Collision
     private void OnCollisionEnter(Collision collision)
@@ -77,7 +82,9 @@ public class Weapon : MonoBehaviour, IWeapon
                 //If adding the weapon was successful.
                 if (inventory.AddWeapon(this))
                 {
-                    m_Collider.enabled = false;
+                    //Disable all colliders.
+                    for (int i = 0; i < m_Colliders.Length; i++)
+                        m_Colliders[i].enabled = false;
 
                     m_Rigidbody.isKinematic = true;
 

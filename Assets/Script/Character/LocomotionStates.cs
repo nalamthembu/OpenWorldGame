@@ -93,9 +93,11 @@ public class IdleState : ILocomotionState
         {
             bool IsAiming = player.WeaponInventory.HasWeaponEquipped && PlayerInput.Instance.IsAiming;
             player.SetAiming(IsAiming);
+            player.SetFiring(PlayerInput.Instance.IsShooting_HOLD || PlayerInput.Instance.IsShooting_PRESS);
             stateMachine.Animator.SetBool(GameStrings.IS_AIMING, IsAiming);
             stateMachine.Animator.SetFloat(GameStrings.INPUT_X, 0, 0.5F, Time.deltaTime);
             stateMachine.Animator.SetFloat(GameStrings.INPUT_Y, 0, 0.5F, Time.deltaTime);
+            stateMachine.Animator.SetBool(GameStrings.IS_SHOOTING, player.IsFiring);
 
             if (IsAiming)
             {
@@ -203,6 +205,8 @@ public class WalkState : ILocomotionState
         {
             bool IsAiming = player.WeaponInventory.HasWeaponEquipped && PlayerInput.Instance.IsAiming;
             player.SetAiming(IsAiming);
+            player.SetFiring(PlayerInput.Instance.IsShooting_HOLD || PlayerInput.Instance.IsShooting_PRESS);
+            stateMachine.Animator.SetBool(GameStrings.IS_SHOOTING, player.IsFiring);
             stateMachine.Animator.SetBool(GameStrings.IS_AIMING, IsAiming);
             stateMachine.Animator.SetFloat(GameStrings.INPUT_MAGNITUDE, PlayerInput.Instance.InputMagnitude);
             stateMachine.Animator.SetFloat(GameStrings.TARGET_ROTATION, player.GetAngle());
@@ -316,7 +320,9 @@ public class RunState : ILocomotionState
         {
             bool IsAiming = player.WeaponInventory.HasWeaponEquipped && PlayerInput.Instance.IsAiming;
             player.SetAiming(IsAiming);
+            player.SetFiring(PlayerInput.Instance.IsShooting_HOLD || PlayerInput.Instance.IsShooting_PRESS);
             stateMachine.Animator.SetBool(GameStrings.IS_AIMING, IsAiming);
+            stateMachine.Animator.SetBool(GameStrings.IS_SHOOTING, player.IsFiring);
             stateMachine.Animator.SetFloat(GameStrings.INPUT_MAGNITUDE, PlayerInput.Instance.InputMagnitude);
             stateMachine.Animator.SetFloat(GameStrings.TARGET_ROTATION, player.GetAngle());
             stateMachine.Animator.SetFloat(GameStrings.CURRENT_SPEED, player.CurrentSpeed);

@@ -4,7 +4,7 @@ public class LocomotionStateMachine : MonoBehaviour
 {
     public Character Character { get; private set; }
 
-    [SerializeField] LocomotionDebug debug;
+    [SerializeField] DebugLocomotion debug;
 
     public Animator Animator { get; private set; }
 
@@ -167,7 +167,7 @@ public class LocomotionStateMachine : MonoBehaviour
 
 #region DEBUG
 [System.Serializable]
-public struct LocomotionDebug
+public struct DebugLocomotion
 {
     public enum LocomotionState
     {

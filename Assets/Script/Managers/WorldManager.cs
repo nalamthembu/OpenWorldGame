@@ -6,7 +6,7 @@ public class WorldManager : MonoBehaviour
 
     [SerializeField] TimeOfDay m_TimeOfDay;
 
-    [SerializeField] WorldDebug m_Debug;
+    [SerializeField] DebugWorld m_Debug;
 
     [SerializeField] SurfaceData m_SurfaceData;
 
@@ -99,7 +99,7 @@ public enum DayOfTheWeek
 
 
 [System.Serializable]
-public struct WorldDebug
+public struct DebugWorld
 {
     public bool enabled;
 

@@ -8,8 +8,10 @@ public class WeaponInventory : MonoBehaviour
     [SerializeField] Transform m_LongArmHolster;
     [SerializeField] Transform m_SideArmHolster;
 
-    public Transform LongArmHolster { get { return m_LongArmHolster; } }
-    public Transform SideArmHolster { get { return m_SideArmHolster; } }
+    [SerializeField] DebugWeaponInventory debug;
+
+    public Transform PrimaryWeaponHolster { get { return m_LongArmHolster; } }
+    public Transform SecondaryWeaponHolster { get { return m_SideArmHolster; } }
 
     private Dictionary<WeaponType, Weapon> m_Weapons;
 
@@ -24,6 +26,16 @@ public class WeaponInventory : MonoBehaviour
     private void Awake()
     {
         InitialiseWeaponInventory();
+
+        debug = new(this);
+    }
+
+    private void Update()
+    {
+        if (debug.enabled)
+        {
+            debug.Update();
+        }
     }
 
     private void InitialiseWeaponInventory()
@@ -81,5 +93,40 @@ public class WeaponInventory : MonoBehaviour
         Debug.Log("Could not equip " + weaponType);
 
         return false;
+    }
+}
+
+[System.Serializable]
+public struct DebugWeaponInventory
+{
+    WeaponInventory weaponInventory;
+
+    public bool enabled;
+
+    public DebugWeaponInventory(WeaponInventory weaponInventory)
+    {
+        this.weaponInventory = weaponInventory;
+        this.enabled = false;
+    }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            MaxAmmoCheat();
+
+            HUDManager.instance.GetNotifications().ShowNotification("Weapon Cheat");
+        }
+    }
+
+    public void MaxAmmoCheat()
+    {
+        if (weaponInventory.CurrentWeapon != null)
+        {
+            if (weaponInventory.CurrentWeapon is Gun gun)
+            {
+                gun.AddAmmo(9999);
+            }
+        }
     }
 }

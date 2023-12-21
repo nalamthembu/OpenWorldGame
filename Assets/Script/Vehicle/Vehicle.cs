@@ -391,6 +391,8 @@ public class SecuritySystem
     private AudioSource alarmAudioSource;
     float currentTime;
 
+    int assignedSoundID;
+
     public void Initialise(Vehicle vehicle)
     {
         this.vehicle = vehicle;
@@ -398,7 +400,7 @@ public class SecuritySystem
         currentTime = 0;
 
         //Random chance of having alarm system engaged.
-        IsEngaged = Random.Range(0, 100) >= 50;
+        IsEngaged = true; // Random.Range(0, 100) >= 50;
 
         disturbanceDetected = false;
 
@@ -426,6 +428,10 @@ public class SecuritySystem
         {
             Debug.LogError("There is no vehicle assigned to this Security system.");
         }
+
+        SoundManager.Instance.TryGetInGameSound("VehicleFX_Alarm", out Sound sound);
+
+        assignedSoundID = Random.Range(0, sound.clips.Length);
     }
 
     public void OnValidate()
@@ -462,7 +468,7 @@ public class SecuritySystem
             {
                 alarmAudioSource.enabled = true;
 
-                SoundManager.Instance.PlayInGameSound("VehicleFX_Alarm", alarmAudioSource, true);
+                SoundManager.Instance.PlayInGameSound("VehicleFX_Alarm", assignedSoundID, alarmAudioSource, true, out _);
             }
         }
     }

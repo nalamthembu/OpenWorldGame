@@ -7,7 +7,7 @@ public class CharacterStateMachine : MonoBehaviour
 
     public Animator Animator { get { return Character.Animator; } }
 
-    [SerializeField] CharacterStateDebug debug;
+    [SerializeField] DebugCharacterState debug;
 
     [SerializeField] LayerMask m_VehicleLayer;
 
@@ -77,7 +77,7 @@ public class CharacterStateMachine : MonoBehaviour
 
 
 [System.Serializable]
-public struct CharacterStateDebug
+public struct DebugCharacterState
 {
     public enum CharacterState
     {

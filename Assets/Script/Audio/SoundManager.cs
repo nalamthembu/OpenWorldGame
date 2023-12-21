@@ -62,7 +62,7 @@ public class SoundManager : MonoBehaviour
     }
 
     //Plays in-game Sounds in 3D Space
-    public void PlayInGameSound(string soundID, Vector3 position, bool randomisePitch)
+    public void PlayInGameSound(string soundID, Vector3 position, bool randomisePitch, float minAudibleDist = 1)
     {
         if (m_InGameSoundDict.TryGetValue(soundID, out Sound sound))
         {
@@ -75,7 +75,7 @@ public class SoundManager : MonoBehaviour
 
                     //Using an object pooling system, can improve performance by reusing objects
                     //instead of constantly creating and destroying them.
-                    AudioSource source = ObjectPoolManager.Instance.GetPool("DynamicAudioSource").Value.GetGameObject().GetComponent<AudioSource>();
+                    AudioSource source = ObjectPoolManager.Instance.GetPool("DynamicAudioSource").GetGameObject().GetComponent<AudioSource>();
 
                     source.transform.position = position;
 
@@ -87,6 +87,13 @@ public class SoundManager : MonoBehaviour
 
                     //Make sure the sound is in 3D Space
                     source.spatialBlend = 1;
+
+                    source.minDistance = minAudibleDist;
+
+                    if (minAudibleDist >= source.maxDistance)
+                    {
+                        source.maxDistance = minAudibleDist * 2;
+                    }
 
                     //Make sure the route the sound to the correct mixer group.
                     source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
@@ -106,7 +113,7 @@ public class SoundManager : MonoBehaviour
     }
 
     //Play in-game Audio in 3D Space From a source (useful for vehicles, characters, etc.)
-    public void PlayInGameSound(string soundID, AudioSource source, bool loop, bool randomisePitch = false, bool TwoDSpace = false)
+    public void PlayInGameSound(string soundID, AudioSource source, bool loop, bool randomisePitch = false, bool TwoDSpace = false, float minAudibleDist = 1)
     {
         if (m_InGameSoundDict.TryGetValue(soundID, out Sound sound))
         {
@@ -125,6 +132,13 @@ public class SoundManager : MonoBehaviour
 
                     //Make sure the sound is in 3D Space
                     source.spatialBlend = TwoDSpace ? 0 : 1;
+
+                    source.minDistance = minAudibleDist;
+
+                    if (minAudibleDist >= source.maxDistance)
+                    {
+                        source.maxDistance = minAudibleDist * 2;
+                    }
 
                     //Useful for ambient loops (City noise, Music, etc.)
                     source.loop = loop;

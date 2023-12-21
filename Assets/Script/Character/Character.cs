@@ -50,7 +50,11 @@ public class Character : MonoBehaviour
 
     public bool IsAiming { get; private set; }
 
+    public bool IsDead { get { return m_Health <= 0; } }
+
     public void SetAiming(bool value) => IsAiming = value;
+
+    public void SetFiring(bool value) => IsFiring = value;
 
     public bool IsFiring { get; private set; }
 
@@ -138,4 +142,42 @@ public class Character : MonoBehaviour
         m_Agent.SetDestination(target.position);
         destinationTransform = target;
     }
+
+    public void TakeDamage(float amount, DamageCause causeOfDamage)
+    {
+        switch(causeOfDamage)
+        {
+            case DamageCause.Bullet:
+                //Play blood spray effect.
+                break;
+        }
+
+        if (IsDead)
+            return;
+
+        if (m_Armour > 0)
+        {
+            m_Armour -= amount;
+
+            return;
+        }
+
+        m_Health -= amount;
+
+        //Validate data
+
+        if (m_Armour < 0)
+            m_Armour = 0;
+
+        if (m_Health < 0)
+            m_Health = 0;
+    }
+}
+
+public enum DamageCause
+{
+    Bullet,
+    VehicleCollision,
+    FallDamage,
+    Melee
 }

@@ -18,7 +18,7 @@ public class OnFootState : ICharacterState
     {
         if (stateMachine.Character is PlayerController player)
         {
-            if (PlayerInput.Instance.EquipLongArm && player.WeaponInventory.TryEquipWeapon(WeaponType.LONG_ARM))
+            if (PlayerInput.Instance.EquipLongArm && player.WeaponInventory.TryEquipWeapon(WeaponType.PRIMARY))
             {
                 player.Animator.SetBool(GameStrings.IS_RIFLE_EQUIPPED, true);
                 player.Animator.CrossFadeInFixedTime(GameStrings.EQUIP_LONG_ARM, 0.25F, 1);

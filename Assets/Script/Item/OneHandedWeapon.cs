@@ -1,3 +1,3 @@
 ﻿using UnityEngine;
 
-public class OneHandedWeapon : Gun, IWeapon { }
+public class OneHandedWeapon : Gun, IGun { }

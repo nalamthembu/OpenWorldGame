@@ -14,6 +14,6 @@ public class WeaponData : ScriptableObject
 
 public enum WeaponType
 {
-    SIDE_ARM,
-    LONG_ARM
+    SECONARY,
+    PRIMARY,
 }
