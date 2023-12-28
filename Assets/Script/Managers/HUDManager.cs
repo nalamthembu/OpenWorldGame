@@ -13,6 +13,8 @@ public class HUDManager : MonoBehaviour
 
     [SerializeField] HUDWeaponSystem hudWeaponSystem;
 
+    public HUDWeaponSystem WeaponSystem { get { return hudWeaponSystem; } }
+
     private PlayerInput input;
 
     public HUDMiniMap GetMiniMap() => hudMiniMap;
@@ -90,7 +92,7 @@ public class HUDManager : MonoBehaviour
 }
 
 [System.Serializable]
-public struct HUDMiniMap
+public class HUDMiniMap
 {
     [SerializeField] Camera miniMapCam;
     [SerializeField][Range(1, 1000)] float cameraHeight;
@@ -117,12 +119,19 @@ public struct HUDMiniMap
 
     public void Update()
     {
-        miniMapCam.gameObject.SetActive(IsVisible);
-        SetMiniMap(cameraAngle, cameraHeight);
+        canvasGroup.alpha = GameStateMachine.Instance.IsGamePaused ? 0 : 1;
+
+        if (canvasGroup.alpha > 0)
+        {
+            miniMapCam.gameObject.SetActive(IsVisible);
+            SetMiniMap(cameraAngle, cameraHeight);
+        }
     }
 
     public void SetMiniMap(float angle, float height)
     {
+        /*
+
         //Follow Player Position.
         miniMapCam.transform.position = Vector3.up * height + PlayerController.Instance.transform.position;
 
@@ -140,6 +149,8 @@ public struct HUDMiniMap
 
         //Apply the rotation.
         playerIconSpriteInstance.transform.rotation = Quaternion.Lerp(playerIconSpriteInstance.transform.rotation, b, Time.deltaTime * 4.0F);
+
+        */
     }
 
     public void OnValidate()
@@ -192,6 +203,9 @@ public class HUDNotifications
 
     public void Update()
     {
+        if (GameStateMachine.Instance.IsGamePaused)
+            return;
+
         if (IsVisible)
         {
             canvasGroup.alpha = 1;
@@ -244,7 +258,7 @@ public class HUDWeaponSystem
 
         public void Update()
         {
-            IsActive = PlayerController.Instance.IsAiming;
+            IsActive = !GameStateMachine.Instance.IsGamePaused;
 
             root.SetActive(IsActive);
 
@@ -258,6 +272,8 @@ public class HUDWeaponSystem
                 {
                     hitIndicator.SetActive(false);
 
+                    hasHitSomething = false;
+
                     hitIndTimer = 0;
                 }
             }
@@ -268,10 +284,7 @@ public class HUDWeaponSystem
 
     public void Update()
     {
-        if (PlayerController.Instance != null && PlayerController.Instance.WeaponInventory.HasWeaponEquipped)
-        {
-            crossHair.Update();
-        }
+        crossHair.Update();
     }
 
     public void OnValidate()

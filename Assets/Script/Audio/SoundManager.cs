@@ -75,32 +75,39 @@ public class SoundManager : MonoBehaviour
 
                     //Using an object pooling system, can improve performance by reusing objects
                     //instead of constantly creating and destroying them.
-                    AudioSource source = ObjectPoolManager.Instance.GetPool("DynamicAudioSource").GetGameObject().GetComponent<AudioSource>();
 
-                    source.transform.position = position;
-
-                    source.playOnAwake = false;
-
-                    source.pitch = randomisePitch ? Random.Range(1, 1.25F) : 1;
-
-                    source.clip = sound.GetRandomClip();
-
-                    //Make sure the sound is in 3D Space
-                    source.spatialBlend = 1;
-
-                    source.minDistance = minAudibleDist;
-
-                    if (minAudibleDist >= source.maxDistance)
+                    if (ObjectPoolManager.Instance.TryGetPool("DynamicAudioSource", out Pool pool))
                     {
-                        source.maxDistance = minAudibleDist * 2;
+                        if (pool.TryGetGameObject(out var poolObject))
+                        {
+                            AudioSource source = poolObject.GetComponent<AudioSource>();
+
+                            source.transform.position = position;
+
+                            source.playOnAwake = false;
+
+                            source.pitch = randomisePitch ? Random.Range(1, 1.25F) : 1;
+
+                            source.clip = sound.GetRandomClip();
+
+                            //Make sure the sound is in 3D Space
+                            source.spatialBlend = 1;
+
+                            source.minDistance = minAudibleDist;
+
+                            if (minAudibleDist >= source.maxDistance)
+                            {
+                                source.maxDistance = minAudibleDist * 2;
+                            }
+
+                            //Make sure the route the sound to the correct mixer group.
+                            source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
+
+                            source.Play();
+
+                            ObjectPoolManager.Instance.ReturnGameObject(source.gameObject, source.clip.length + 1);
+                        }
                     }
-
-                    //Make sure the route the sound to the correct mixer group.
-                    source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
-
-                    source.Play();
-
-                    ObjectPoolManager.Instance.ReturnGameObject(source.gameObject, source.clip.length + 1);
 
                     break;
             }

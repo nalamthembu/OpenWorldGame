@@ -31,6 +31,23 @@ public class ObjectPoolManager : MonoBehaviour
         return null;
     }
 
+
+    public bool TryGetPool(string poolName, out Pool pool)
+    {
+        if (poolDictionary.TryGetValue(poolName, out Pool value))
+        {
+            pool = value;
+
+            return true;
+        }
+
+        Debug.LogError("Couldn't find " + poolName + " pool");
+
+        pool = null;
+
+        return false;
+    }
+
     private void InitialisePools()
     {
         poolDictionary = new();
@@ -60,6 +77,8 @@ public class Pool
     [SerializeField] int amount;
     private List<GameObject> pooledObjects;
     [HideInInspector] public Transform objectPoolManager;
+    private Transform poolManagerTransform;
+    private Transform poolParent;
 
     public void OnValidate()
     {
@@ -71,10 +90,12 @@ public class Pool
 
     public void Awake(Transform poolManagerTransform)
     {
+        this.poolManagerTransform = poolManagerTransform;
+
         pooledObjects = new();
 
-        //Pool Parent
-        Transform poolParent = new GameObject(name + "s").transform;
+        //Start of Pool Parent initialisation.
+        poolParent = new GameObject(name + "s").transform;
 
         poolParent.parent = poolManagerTransform;
 
@@ -83,19 +104,34 @@ public class Pool
 
         for (int i = 0; i < amount; i++)
         {
-            GameObject gObj = Object.Instantiate(gameObject, objectPoolManager);
-
-            gObj.SetActive(false);
-
-            //Set gObj Parent to pool parent (this is just to organise the hierachy a little bit)
-
-            gObj.transform.parent = poolParent;
-
-            pooledObjects.Add(gObj);
+            AddGameObjectToPool();
         }
     }
 
+    private void AddGameObjectToPool()
+    {
+        GameObject gObj = Object.Instantiate(gameObject, objectPoolManager);
+
+        gObj.SetActive(false);
+
+        //Set gObj Parent to pool parent (this is just to organise the hierachy a little bit)
+
+        gObj.transform.parent = poolParent;
+
+        pooledObjects.Add(gObj);
+    }
+
     public GameObject GetGameObject()
+    {
+        if (TryGetGameObject(out GameObject pooledObject))
+        {
+            return pooledObject;
+        }
+
+        return null;
+    }
+
+    public bool TryGetGameObject(out GameObject GOPoolObject)
     {
         for (int i = 0; i < pooledObjects.Count; i++)
         {
@@ -103,12 +139,24 @@ public class Pool
             {
                 pooledObjects[i].SetActive(true);
 
-                return pooledObjects[i];
+                GOPoolObject = pooledObjects[i];
+
+                return true;
             }
         }
 
-        Debug.LogError("Could not get object from " + name + " pool.");
+        GOPoolObject = null;
 
-        return null;
+        Debug.LogWarning("Could not get object from " + name + " pool. Adding an additional Object to the pool.");
+
+        AddGameObjectToPool();
+
+        if (TryGetGameObject(out GameObject pooledObj))
+        {
+            GOPoolObject = pooledObj;
+            return true;
+        }
+
+        return false;
     }
 }

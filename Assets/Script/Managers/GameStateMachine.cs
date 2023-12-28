@@ -77,28 +77,11 @@ public class GameStatePaused : GameState
 {
     GameStateMachine machine;
     public List<PausedRigidbodies> RigidBodiesInScene { get; private set; }
-    public List<Character> CharactersInScene { get; private set; }
 
     private void InitLists()
     {
         RigidBodiesInScene = new();
-        CharactersInScene = new();
-
         GetAllRigidBodies();
-        GetAllCharacters();
-    }
-
-    private void GetAllCharacters()
-    {
-        if (CharactersInScene is not null)
-            CharactersInScene.Clear();
-
-        Character[] chrs = Object.FindObjectsOfType<Character>();
-
-        for (int i = 0; i < chrs.Length; i++)
-        {
-            CharactersInScene.Add(chrs[i]);
-        }
     }
 
     private void GetAllRigidBodies()
@@ -115,24 +98,6 @@ public class GameStatePaused : GameState
                 continue;
 
             RigidBodiesInScene.Add(new(rbs[i], rbs[i].velocity));
-        }
-    }
-
-    private void FreezeAllCharacters()
-    {
-        for(int i = 0; i < CharactersInScene.Count; i++)
-        {
-            if (CharactersInScene != null)
-                CharactersInScene[i].Freeze();
-        }
-    }
-
-    private void UnFreezeAllCharacters()
-    {
-        for (int i = 0; i < CharactersInScene.Count; i++)
-        {
-            if (CharactersInScene != null)
-                CharactersInScene[i].UnFreeze();
         }
     }
 
@@ -166,9 +131,9 @@ public class GameStatePaused : GameState
 
         FreezeAllRigidbodies();
 
-        FreezeAllCharacters();
-
         GameManager.instance.SetCursorState(true, CursorLockMode.None);
+
+        UIManager.Instance.SetPauseMenuEnabled(true);
 
         Debug.Log("GameState : Paused ");
     }
@@ -176,8 +141,6 @@ public class GameStatePaused : GameState
     public override void OnExit(GameStateMachine stateMachine)
     {
         UnFreezeAllRigidbodies();
-
-        UnFreezeAllCharacters();
     }
 
     public override void OnUpdate(GameStateMachine stateMachine)
@@ -199,6 +162,8 @@ public class GameStateRunning : GameState
     {
         Debug.Log("GameState : Running ");
         GameManager.instance.SetCursorState(false, CursorLockMode.Locked);
+        UIManager.Instance.SetPauseMenuEnabled(false);
+
     }
 
     public override void OnUpdate(GameStateMachine stateMachine)

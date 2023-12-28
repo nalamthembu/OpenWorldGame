@@ -336,37 +336,11 @@ public class Seat
 
     [SerializeField] Transform entryPoint;
 
-    [SerializeField] Character characterOccupyingSeat;
-
     public Transform GetEntryPoint() => entryPoint;
 
     public bool IsOccupied;
 
     public SeatType GetSeatType() => seatType;
-
-    public void SetOccupier(Character character)
-    {
-        characterOccupyingSeat = character;
-
-        IsOccupied = true;
-    }
-
-    public void RemoveOccupier()
-    {
-        characterOccupyingSeat = null;
-    }
-
-    public Character GetOccupyingCharacter()
-    {
-        if (characterOccupyingSeat is null)
-        {
-            Debug.LogError("There is no chraracter occupying " + seatType + " seat.");
-
-            return null;
-        }
-
-        return characterOccupyingSeat;
-    }
 }
 
 public enum SeatType
