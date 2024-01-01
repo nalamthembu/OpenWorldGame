@@ -351,6 +351,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &35595125
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -470,11 +471,6 @@ Transform:
   - {fileID: 373329011}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!198 &67935017 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 198476229333165050, guid: f4b0d24c69afadf489bb66afd10efd84, type: 3}
-  m_PrefabInstance: {fileID: 929638946}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &67935019 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4112613829369882, guid: f4b0d24c69afadf489bb66afd10efd84, type: 3}
@@ -728,6 +724,64 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4225209396273906, guid: e35f45c384227f94c810e7addc7972f9, type: 3}
   m_PrefabInstance: {fileID: 1418958077}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &125575761 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8087028751235918415, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
+  m_PrefabInstance: {fileID: 603002337}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &125575762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125575761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fdd69b4a2017d54baa734aa0f038f80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ThirdPersonCamera:
+    m_Targets:
+    - {fileID: 743788727}
+    m_AttachedCamera: {fileID: 440501737}
+    m_FOVSmoothTime: 1
+    m_IsActive: 0
+    m_Offset: {x: 0.5, y: 0}
+    m_PitchLimits: {x: -45, y: 90}
+    m_CollisionLayers:
+      serializedVersion: 2
+      m_Bits: 4097
+    m_DistFromTarget: 3
+    m_MaxDistance: 15
+    m_InactivityTimeOut: 5
+    m_Sensitivity: 10
+  m_ThirdPersonAimingCamera:
+    m_Targets:
+    - {fileID: 743788727}
+    m_AttachedCamera: {fileID: 440501737}
+    m_FOVSmoothTime: 0.25
+    m_IsActive: 0
+    m_Offset: {x: 0.5, y: 0}
+    m_PitchLimits: {x: -45, y: 90}
+    m_CollisionLayers:
+      serializedVersion: 2
+      m_Bits: 4097
+    m_DistFromTarget: 3
+    m_MaxDistance: 15
+    m_InactivityTimeOut: 5
+    m_Sensitivity: 5
+  m_DebugCamera:
+    m_Targets: []
+    m_AttachedCamera: {fileID: 440501737}
+    m_FOVSmoothTime: 0.25
+    m_IsActive: 1
+    m_PitchLimits: {x: -45, y: 90}
+    m_FOVLimits: {x: 10, y: 100}
+    m_PositionSmoothTime: 0.5
+    m_RotationSpeed: 10
+    m_Sensitivity: 10
+    m_CurrentSpeed: 1
 --- !u!1001 &128904791
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1371,6 +1425,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!4 &218442250 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4856788126612272, guid: b38180f4dd93ed945ad6e4e365f91923, type: 3}
@@ -1890,6 +1945,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Vehicle
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &239372872 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1128380225305276, guid: 337a40757de342b4294a6e01aba3d67e, type: 3}
@@ -1917,6 +1973,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &249750128
 GameObject:
   m_ObjectHideFlags: 0
@@ -2282,6 +2339,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &314137280
 GameObject:
   m_ObjectHideFlags: 0
@@ -2488,6 +2546,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &322100986
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2608,19 +2667,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aedf042f3bce4084196137c56b174c6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_WeaponData: {fileID: 11400000, guid: 6aa20ad7029082c42903db1215cba63f, type: 2}
-  m_LeftHandIKTransform: {fileID: 0}
-  m_BulletSpawn: {fileID: 553227747}
-  m_MuzzleFlash: {fileID: 2025676228}
-  m_ShellEjection: {fileID: 67935017}
-  m_BulletSpread: 1
-  GunData: {fileID: 11400000, guid: 6aa20ad7029082c42903db1215cba63f, type: 2}
-  debug:
-    enabled: 0
-    FireGun: 0
-  bulletCollisionLayer:
-    serializedVersion: 2
-    m_Bits: 4097
 --- !u!135 &322100989
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3314,6 +3360,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &381881616
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3405,6 +3452,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!4 &383452746 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4619799983489866, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
@@ -3771,6 +3819,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Resolution: 1
   DefaultSpotCookie: {fileID: 2800000, guid: f21e8df562835a243bcb208ad0cffd44, type: 3}
+--- !u!20 &440501737 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2931208631334764660, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
+  m_PrefabInstance: {fileID: 603002337}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &448499649
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4249,6 +4302,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Vehicle
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!64 &493650507
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4568,37 +4622,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1521494032}
   m_SourcePrefab: {fileID: 100100000, guid: 191a40a97567c454dad88aa6ea16ac71, type: 3}
---- !u!1 &543453041
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 543453042}
-  m_Layer: 0
-  m_Name: HolsterPistol
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &543453042
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 543453041}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.6, y: 10.6, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 970382618}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &553227746
 GameObject:
   m_ObjectHideFlags: 0
@@ -4688,6 +4711,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &582999707
 GameObject:
   m_ObjectHideFlags: 0
@@ -4717,7 +4741,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d215d04329b5dd0499224ae97eae0292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 2751486369878693, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
 --- !u!4 &582999709
 Transform:
   m_ObjectHideFlags: 0
@@ -4760,6 +4783,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &586772202
 GameObject:
   m_ObjectHideFlags: 0
@@ -4981,6 +5005,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2931208631334764660, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
+      propertyPath: field of view
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 2931208631334764660, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
       propertyPath: m_CullingMask.m_Bits
       value: 15415
       objectReference: {fileID: 0}
@@ -5031,7 +5059,7 @@ PrefabInstance:
     - target: {fileID: 8474664096609814838, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
       propertyPath: target
       value: 
-      objectReference: {fileID: 1231225423}
+      objectReference: {fileID: 0}
     - target: {fileID: 8474664096609814838, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
       propertyPath: pitchMinMax.x
       value: -60
@@ -5076,10 +5104,14 @@ PrefabInstance:
       propertyPath: cameraSettings.Array.data[1].distance
       value: 3
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8474664096609814838, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8087028751235918415, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 125575762}
     - targetCorrespondingSourceObject: {fileID: 3325500262122990562, guid: b47be9c9249cd9c4393ad3798145c71e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 440501732}
@@ -5260,6 +5292,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &634097701
 GameObject:
   m_ObjectHideFlags: 0
@@ -5323,6 +5356,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &667844025
 GameObject:
   m_ObjectHideFlags: 0
@@ -5413,6 +5447,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &686748762
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5785,6 +5820,37 @@ Transform:
   - {fileID: 1157625971}
   m_Father: {fileID: 1767656062}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &743788726
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 743788727}
+  m_Layer: 0
+  m_Name: Cam_Focus
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &743788727
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 743788726}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.25, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1776977228}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &750597060
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5941,6 +6007,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &761045473 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1128380225305276, guid: 337a40757de342b4294a6e01aba3d67e, type: 3}
@@ -5968,6 +6035,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!4 &786816286 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4680191898837108, guid: 337a40757de342b4294a6e01aba3d67e, type: 3}
@@ -6000,6 +6068,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &797396430
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6091,6 +6160,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!4 &804012902 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4856788126612272, guid: b38180f4dd93ed945ad6e4e365f91923, type: 3}
@@ -6274,6 +6344,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!4 &819707305 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4225209396273906, guid: e35f45c384227f94c810e7addc7972f9, type: 3}
@@ -6306,6 +6377,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &828501012
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6884,27 +6956,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f4b0d24c69afadf489bb66afd10efd84, type: 3}
---- !u!1 &930483605 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2751486369878693, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-  m_PrefabInstance: {fileID: 1379671337}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &930483615
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 930483605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6783b946271ca24ba99b6a2e0b857e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_LongArmHolster: {fileID: 1049145672}
-  m_SideArmHolster: {fileID: 543453042}
-  debug:
-    enabled: 0
 --- !u!1001 &934822691
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11986,11 +12037,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6910600918815291271, guid: 5e36cea34e50bdd49b9bbfeee06e4421, type: 3}
   m_PrefabInstance: {fileID: 955354984}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &970382618 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8618795137115583381, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-  m_PrefabInstance: {fileID: 1379671337}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &973233889
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12090,6 +12136,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &1016083388
 GameObject:
   m_ObjectHideFlags: 0
@@ -12241,37 +12288,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 304292928}
   m_SourcePrefab: {fileID: 100100000, guid: 343a362cd2f920440a92d2c3068a04fc, type: 3}
---- !u!1 &1049145671
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1049145672}
-  m_Layer: 0
-  m_Name: HolsterRifle
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1049145672
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1049145671}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1726337138}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1059540283 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4877685267080598, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
@@ -13169,6 +13185,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &1176340161
 GameObject:
   m_ObjectHideFlags: 0
@@ -13629,11 +13646,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
---- !u!4 &1231225423 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5544121512637474738, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-  m_PrefabInstance: {fileID: 1379671337}
-  m_PrefabAsset: {fileID: 0}
+  IsDestructable: 0
 --- !u!4 &1235176295 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4883762814713038, guid: baebdd3b26f756b4c8f1b2d2efe1cf42, type: 3}
@@ -13889,6 +13902,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &1263259026
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14281,6 +14295,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &1285853022
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14375,6 +14390,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &1309202561
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14768,155 +14784,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4225209396273906, guid: e35f45c384227f94c810e7addc7972f9, type: 3}
   m_PrefabInstance: {fileID: 934822691}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1379671337
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2751486369878693, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_Name
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 2435646238351614291, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_RotSmoothTime
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 2435646238351614291, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_DebugPlayer.SpeedGizmoPos.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2435646238351614291, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_DebugPlayer.SpeedGizmoPos.y
-      value: 1.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 2435646238351614291, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_DebugCharacter.debugAnimation
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2435646238351614291, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_DebugPlayer.RotationGizmoPos.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2435646238351614291, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_DebugPlayer.RotationGizmoPos.y
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2435646238351614291, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_DebugPlayer.showPlayerSpeedValues
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2435646238351614291, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_DebugCharacter.animDebugGizmoPos.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2435646238351614291, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_DebugCharacter.animDebugGizmoPos.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2435646238351614291, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_DebugPlayer.showPlayerRotationValues
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3422685591557013974, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: debug.labelPosition.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3422685591557013974, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: debug.labelPosition.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3422685591557013974, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_VehicleLayer.m_Bits
-      value: 4096
-      objectReference: {fileID: 0}
-    - target: {fileID: 3422685591557013974, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: debug.debugCharacterState
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4312780644362691791, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: debug.labelPosition.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4312780644362691791, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: debug.labelPosition.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4312780644362691791, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: debug.debugLocomotionState
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5782763524289645342, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_CullingMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5782763524289645342, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'Hips'\n\tFrom animation clip 'Idle_Arm Stretching'\n\tFrom
-        animation clip 'Idle_Arm Stretching'"
-      objectReference: {fileID: 0}
-    - target: {fileID: 5782763524289645342, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6981545698239242015, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -13.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 6981545698239242015, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6981545698239242015, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 58.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6981545698239242015, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6981545698239242015, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6981545698239242015, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6981545698239242015, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6981545698239242015, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6981545698239242015, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 6981545698239242015, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 4778568489471593334, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1049145672}
-    - targetCorrespondingSourceObject: {fileID: 8618795137115583381, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 543453042}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2751486369878693, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 930483615}
-  m_SourcePrefab: {fileID: 100100000, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
 --- !u!1001 &1385781590
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15067,6 +14934,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &1411987219
 GameObject:
   m_ObjectHideFlags: 0
@@ -15170,6 +15038,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &1418958077
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15836,6 +15705,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &1447184003
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16467,6 +16337,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Vehicle
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!4 &1465065054 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4586004585864028, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
@@ -17147,6 +17018,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Vehicle
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &1488888121
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17235,6 +17107,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &1500563353 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1790173281630974, guid: 343a362cd2f920440a92d2c3068a04fc, type: 3}
@@ -17262,6 +17135,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &1501266272
 GameObject:
   m_ObjectHideFlags: 0
@@ -18142,6 +18016,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &1587398454
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18398,6 +18273,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &1616966851
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18486,6 +18362,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &1620584117 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1128380225305276, guid: 337a40757de342b4294a6e01aba3d67e, type: 3}
@@ -18513,6 +18390,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!4 &1623006805 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4883762814713038, guid: baebdd3b26f756b4c8f1b2d2efe1cf42, type: 3}
@@ -18808,6 +18686,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!4 &1676065291 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4856788126612272, guid: b38180f4dd93ed945ad6e4e365f91923, type: 3}
@@ -18904,6 +18783,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &1680618046
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19178,11 +19058,6 @@ Transform:
   - {fileID: 1068968737}
   m_Father: {fileID: 1156374771}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1726337138 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4778568489471593334, guid: f442da4e5ebaef546b17dc5b3dda92d6, type: 3}
-  m_PrefabInstance: {fileID: 1379671337}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1727692051 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4883762814713038, guid: baebdd3b26f756b4c8f1b2d2efe1cf42, type: 3}
@@ -19215,6 +19090,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &1731983978 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1790173281630974, guid: 343a362cd2f920440a92d2c3068a04fc, type: 3}
@@ -19242,6 +19118,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &1739344477
 GameObject:
   m_ObjectHideFlags: 0
@@ -19440,6 +19317,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &1762960692 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1790173281630974, guid: 343a362cd2f920440a92d2c3068a04fc, type: 3}
@@ -19467,6 +19345,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &1765332676
 GameObject:
   m_ObjectHideFlags: 0
@@ -19586,29 +19465,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4580766925885248, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
   m_PrefabInstance: {fileID: 1813698753}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1776977229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1776977226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 225b873d940c52848a54ad047dfc10e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_WalkSpeed: 2
-  m_RunSpeed: 7
-  m_Health: 100
-  m_Armour: 0
-  m_SpeedSmoothTime: 0
-  m_RotSmoothTime: 0
-  m_Gravity: -12
-  m_GroundLayers:
-    serializedVersion: 2
-    m_Bits: 1
-  destinationVector: {x: 0, y: 0, z: 0}
 --- !u!195 &1776977230
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -19631,23 +19487,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &1776977231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1776977226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 450969b3e22c3a5439ba10127fab57a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debug:
-    currentState: 0
-    debugLocomotionState: 0
-    labelPosition: {x: 0, y: 0}
-  m_IdleAnimationCount: 0
 --- !u!114 &1776977232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20144,25 +19983,6 @@ MonoBehaviour:
     spineStiffness: 0.5
     pullBodyVertical: 0.5
     pullBodyHorizontal: 0
---- !u!114 &1776977234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1776977226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bfcb40312b9b714ebcf5433feb98c67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debug:
-    debugCharacterState: 0
-    labelPosition: {x: 0, y: 0}
-    currentState: 0
-  m_VehicleLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!1 &1778981243
 GameObject:
   m_ObjectHideFlags: 0
@@ -20483,11 +20303,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 98bc34ddef060be4ea47e99161e9df8f, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1316981293597076, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4580766925885248, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1776977234}
+      addedObject: {fileID: 743788727}
+    m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1316981293597076, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1776977233}
@@ -20496,13 +20316,7 @@ PrefabInstance:
       addedObject: {fileID: 1776977232}
     - targetCorrespondingSourceObject: {fileID: 1316981293597076, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1776977231}
-    - targetCorrespondingSourceObject: {fileID: 1316981293597076, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1776977230}
-    - targetCorrespondingSourceObject: {fileID: 1316981293597076, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1776977229}
   m_SourcePrefab: {fileID: 100100000, guid: 2f3e27eecb190e44a9af50723c394274, type: 3}
 --- !u!1001 &1816057186
 PrefabInstance:
@@ -20858,6 +20672,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &1910797772
 GameObject:
   m_ObjectHideFlags: 0
@@ -21174,6 +20989,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!4 &1971917903 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4225209396273906, guid: e35f45c384227f94c810e7addc7972f9, type: 3}
@@ -26318,6 +26134,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1001 &2036271807
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26433,6 +26250,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!4 &2049217113 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4719498968730246, guid: a2fe7f9dc74a5ff4696014f411430c80, type: 3}
@@ -26846,6 +26664,7 @@ MonoBehaviour:
   m_CollisionSoundID: 
   m_BulletHitSoundID: BulletFX_Hit_Metal
   useSoundSweetener: 0
+  IsDestructable: 0
 --- !u!1 &2100408088
 GameObject:
   m_ObjectHideFlags: 0
@@ -27564,7 +27383,6 @@ SceneRoots:
   - {fileID: 3725498895925474596}
   - {fileID: 5904341632664900822}
   - {fileID: 2908013367339461479}
-  - {fileID: 1379671337}
   - {fileID: 2283475175923291608}
   - {fileID: 700079720}
   - {fileID: 1263882227}

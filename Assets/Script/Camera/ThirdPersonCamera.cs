@@ -5,15 +5,15 @@ public class ThirdPersonCamera : BaseCamera
 {
     public static ThirdPersonCamera Instance;
 
-    [SerializeField][Range(1, 10)] float m_DistFromTarget = 3.0F;
+    [SerializeField] protected Vector2 m_Offset = new(0.5F, 0.0F);
 
-    [SerializeField][Range(1, 50)] float m_MaxDistance = 15.0F;
-
-    [SerializeField] Vector2 m_Offset = new(0.5F, 0.0F);
-
-    [SerializeField] Vector2 m_PitchLimits = new(-45, 90);
+    [SerializeField] protected Vector2 m_PitchLimits = new(-45, 90);
 
     [SerializeField] LayerMask m_CollisionLayers;
+
+    [SerializeField][Range(1, 10)] protected float m_DistFromTarget = 3.0F;
+
+    [SerializeField][Range(1, 50)] protected float m_MaxDistance = 15.0F;
 
     [SerializeField] [Range(1, 10)] float m_InactivityTimeOut = 5.0F;
 
@@ -23,6 +23,7 @@ public class ThirdPersonCamera : BaseCamera
 
     private Vector3 m_LastMousePos;
 
+    protected bool m_CheckForInactivity = true;
 
     //Flags
     bool m_MouseHasNotMovedInAWhile;
@@ -73,24 +74,27 @@ public class ThirdPersonCamera : BaseCamera
         Vector3 targetRotation;
         Quaternion desiredQuat;
 
-        if (!IsPlayerMovingMouse() && m_MouseHasNotMovedInAWhile)
+        if (m_CheckForInactivity)
         {
-            m_Pitch = Mathf.LerpAngle(m_Pitch, 0, Time.deltaTime);
-
-            m_Yaw = Mathf.LerpAngle(m_Yaw, 0, Time.deltaTime);
-
-            targetRotation = new()
+            if (!IsPlayerMovingMouse() && m_MouseHasNotMovedInAWhile)
             {
-                x = m_Pitch,
-                y = m_Yaw,
-                z = 0
-            };
+                m_Pitch = Mathf.LerpAngle(m_Pitch, 0, Time.deltaTime);
 
-            desiredQuat = Quaternion.Euler(targetRotation);
+                m_Yaw = Mathf.LerpAngle(m_Yaw, 0, Time.deltaTime);
 
-            transform.rotation = desiredQuat;
+                targetRotation = new()
+                {
+                    x = m_Pitch,
+                    y = m_Yaw,
+                    z = 0
+                };
 
-            return;
+                desiredQuat = Quaternion.Euler(targetRotation);
+
+                transform.rotation = desiredQuat;
+
+                return;
+            }
         }
 
         m_Yaw += PlayerInput.Instance.GetMouseX(m_Sensitivity);

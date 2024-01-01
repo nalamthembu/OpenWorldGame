@@ -70,8 +70,10 @@ public abstract class BaseCamera
     {
         DoUpdateRotation();
         DoUpdatePosition();
+        DoUpdateSpeed();
     }
 
     public abstract void DoUpdatePosition();
     public abstract void DoUpdateRotation();
+    protected virtual void DoUpdateSpeed() { }
 }
