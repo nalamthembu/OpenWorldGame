@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using UnityEngine;
+using System.Collections.Generic;
 
 public static class HelperMethods
 {
@@ -35,7 +36,6 @@ public static class HelperMethods
             )).ToString();
     }
     #endregion
-
 
     #region NUMERICTYPE_ANIMATOR
     public static float GetCurrentAnimatorTime(this Animator targetAnim, int layer = 0)

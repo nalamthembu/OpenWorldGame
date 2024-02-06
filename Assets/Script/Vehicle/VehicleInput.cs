@@ -23,11 +23,8 @@ public class VehicleInput : MonoBehaviour
     public bool IsInReverse { get { return isInReverse; } set { isInReverse = value; } }
     #endregion
 
-    private AIDriver aiDriver;
-
     private void Awake()
     {
-        aiDriver = GetComponent<AIDriver>();
         m_Debug = new(this);
     }
 
@@ -41,10 +38,6 @@ public class VehicleInput : MonoBehaviour
 
     private void FloorValues()
     {
-        //FLOAT-POINT NUMBERS ARE MESSING THIS UP.
-        if (aiDriver)
-            throttle = Mathf.Floor(throttle - aiDriver.targetThrottle);
-
         brake = Mathf.Floor(brake);
         Handbrake = Mathf.Floor(Handbrake);
     }

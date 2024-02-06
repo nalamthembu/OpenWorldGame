@@ -18,7 +18,7 @@ using UnityEngine;
     )
 ]
 
-public class Vehicle : MonoBehaviour
+public class Vehicle : Entity
 {
     //TO-DO : ABS ON WHEELS.
 
@@ -49,9 +49,6 @@ public class Vehicle : MonoBehaviour
     public List<Wheel> AllWheels { get { return allWheels; } }
     public List<Wheel> SteeringWheels { get { return steeringWheels; } }
     public bool ABSActive { get; private set; }
-
-    public bool IsAIRacer { get; private set; }
-
     public float SpeedKMH { get { return rigidBody.velocity.magnitude * 3.5F; } }
     public VehicleEngine Engine { get { return engine; } }
     public VehicleTransmission Transmission { get { return transmission; } }
@@ -102,8 +99,6 @@ public class Vehicle : MonoBehaviour
 
         SetMaxSteerAngle();
 
-        IsAIRacer = GetComponent<AIDriver>();
-
         InitialiseSecuritySystem();
 
         InitialiseHorn();
@@ -129,11 +124,14 @@ public class Vehicle : MonoBehaviour
 
     private void Start()
     {
-        securitySystem.Start();
-        horn.Start();
+        if (securitySystem != null)
+        {
+            securitySystem.Start();
+            horn.Start();
+        }
     }
 
-    private void Update()
+    protected override void Update()
     {
         if (securitySystem.IsEngaged)
             securitySystem.Update();
@@ -207,12 +205,6 @@ public class Vehicle : MonoBehaviour
         {
             sF_Powered = Mathf.Lerp(0.05F, 3.0F, speedT);
             fF_Powered = Mathf.Lerp(0.1f, 3.0F, speedT);
-
-            if (IsAIRacer)
-            {
-                sF_Powered = Mathf.Lerp(0.05f, 3.0f, speedT + 0.25F);
-                fF_Powered = Mathf.Lerp(0.1f, 3.0f, speedT + 0.25F);
-            }
 
             poweredWheels[i].SetWheelStiffness(sF_Powered, fF_Powered);
         }
@@ -403,9 +395,12 @@ public class SecuritySystem
             Debug.LogError("There is no vehicle assigned to this Security system.");
         }
 
-        SoundManager.Instance.TryGetInGameSound("VehicleFX_Alarm", out Sound sound);
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.TryGetInGameSound("VehicleFX_Alarm", out Sound sound);
 
-        assignedSoundID = Random.Range(0, sound.clips.Length);
+            assignedSoundID = Random.Range(0, sound.clips.Length);
+        }
     }
 
     public void OnValidate()

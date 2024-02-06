@@ -10,26 +10,42 @@ public class SoundManager : MonoBehaviour
     private readonly Dictionary<string, Sound> m_InGameSoundDict = new();
     private readonly Dictionary<string, FESound> m_FESoundDict = new();
     private readonly Dictionary<SoundType, Mixer> m_MixerDict = new();
+    private readonly Dictionary<string, MixerState> m_MixerStates = new();
 
     private AudioSource m_FESource;
     
     //Allow the methods to be accessed from other scripts.
     public static SoundManager Instance { get; private set; }
 
+    public string CurrentMixerStateID { get; private set; }
+
     private void Awake()
     {
-        //Singleton
-        if (Instance != null)
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
         {
             Destroy(gameObject);
             return;
         }
 
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-
         InitialiseDictionaries();
         InitialiseFrontendSoundSource();
+    }
+
+
+    public void TransitionToMixerState(string ID, float time)
+    {
+        if (m_MixerStates.TryGetValue(ID, out var mixerState))
+        {
+            mixerState.mixerSnapshot.TransitionTo(time);
+
+            CurrentMixerStateID = ID;
+        }
+        else
+            Debug.LogError("The mixer state : " + ID + " does not exist");
     }
 
     private void InitialiseFrontendSoundSource()
@@ -39,6 +55,8 @@ public class SoundManager : MonoBehaviour
         m_FESource.spatialBlend = 0;
 
         m_FESource.playOnAwake = false;
+
+        m_FESource.bypassReverbZones = true;
 
         m_FESource.outputAudioMixerGroup = m_MixerDict[SoundType.FRONTEND].mixerGroup;
     }
@@ -55,9 +73,14 @@ public class SoundManager : MonoBehaviour
             m_FESoundDict.Add(feSound.soundID, feSound);
         }
 
-        foreach(Mixer mixer in m_MixerScriptable.mixers)
+        foreach (Mixer mixer in m_MixerScriptable.mixers)
         {
             m_MixerDict.Add(mixer.type, mixer);
+        }
+
+        foreach (MixerState mixerState in m_MixerScriptable.mixerStates)
+        {
+            m_MixerStates.Add(mixerState.ID, mixerState);
         }
     }
 
@@ -88,7 +111,12 @@ public class SoundManager : MonoBehaviour
 
                             source.pitch = randomisePitch ? Random.Range(1, 1.25F) : 1;
 
-                            source.clip = sound.GetRandomClip();
+                            AudioClip randomclip = sound.GetRandomClip();
+
+                            //Make sure to not reassign a clip if it was already assigned before
+                            if (source.clip != randomclip)
+                                source.clip = randomclip;
+
 
                             //Make sure the sound is in 3D Space
                             source.spatialBlend = 1;
@@ -100,8 +128,10 @@ public class SoundManager : MonoBehaviour
                                 source.maxDistance = minAudibleDist * 2;
                             }
 
-                            //Make sure the route the sound to the correct mixer group.
-                            source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
+                            //Make sure the route the sound to the correct mixer group and
+                            //don't reassign it the source if it was already outputting to the correct mixer
+                            if (source.outputAudioMixerGroup != m_MixerDict[sound.type].mixerGroup)
+                                source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
 
                             source.Play();
 
@@ -132,10 +162,16 @@ public class SoundManager : MonoBehaviour
 
                     source.pitch = randomisePitch ? Random.Range(1, 1.25F) : 1;
 
-                    source.clip = sound.GetRandomClip();
+                    AudioClip randomclip = sound.GetRandomClip();
 
-                    //Make sure the route the sound to the correct mixer group.
-                    source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
+                    //Make sure to not reassign a clip if it was already assigned before
+                    if (source.clip != randomclip)
+                        source.clip = randomclip;
+
+                    //Make sure the route the sound to the correct mixer group and
+                    //don't reassign it the source if it was already outputting to the correct mixer
+                    if (source.outputAudioMixerGroup != m_MixerDict[sound.type].mixerGroup)
+                        source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
 
                     //Make sure the sound is in 3D Space
                     source.spatialBlend = TwoDSpace ? 0 : 1;
@@ -177,10 +213,16 @@ public class SoundManager : MonoBehaviour
 
                     source.pitch = randomisePitch ? Random.Range(1, 1.25F) : 1;
 
-                    source.clip = sound.GetRandomClip();
+                    AudioClip randomclip = sound.GetRandomClip();
 
-                    //Make sure the route the sound to the correct mixer group.
-                    source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
+                    //Make sure to not reassign a clip if it was already assigned before
+                    if (source.clip != randomclip)
+                        source.clip = randomclip;
+
+                    //Make sure the route the sound to the correct mixer group and
+                    //don't reassign it the source if it was already outputting to the correct mixer
+                    if (source.outputAudioMixerGroup != m_MixerDict[sound.type].mixerGroup)
+                        source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
 
                     //Make sure the sound is in 3D Space
                     source.spatialBlend = TwoDSpace ? 0 : 1;
@@ -218,8 +260,10 @@ public class SoundManager : MonoBehaviour
 
                     source.clip = sound.clips[soundIndex];
 
-                    //Make sure the route the sound to the correct mixer group.
-                    source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
+                    //Make sure the route the sound to the correct mixer group and
+                    //don't reassign it the source if it was already outputting to the correct mixer
+                    if (source.outputAudioMixerGroup != m_MixerDict[sound.type].mixerGroup)
+                        source.outputAudioMixerGroup = m_MixerDict[sound.type].mixerGroup;
 
                     //Make sure the sound is in 3D Space
                     source.spatialBlend = TwoDSpace ? 0 : 1;
@@ -264,11 +308,17 @@ public class SoundManager : MonoBehaviour
     }
 
     //Plays frontend sound out of the Frontend AudioSource (UI/Menu Sound essentially)
-    public void PlayFESound(string soundID)
+    public void PlayFESound(string soundID, float volume = 1)
     {
         if (m_FESoundDict.TryGetValue(soundID, out FESound sound))
         {
-            m_FESource.clip = sound.GetRandomClip();
+            AudioClip randomclip = sound.GetRandomClip();
+
+            //Make sure to not reassign a clip if it was already assigned before
+            if (m_FESource.clip != randomclip)
+                m_FESource.clip = randomclip;
+
+            m_FESource.volume = volume;
 
             //Mixer group is already set when FESource was initialised (Check InitialiseFrontendSoundSource())
 

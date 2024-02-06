@@ -76,6 +76,8 @@ public class WheelFX : MonoBehaviour
 
         m_RoadNoiseSource.playOnAwake = false;
 
+        m_RoadNoiseSource.volume = 0;
+
 
         m_SkidSource.minDistance = 1;
 
@@ -93,7 +95,7 @@ public class WheelFX : MonoBehaviour
 
     void Update()
     {
-        if (!m_WheelCollider.GetGroundHit(out m_WheelHit) || GameIsPaused())
+        if (!m_WheelCollider.GetGroundHit(out m_WheelHit))
         {
             if (m_SkidSource.isPlaying)
                 StopAllSounds();
@@ -105,6 +107,9 @@ public class WheelFX : MonoBehaviour
 
         if (IsSkidding())
         {
+            //BUG FIX : This was playing regardless of whether we were skidding or not.
+            SkidSound();
+
             if (m_SoundWait <= 0)
             {
                 m_SoundWait = 1;
@@ -126,7 +131,6 @@ public class WheelFX : MonoBehaviour
             SkidParticles(PARTICLE_STATE.OFF);
         }
 
-        SkidSound();
         HandleWheelNoise();
 
         m_SoundWait -= Time.deltaTime * m_SoundEmission;
@@ -172,8 +176,6 @@ public class WheelFX : MonoBehaviour
         m_SkidSource.pitch = Mathf.Lerp(1, currentSkidMaxPitch, m_CurrentFrictionValue / 1);
         m_SkidSource.volume = Mathf.Lerp(0, 1.0F, m_CurrentFrictionValue / 1);
     }
-
-    bool GameIsPaused() => GameStateMachine.Instance.IsGamePaused;
 
     bool IsSkidding()
     {
@@ -263,8 +265,8 @@ public class WheelFX : MonoBehaviour
         markMesh.uv = uvm;
         filter.mesh = markMesh;
         renderer.material = m_SkidMaterial;
-        mark.transform.SetParent(WorldManager.Instance.SKIDMARK_PARENTOBJ.transform);
-        Destroy(mark, WorldManager.SKIDMARK_LIFETIME);
+        //mark.transform.SetParent(WorldManager.Instance.SKIDMARK_PARENTOBJ.transform);
+        Destroy(mark, 10.0F);
     }
 
 
