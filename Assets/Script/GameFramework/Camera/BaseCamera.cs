@@ -19,6 +19,8 @@ public class BaseCamera : MonoBehaviour
 
     protected Camera m_CameraComp;
 
+    public Camera CameraComponent { get { return m_CameraComp; } }
+
     /// <summary>
     /// This is the index of which camera setting this camera is using from m_CameraSettingsData.
     /// </summary>

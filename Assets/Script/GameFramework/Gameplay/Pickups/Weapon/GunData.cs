@@ -7,6 +7,7 @@ using UnityEditor;
 public class GunData : BaseWeaponData
 {
     public int MaxClip;
+    public float range = 1000;
     public FireType FireType;
     public WeaponClassification WeaponClass;
     public GameObject BulletPrefab;

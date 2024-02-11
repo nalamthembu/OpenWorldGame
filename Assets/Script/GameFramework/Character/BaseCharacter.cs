@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.AI;
+using RootMotion.Dynamics; //PuppetMaster Active Ragdoll Physics.
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Animator))]
@@ -19,6 +20,10 @@ public class BaseCharacter : Entity
 
     [SerializeField][Range(1, 7)] protected float m_WalkSpeed, m_RunSpeed;
 
+    private PuppetMaster m_PuppetMasterComponent;
+
+    public PuppetMaster PuppetMaster { get { return m_PuppetMasterComponent; } }
+
     public CharacterState CharacterState { get; protected set; }
 
     public static event Action<BaseCharacter> OnSpawned;
@@ -35,6 +40,8 @@ public class BaseCharacter : Entity
     {
         base.Awake();
 
+        m_PuppetMasterComponent = GetComponentInChildren<PuppetMaster>();
+
         m_Animator = GetComponent<Animator>();
 
         if (m_animData is null)
@@ -43,10 +50,13 @@ public class BaseCharacter : Entity
         }
 
         CharacterState = CharacterState.OnFoot;
+
+        b_CanBeDamaged = true;
     }
 
-    protected virtual void Start()
+    protected override void Start()
     {
+        base.Start();
         OnSpawned?.Invoke(this);
     }
 

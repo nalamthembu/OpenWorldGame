@@ -75,4 +75,11 @@ public static class HelperMethods
     }
 
     #endregion
+
+    #region OBJECTS
+
+    public static float SqrDistance(this System.Object _, Vector3 a, Vector3 b) 
+        =>  Mathf.Abs((a - b).sqrMagnitude);
+    
+    #endregion
 }

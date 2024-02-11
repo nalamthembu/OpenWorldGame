@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class BaseAICharacter : CharacterController
+[RequireComponent(typeof(HealthComponent))]
+public class BaseAICharacter : BaseCharacter
 {
     protected virtual void MoveTo(Vector3 position)
     {

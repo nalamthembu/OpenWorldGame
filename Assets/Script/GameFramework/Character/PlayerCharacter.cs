@@ -9,8 +9,6 @@ public class PlayerCharacter : BaseCharacter
     [SerializeField][Range(0.1f, 5F)] float m_SpeedSmoothTime = 0.5F;
     [SerializeField][Range(1, 10)] float m_JumpHeight = 2;
 
-    CharacterController m_CharController;
-
     public static PlayerCharacter Instance;
 
     private bool m_CameraIsInDebugMode = false;
@@ -28,8 +26,6 @@ public class PlayerCharacter : BaseCharacter
     protected override void Awake()
     {
         base.Awake();
-
-        m_CharController = GetComponent<CharacterController>();
 
         if (Instance == null)
         {

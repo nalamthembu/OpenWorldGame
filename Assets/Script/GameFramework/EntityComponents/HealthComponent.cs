@@ -20,9 +20,31 @@ public class HealthComponent : MonoBehaviour, IEntityComponent
 
     public bool IsDead { get; private set; }
 
+    //<this entity, Instigator, DamageCauser>
     public static event Action<Entity, Entity, Entity> OnEntityDead;
 
+    protected Entity m_thisEntity;
+
+    protected virtual void Awake() => m_thisEntity = GetComponent<Entity>();
+
     protected virtual void Start() { /* child classes use this. */ }
+
+    private void OnValidate()
+    {
+        if (m_Health <= 0)
+        {
+            if (TryGetComponent<Entity>(out var attachedEntity))
+                OnEntityDead(attachedEntity, null, null);
+            else
+                Debug.LogError("This component is not attached to an Entity.");
+
+            IsDead = true;
+
+            enabled = false;
+
+            return;
+        }
+    }
 
     public virtual void AddHealth(float amount)
     {
@@ -44,30 +66,38 @@ public class HealthComponent : MonoBehaviour, IEntityComponent
 
     public virtual void TakeDamage(float fDamage, Entity Instigator, Entity DamageCauser)
     {
-        if (m_Health <= 0)
-        {
-            if (TryGetComponent<Entity>(out var attachedEntity))
-                OnEntityDead(attachedEntity, Instigator, DamageCauser);
-            else
-                Debug.LogError("This component is not attached to an Entity.");
-
-            IsDead = true;
-
-            enabled = false;
-
+        if (IsDead)
             return;
-        }
         else
         {
             if (m_Armor > 0)
             {
-                m_Armor = Mathf.Min(m_Armor, fDamage);
+                m_Armor -= fDamage;
+
+                if (m_Armor <= 0)
+                    m_Armor = 0;
 
                 return;
             }
 
             if (m_Health > 0)
-                m_Health = Mathf.Min(m_Health, fDamage);
+            {
+                m_Health -= fDamage;
+
+                if (m_Health <= 0)
+                {
+                    IsDead = true;
+
+                    m_Health = 0;
+
+                    //Activate Ragdoll
+                    if (m_thisEntity is BaseCharacter character && character.PuppetMaster != null)
+                        character.PuppetMaster.Kill();
+
+                    if (TryGetComponent<Entity>(out var attachedEntity))
+                        OnEntityDead(attachedEntity, Instigator, DamageCauser);
+                }
+            }
         }
     }
     

@@ -44,6 +44,8 @@ public class Entity : MonoBehaviour
         OnAddToWorld?.Invoke(this);
     }
 
+    protected virtual void Start() { }
+
     protected virtual void Update()
     {
         //If we're below the min Y,

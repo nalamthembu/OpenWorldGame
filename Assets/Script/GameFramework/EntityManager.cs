@@ -3,7 +3,21 @@ using System.Collections.Generic;
 
 public class EntityManager : MonoBehaviour
 {
-    List<Entity> m_EntitiesInScene = new();
+    public readonly List<Entity> m_EntitiesInScene = new();
+
+    public static EntityManager Instance;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void OnEnable()
     {

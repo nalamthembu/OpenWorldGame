@@ -18,6 +18,8 @@ public class BasePickup : Entity
 
     protected bool m_IsPickedUp;
 
+    public bool IsPickedUp { get { return m_IsPickedUp; } }
+
     public static event Action<BasePickup> OnPickUp;
     public static event Action<BasePickup> OnEnterPickupRadius;
     public static event Action<BasePickup> OnExitPickupRadius;

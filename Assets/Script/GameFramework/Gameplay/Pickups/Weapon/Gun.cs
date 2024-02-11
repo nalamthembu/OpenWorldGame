@@ -39,6 +39,16 @@ public class Gun : Weapon
         InitialiseAudioSources();
     }
 
+    protected override void Start()
+    {
+        if (Owner == null)
+        {
+            m_RemainingAmmo = Random.Range(0, 200);
+
+            Reload();
+        }
+    }
+
     protected virtual void InitialiseAudioSources()
     {
         m_ShotFireSource = gameObject.AddComponent<AudioSource>();
@@ -149,25 +159,53 @@ public class Gun : Weapon
                     return;
                 }
 
-                Vector3 bulletLookDirection = m_BulletSpawn.forward;
+                Vector3 target = m_BulletSpawn.forward * m_GunData.range;
 
                 if (Owner == PlayerCharacter.Instance)
                 {
-                    //make the bullet look at the crosshair direction.
+                    if (ThirdPersonCamera.Instance)
+                    {
+                        Vector3 TPS_CAM_POS = ThirdPersonCamera.Instance.CameraComponent.transform.position;
+
+                        Vector3 TPS_CAM_FWD_DIR = ThirdPersonCamera.Instance.CameraComponent.transform.forward;
+
+                        Vector3 LINE_CAST_ENDPOINT = TPS_CAM_POS + TPS_CAM_FWD_DIR * m_GunData.range;
+
+                        if (Physics.Linecast(m_BulletSpawn.position, LINE_CAST_ENDPOINT, out var hit))
+                            target = hit.point;
+                        else
+                            target = TPS_CAM_FWD_DIR * m_GunData.range;
+                    }
                 }
 
-                GameObject bulletGO = Instantiate(m_GunData.BulletPrefab, m_BulletSpawn.position, Quaternion.LookRotation(bulletLookDirection));
+                Vector3 lookDir = (target - m_BulletSpawn.position).normalized;
+
+                GameObject bulletGO = Instantiate(m_GunData.BulletPrefab, m_BulletSpawn.position, Quaternion.LookRotation(lookDir));
+
+                Debug.DrawRay(m_BulletSpawn.position, lookDir, Color.red);
 
                 if (bulletGO.TryGetComponent<Bullet>(out var bullet))
                 {
-                    bullet.InitialiseProjectile(Owner, m_WeaponData.damage);
+                    bullet.InitialiseProjectile(Owner, m_WeaponData.damage, m_GunData.range);
                 }
 
-
                 if (m_MuzzleFlash != null)
+                {
                     m_MuzzleFlash.Play();
+
+                    if (m_BulletShellFX != null)
+                    {
+                        m_BulletShellFX.Play();
+                    }
+                    else
+                    {
+                        Debug.LogError("There is no bulletshell fx game object attached! : " + m_WeaponData.weaponName);
+                    }
+                }
                 else
+                {
                     Debug.LogError("There is no muzzle flash game object attached! : " + m_WeaponData.weaponName);
+                }
 
                 //SUBTRACT AMMO
                 m_CurrClip--;
@@ -178,11 +216,11 @@ public class Gun : Weapon
                     //Play some ear candy for the player.
                     if (Owner == PlayerCharacter.Instance)
                     {
-                        SoundManager.Instance.PlayInGameSound("Generic_Sub_Sweeteneer", m_SweetenerSource, false, true, true, 2.5F);
+                        SoundManager.Instance.PlayInGameSound("Generic_Sub_Sweeteneer", m_SweetenerSource, false, true, true, 1.5F);
                     }
 
                     //Play Fire Sound
-                    SoundManager.Instance.PlayInGameSound(m_GunData.fireShotAudioID, m_ShotFireSource, false, true, false, 5.0F);
+                    SoundManager.Instance.PlayInGameSound(m_GunData.fireShotAudioID, m_ShotFireSource, false, true, false, 1.0F);
 
                     //PLAY INDOOR TAIL IF THERES SOMETHING within 100m ABOVE OUR HEADS
                     if (Physics.Linecast(transform.position, transform.position + transform.up * 100))
@@ -239,6 +277,16 @@ public class Gun : Weapon
                 Fire();
             }
         }
+    }
+
+    protected override void DoPlayerPickUp()
+    {
+        base.DoPlayerPickUp();
+
+        //Reload weapon onPickup
+
+        if (m_CurrClip <= 0)
+            Reload();
     }
 }
 

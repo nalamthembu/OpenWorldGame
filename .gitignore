@@ -19,6 +19,7 @@ Assets/UMS_LODs/*
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/[Dd]ev[Ss]creenshots/
 *.meta
 
 # MemoryCaptures can get excessive in size.
