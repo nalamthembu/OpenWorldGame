@@ -59,8 +59,10 @@ public class Vehicle : Entity
     private const float TIME_BEFORE_AUTORESET = 3;
     private float currentResetTimer = 0;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         input = GetComponent<VehicleInput>();
 
         engine = GetComponent<VehicleEngine>();
@@ -122,8 +124,10 @@ public class Vehicle : Entity
         securitySystem.OnValidate();
     }
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
+
         if (securitySystem != null)
         {
             securitySystem.Start();
@@ -299,6 +303,21 @@ public class Vehicle : Entity
 
     private void InitialiseHorn() => horn.Initialise(this);
 
+    protected override void OnCollisionEnter(Collision collision)
+    {
+        base.OnCollisionEnter(collision);
+
+        //If the car got hit at a high velocity
+        if (collision.relativeVelocity.magnitude >= 5.0F)
+            securitySystem.NotifySecuritySystemOfDisturbance();
+        
+        //if the car got hit by a projectile 
+        if (collision.collider.TryGetComponent<Projectile>(out _))
+        {
+            securitySystem.NotifySecuritySystemOfDisturbance();
+        }
+    }
+
 }
 
 [System.Serializable]
@@ -375,7 +394,7 @@ public class SecuritySystem
 
         alarmAudioSource.spatialBlend = 1;
 
-        alarmAudioSource.minDistance = 5;
+        alarmAudioSource.minDistance = 1;
 
         alarmAudioSource.maxDistance = 20;
 

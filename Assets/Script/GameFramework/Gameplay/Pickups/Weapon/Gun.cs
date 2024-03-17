@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System;
+using Random = UnityEngine.Random;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -11,10 +14,10 @@ public class Gun : Weapon
     [SerializeField] Transform m_BulletSpawn;
     [SerializeField] ParticleSystem m_MuzzleFlash;
     [SerializeField] ParticleSystem m_BulletShellFX;
+    [SerializeField] float m_Spread = 0;
 
     AudioSource m_ShotFireSource;
     AudioSource m_ShotTailSource;
-    AudioSource m_ShotIndoorTailSource;
     AudioSource m_SweetenerSource;
 
     protected int m_CurrClip, m_RemainingAmmo;
@@ -26,6 +29,10 @@ public class Gun : Weapon
 
     //Waiting for the character to let go of the trigger (semi-autos only)
     private bool m_WaitingForTriggerReset;
+
+    public static event Action<Gun> OnReload;
+    public static event Action<Gun> OnDoneReloading;
+    public static event Action<Gun> OnGunIsEmpty;
 
     private float m_TimeForNextShot;
 
@@ -41,9 +48,11 @@ public class Gun : Weapon
 
     protected override void Start()
     {
+        base.Start();
+
         if (Owner == null)
         {
-            m_RemainingAmmo = Random.Range(0, 200);
+            m_RemainingAmmo = Random.Range(30, 900);
 
             Reload();
         }
@@ -51,31 +60,85 @@ public class Gun : Weapon
 
     protected virtual void InitialiseAudioSources()
     {
+        //Shot Fire
         m_ShotFireSource = gameObject.AddComponent<AudioSource>();
+        m_ShotFireSource.outputAudioMixerGroup = m_GunData.mixerGroup;
         m_ShotFireSource.playOnAwake = false;
+        m_ShotFireSource.spatialBlend = 1;
+        m_ShotFireSource.volume = 1;
+
+        //Shot Tail
         m_ShotTailSource = gameObject.AddComponent<AudioSource>();
+        m_ShotTailSource.outputAudioMixerGroup = m_GunData.mixerGroup;
         m_ShotTailSource.playOnAwake = false;
+        m_ShotTailSource.volume = 0.75F;
+
+        //Sweetener
         m_SweetenerSource = gameObject.AddComponent<AudioSource>();
+        m_SweetenerSource.outputAudioMixerGroup = m_GunData.mixerGroup;
         m_SweetenerSource.playOnAwake = false;
-        m_ShotIndoorTailSource = gameObject.AddComponent<AudioSource>();
-        m_ShotIndoorTailSource.playOnAwake = false;
+        m_SweetenerSource.volume = 1;
     }
 
     public void Reload()
     {
-        if (m_RemainingAmmo <= 0) //There's no ammo left.
+        if (m_IsReloading)
             return;
 
-        if (m_RemainingAmmo >= m_GunData.MaxClip)
-        {
-            m_CurrClip += m_GunData.MaxClip;
-
-            m_RemainingAmmo -= m_CurrClip;
+        if (m_RemainingAmmo <= 0)
+        { //theres nothing left.
+            OnGunIsEmpty?.Invoke(this);
+            return;
         }
-        else
+
+        StartCoroutine(ReloadSequence(m_GunData.ReloadTime));
+    }
+
+    protected virtual IEnumerator ReloadSequence(float reloadDelay)
+    {
+        if (m_IsReloading)
+            yield return null;
+
+        float timer = 0;
+
+        m_IsReloading = true;
+
+        OnReload?.Invoke(this);
+
+        while (timer < reloadDelay)
         {
-            m_CurrClip = m_RemainingAmmo;
-            m_RemainingAmmo -= m_CurrClip;
+            timer += Time.deltaTime;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        if (m_RemainingAmmo > 0)
+        {
+            if (m_RemainingAmmo >= m_GunData.MaxClip)
+            {
+                m_CurrClip = m_GunData.MaxClip;
+
+                m_RemainingAmmo -= m_CurrClip;
+
+                m_IsReloading = false;
+
+                OnDoneReloading?.Invoke(this);
+
+                yield return null;
+            }
+
+            if (m_RemainingAmmo <= m_GunData.MaxClip)
+            {
+                m_CurrClip = m_RemainingAmmo;
+
+                m_RemainingAmmo -= m_CurrClip;
+
+                m_IsReloading = false;
+
+                OnDoneReloading?.Invoke(this);
+
+                yield return null;
+            }
         }
     }
 
@@ -90,12 +153,12 @@ public class Gun : Weapon
     {
         base.Update();
 
-        if (m_CurrClip <= 0 && m_RemainingAmmo > 0)
-            Reload();
-
         //CHECK IF EQUIPPED AND OWNER IS AIMING
         if (Owner != null && Owner is BaseCharacter ownerCharacter && IsEquipped && ownerCharacter.IsAiming)
         {
+            if (m_CurrClip <= 0 && m_RemainingAmmo > 0)
+                Reload();
+
             //IF THIS WEAPON IS SEMI-AUTO & IF THE OWNER IS FIRING, FIRE.
             //ELSE IF THIS WEAPON IS AUTO & OWNER IS FIRING, FIRE AT FIRE RATE.
 
@@ -145,9 +208,6 @@ public class Gun : Weapon
         if (m_IsReloading)
             return;
 
-        //TODO : IF AMMO <= 0 & NOT ISRELOADING THEN RELOAD,
-        //TODO : SET ISRELOADING = TRUE, RETURN
-
         if (m_CurrClip > 0)
         {
             //FIRE A PROJECTILE
@@ -165,28 +225,31 @@ public class Gun : Weapon
                 {
                     if (ThirdPersonCamera.Instance)
                     {
-                        Vector3 TPS_CAM_POS = ThirdPersonCamera.Instance.CameraComponent.transform.position;
+                        //Middle of the screen.
+                        Ray ray = ThirdPersonCamera.Instance.CameraComponent.ViewportPointToRay(new(0.5f, 0.5f));
 
-                        Vector3 TPS_CAM_FWD_DIR = ThirdPersonCamera.Instance.CameraComponent.transform.forward;
-
-                        Vector3 LINE_CAST_ENDPOINT = TPS_CAM_POS + TPS_CAM_FWD_DIR * m_GunData.range;
-
-                        if (Physics.Linecast(m_BulletSpawn.position, LINE_CAST_ENDPOINT, out var hit))
+                        if (Physics.Raycast(ray, out var hit))
                             target = hit.point;
                         else
-                            target = TPS_CAM_FWD_DIR * m_GunData.range;
+                            target = ray.GetPoint(m_GunData.range);
                     }
                 }
 
                 Vector3 lookDir = (target - m_BulletSpawn.position).normalized;
 
-                GameObject bulletGO = Instantiate(m_GunData.BulletPrefab, m_BulletSpawn.position, Quaternion.LookRotation(lookDir));
+                //Calculate Bullet Spread
+                float xSpread = Random.Range(-m_Spread, m_Spread);
+                float ySpread = Random.Range(-m_Spread, m_Spread);
+                Vector3 lookDirWithSpread = lookDir + (Vector3)new(xSpread, ySpread);
 
-                Debug.DrawRay(m_BulletSpawn.position, lookDir, Color.red);
+                //Spawn Bullet
+                GameObject bulletGO = Instantiate(m_GunData.BulletPrefab, m_BulletSpawn.position, Quaternion.identity);
+                bulletGO.transform.forward = lookDir;
+
 
                 if (bulletGO.TryGetComponent<Bullet>(out var bullet))
                 {
-                    bullet.InitialiseProjectile(Owner, m_WeaponData.damage, m_GunData.range);
+                    bullet.InitialiseProjectile(Owner, m_WeaponData.damage, m_GunData.range, lookDirWithSpread);
                 }
 
                 if (m_MuzzleFlash != null)
@@ -210,33 +273,7 @@ public class Gun : Weapon
                 //SUBTRACT AMMO
                 m_CurrClip--;
 
-                //PLAY SOUND
-                if (SoundManager.Instance)
-                {
-                    //Play some ear candy for the player.
-                    if (Owner == PlayerCharacter.Instance)
-                    {
-                        SoundManager.Instance.PlayInGameSound("Generic_Sub_Sweeteneer", m_SweetenerSource, false, true, true, 1.5F);
-                    }
-
-                    //Play Fire Sound
-                    SoundManager.Instance.PlayInGameSound(m_GunData.fireShotAudioID, m_ShotFireSource, false, true, false, 1.0F);
-
-                    //PLAY INDOOR TAIL IF THERES SOMETHING within 100m ABOVE OUR HEADS
-                    if (Physics.Linecast(transform.position, transform.position + transform.up * 100))
-                    {
-                        //Play outdoor tail at a really low attenuation
-                        SoundManager.Instance.PlayInGameSound(m_GunData.fireShotOutDoorTailID, m_ShotTailSource, false, true, false, 0.25F);
-
-                        //Play indoor tail
-                        SoundManager.Instance.PlayInGameSound(m_GunData.fireShotIndoorTailID, m_ShotIndoorTailSource, false, true, false, 0.5F);
-                    }
-                    else
-                    { 
-                        //PLAY OUT DOOR TAIL IF THERES NOTHING ABOVE US (This could also mean we're in a really big room)
-                        SoundManager.Instance.PlayInGameSound(m_GunData.fireShotOutDoorTailID, m_ShotTailSource, false, true, false);
-                    }
-                }
+                PlayShotSound();
 
                 //If the gun isn't picked up, there should be some visible kickback (assuming the gun misfired)
                 if (m_RigidBody && Owner == null)
@@ -245,7 +282,30 @@ public class Gun : Weapon
                 }
             }
         }
+        else
+        {
+            Reload();
+        }
+    }
 
+    protected virtual void PlayShotSound()
+    {
+        //Detect Occulusion
+        Vector3 startPosition = m_BulletSpawn.position + m_BulletSpawn.forward * 1.25F;
+        Vector3 endPosition = m_BulletSpawn.position + Vector3.up * 100;
+        bool IsThereASurfaceAboveTheGun = Physics.Linecast(startPosition, endPosition, out _, -1, QueryTriggerInteraction.Ignore);
+
+        //Set Clips
+        m_ShotFireSource.clip = m_GunData.GunSound.GetShotClip();
+        m_ShotTailSource.clip = IsThereASurfaceAboveTheGun ? m_GunData.GunSound.GetShotIndoorTail() : m_GunData.GunSound.GetShotTail();
+        m_SweetenerSource.clip = m_GunData.GunSound.GetSweetener();
+
+        //Play Sweetener 
+        //Play Gunshot Sound
+        //Play Gunshot Tail Sound
+        m_ShotFireSource.Play();
+        m_ShotTailSource.Play();
+        m_SweetenerSource.Play();
     }
 
     public void AddAmmo(int amount) => m_RemainingAmmo += amount;

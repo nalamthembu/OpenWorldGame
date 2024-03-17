@@ -20,6 +20,9 @@
         IS_AIMING = "IS_AIMING",
         CAMERA_X = "CAMERA_X",
         CAMERA_Y = "CAMERA_Y",
-        IS_FIRING = "IS_SHOOTING";
+        IS_FIRING = "IS_SHOOTING",
+        HIT_DIRECTION = "HIT_DIRECTION",
+        GOT_HIT = "GOT_HIT",
+        IS_RELOADING = "IS_RELOADING";
 
 }

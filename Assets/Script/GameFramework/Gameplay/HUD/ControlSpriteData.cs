@@ -27,12 +27,14 @@ public class ControlSpriteData : ScriptableObject
     }
 }
 
+//This describes the control scheme (example : PS Controller, XB Controller, Generic Gamepad, Keyboard & Mouse)
 public struct ControlScheme
 {
     public string name;
     public Control[] controls;
 }
 
+//A single control (Cross Button, Y Button or F-Key & LMB)
 public struct Control
 {
     public string name;

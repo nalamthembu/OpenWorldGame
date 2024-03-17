@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class HUD : MonoBehaviour
+public class BaseHUD : MonoBehaviour
 {
     [Header("----------HUD Object----------")]
     [SerializeField] protected GameObject m_HUDObject;

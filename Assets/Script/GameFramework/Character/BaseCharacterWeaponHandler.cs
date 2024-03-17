@@ -11,6 +11,10 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
     public Gun PrimaryWeapon { get { return m_PrimaryWeapon; } }
     public Gun SecondaryWeapon { get { return m_SecondaryWeapon; } }
 
+    float m_IKWeight;
+    float m_IKWeightVelRef;
+    const float IKWEIGHTSMOOTHTIME = 0.25F;
+
     public Gun GetEquippedWeapon()
     {
         if (m_PrimaryWeapon && m_PrimaryWeapon.IsEquipped)
@@ -27,6 +31,26 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
         m_ThisCharacter = GetComponent<BaseCharacter>();
     }
 
+    protected virtual void OnEnable()
+    {
+        Gun.OnReload += OnGunBeginReload;
+    }
+
+    protected virtual void OnDisable()
+    {
+        Gun.OnReload -= OnGunBeginReload;
+    }
+
+    private void OnGunBeginReload(Gun targetGun)
+    {
+        bool TargetGunIsEquippedWeapon = targetGun == GetEquippedWeapon();
+
+        if (!TargetGunIsEquippedWeapon) 
+            return;
+
+        m_ThisCharacter.Animator.SetTrigger(GameStrings.IS_RELOADING);
+    }
+
     protected virtual void Update() { /* used by child classes */ }
 
     private void OnAnimatorIK(int layerIndex)
@@ -38,10 +62,14 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
 
         if (gun != null && gun.LeftHandIK != null) 
         {
-            if (!GetEquippedWeapon())
+            //Disable IK when reloading or not equipped
+            if (!GetEquippedWeapon() || GetEquippedWeapon() && GetEquippedWeapon().IsReloading)
             {
-                m_ThisCharacter.Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 0);
-                m_ThisCharacter.Animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, 0);
+                //Smoothly Interpolate
+                m_IKWeight = Mathf.SmoothDamp(m_IKWeight, 0, ref m_IKWeightVelRef, IKWEIGHTSMOOTHTIME);
+
+                m_ThisCharacter.Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, m_IKWeight);
+                m_ThisCharacter.Animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, m_IKWeight);
                 return;
             }
             else
@@ -54,12 +82,15 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
                     WeaponClassification.Grenade => true,
                     WeaponClassification.Remote_Explosive => true,
                     _ => false
-                };
+                } && !m_ThisCharacter.IsAiming;
+
+                //Smoothly Interpolate
+                m_IKWeight = Mathf.SmoothDamp(m_IKWeight, singleHandedWeaponWhenNotAiming ? 0 : 1, ref m_IKWeightVelRef, IKWEIGHTSMOOTHTIME);
 
                 m_ThisCharacter.Animator.SetIKPosition(AvatarIKGoal.LeftHand, gun.LeftHandIK.position);
                 m_ThisCharacter.Animator.SetIKRotation(AvatarIKGoal.LeftHand, gun.LeftHandIK.rotation);
-                m_ThisCharacter.Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, singleHandedWeaponWhenNotAiming? 0 : 1);
-                m_ThisCharacter.Animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, singleHandedWeaponWhenNotAiming ? 0 : 1);
+                m_ThisCharacter.Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, m_IKWeight);
+                m_ThisCharacter.Animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, m_IKWeight);
             }
         }
     }
@@ -92,9 +123,7 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
                             bool PreviousWeaponWasEquipped = m_PrimaryWeapon.IsEquipped;
 
                             //Drop the old one
-                            m_PrimaryWeapon.SetCanBePickedUp(true);
-                            m_PrimaryWeapon.SetSimulatePhysics(true);
-                            m_PrimaryWeapon = null;
+                            RemoveWeapon(WeaponType.Primary);
 
                             //Get the new one
                             m_PrimaryWeapon = thisNewGun;
@@ -129,9 +158,7 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
                             bool PreviousWeaponWasEquipped = m_SecondaryWeapon.IsEquipped;
 
                             //Drop the old one
-                            m_SecondaryWeapon.SetCanBePickedUp(true);
-                            m_SecondaryWeapon.SetSimulatePhysics(true);
-                            m_SecondaryWeapon = null;
+                            RemoveWeapon(WeaponType.Secondary);
 
                             //Get the new one
                             m_SecondaryWeapon = thisNewGun;

@@ -1,10 +1,9 @@
 using UnityEngine;
 using System;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using MyBox;
+using Object = UnityEngine.Object;
+using System.Collections;
 
-[RequireComponent(typeof(EntityEffectsComponent))]
 /// <summary>
 /// This base class describes every player interactable object
 /// in the game and contains various properties about that object.
@@ -15,36 +14,48 @@ public class Entity : MonoBehaviour
 {
     [Tooltip("This is the minimum Y position before the game considerers this entity out of of the world.")]
     [SerializeField][Range(-10000, 0)] float m_MinY = -1000.0F;
-
     [HideInInspector] public bool b_IsOnFire; //Toggling this spawns fire on the object and decreases health if that is allowed.
     [HideInInspector] public bool b_IsDamaged; //Could be used for showing visible damage on an object (example : a damaged television screen)
     [HideInInspector] public bool b_IsExploding; //In the process of exploding.
     [HideInInspector] public bool b_HasExploded; //Has finished exploding.
-    [HideInInspector] public bool b_CanBeDamaged;
     [HideInInspector] public Entity Owner = null; //This would be used for vehicles, guns and/or pickups.
+    [HideInInspector] public bool b_IsInvolvedInMission; //If this is true, it will not be deleted under any circumstance during a mission.
+    [HideInInspector] public bool b_DespawnsAfterDeath = true; //True by default.
+    [HideInInspector] public float f_DespawnTime = 60; //seconds
+    [SerializeField] public bool b_CanBeDamaged;
 
-    //Only shows when b_CanBeDamaged = true
-    [HideInInspector] public GameObject m_DamagedObject;
-  
     public static event Action<Entity> OnOutOfWorld;
-
     public static event Action<Entity> OnAddToWorld;
+                                                                     
+    private void OnEntityDeath() => StartCoroutine(DespawnAfterDelay(f_DespawnTime));
 
-    //<this entity, hitPoint, hitNormal>
-    public static event Action<Entity, Vector3, Vector3> OnShot; //Fires when a bullet collides with this entity.
-
-    //<this entity, hitPoint, hitNormal>
-    public static event Action<Entity, Vector3, Vector3> OnCollision; //This is mainly for entities with singular colliders,
-                                                    //this might not work on a complex object like a character.
-    
-    public bool HasHealthComponent { get; private set; }
-
-    protected virtual void Awake() 
+    protected virtual IEnumerator DespawnAfterDelay(float delay)
     {
-        OnAddToWorld?.Invoke(this);
+        Debug.Log($"Scheduled to despawn [{GetType()}]:[{gameObject.name}] in {delay} second(s).");
+
+        while (delay > 0)
+        {
+            delay -= Time.deltaTime;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        RemoveEntityFromScene();
+
+        Debug.Log($"Despawning [{GetType()}]:[{gameObject.name}], now.");
     }
 
-    protected virtual void Start() { }
+    protected virtual void Awake() { }
+
+    protected virtual void Start()
+    {
+        if (EntityManager.Instance != null)
+        {
+            OnAddToWorld?.Invoke(this);
+        }
+    }
+
+    public virtual void SetOwner(Entity owner) => Owner = owner;
 
     protected virtual void Update()
     {
@@ -55,15 +66,13 @@ public class Entity : MonoBehaviour
 
     protected virtual void OnBecameInvisible()
     {
-        //TODO : Make this exclude mission entities or other objects that will have to be really far.
-
-        if (!ThirdPersonCamera.Instance)
+        if (!ThirdPersonCamera.Instance || b_IsInvolvedInMission)
             return;
 
         float distanceFromCamera = Vector3.Distance(transform.position, ThirdPersonCamera.Instance.transform.position);
 
         //if this entity is really far from the camera
-        if (distanceFromCamera >= ThirdPersonCamera.Instance.FarZ / 0.85F)
+        if (distanceFromCamera >= ThirdPersonCamera.Instance.FarZ * 0.85F)
         {
             RemoveEntityFromScene();
         }
@@ -78,6 +87,11 @@ public class Entity : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    public virtual void OnShot(Projectile projectile, Entity OwnerOfProjectile)
+    {
+        //Process the effect in child class.
+    }
+
     public virtual void Teleport(Vector3 position) => transform.position = position;
 
     protected virtual void OnCollisionEnter(Collision collision)
@@ -85,37 +99,23 @@ public class Entity : MonoBehaviour
         //Was this entity hit by a bullet?
         if (collision.collider.TryGetComponent<Bullet>(out var bullet))
         {
-            OnShot?.Invoke(this, collision.contacts[0].point, collision.contacts[0].normal);
+            OnShot(bullet, bullet.Owner);
+
             return;
         }
-        else
-        {
-            //All other collision, including other projectiles, like a grenade.
-            OnCollision?.Invoke(this, collision.contacts[0].point, collision.contacts[0].normal);
-        }
     }
-    
 }
 
-#if UNITY_EDITOR
-[CustomEditor(typeof(Entity))]
-public class EntityEditor : Editor
+//Manager for variable levels of damage
+[System.Serializable]
+public class DamageDetail
 {
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector(); // for other non-HideInInspector fields
+    [SerializeField] GameObject m_DamageLevelPrefab;
+    [SerializeField] public float m_HealthAtThisDamageLevel;
 
-        Entity entity = (Entity)target;
+    private Transform transform;
 
-        if (GUILayout.Button("Can Be Damaged : " + entity.b_CanBeDamaged))
-            entity.b_CanBeDamaged = !entity.b_CanBeDamaged;
+    public void Initialise(Transform transform) => this.transform = transform;
 
-        //Show damage options if this entity can be damaged.
-        if (entity.b_CanBeDamaged)
-        {
-            GUILayout.Label("----------Damage-----------");
-            entity.m_DamagedObject = EditorGUILayout.ObjectField("Damaged Object", entity.m_DamagedObject, entity.m_DamagedObject.GetType()) as GameObject;
-        }
-    }
+    public void SpawnDamagePrefab() => Object.Instantiate(m_DamageLevelPrefab, transform.position, transform.rotation, transform);
 }
-#endif

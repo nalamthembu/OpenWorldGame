@@ -31,7 +31,6 @@ public class Wheel : MonoBehaviour
     private void Awake()
     {
         collider = GetComponent<WheelCollider>();
-        SpawnWheelAndRim();
     }
 
     public void SetMotorTorque(float torque) => collider.motorTorque = torque * 1.25F;

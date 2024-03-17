@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class DeathHUD : HUD
+public class DeathHUD : BaseHUD
 {
     [Header("----------General----------")]
 

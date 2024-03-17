@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InteractionHUD : HUD
+public class InteractionHUD : BaseHUD
 {
     [Header("-----------General----------")]
     [SerializeField] TMP_Text m_ObjectText;

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MiniMapHUD : HUD
+public class MiniMapHUD : BaseHUD
 {
     [Header("----------General----------")]
     [SerializeField] GameObject m_MiniMapCameraPrefab;

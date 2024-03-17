@@ -1,13 +1,24 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.AI;
-using RootMotion.Dynamics; //PuppetMaster Active Ragdoll Physics.
+using RootMotion.Dynamics; //PuppetMaster Active Ragdoll Physics (Dependency)
 using Random = UnityEngine.Random;
 
+public enum CharacterState
+{
+    OnFoot,
+    Prone,
+    Crouch,
+    InVehicle
+};
+
+[RequireComponent(typeof(CharacterSpeech))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(BaseCharacterWeaponHandler))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class BaseCharacter : Entity
 {
+    #region Properties
     protected enum FootUp
     {
         Left,
@@ -36,6 +47,8 @@ public class BaseCharacter : Entity
     public bool IsAiming { get; set; }
     public bool IsFiring { get; set; }
 
+    #endregion
+
     protected override void Awake()
     {
         base.Awake();
@@ -52,6 +65,14 @@ public class BaseCharacter : Entity
         CharacterState = CharacterState.OnFoot;
 
         b_CanBeDamaged = true;
+    }
+
+    public override void OnShot(Projectile projectile, Entity OwnerOfProjectile)
+    {
+        base.OnShot(projectile, OwnerOfProjectile);
+        float dotProduct = Vector3.Dot(projectile.transform.position, transform.position);
+        Animator.CrossFadeInFixedTime(GameStrings.GOT_HIT, 0.25F); //Transition to animation
+        Animator.SetFloat(GameStrings.HIT_DIRECTION, dotProduct);
     }
 
     protected override void Start()
@@ -100,11 +121,3 @@ public class BaseCharacter : Entity
             return FootUp.Right;
     }
 }
-
-public enum CharacterState
-{
-    OnFoot,
-    Prone,
-    Crouch,
-    InVehicle
-};

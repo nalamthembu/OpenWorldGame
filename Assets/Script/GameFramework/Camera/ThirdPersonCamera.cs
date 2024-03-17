@@ -158,13 +158,11 @@ public class ThirdPersonCamera : BaseCamera
         Vector3 desiredPosition = m_Target.position - transform.forward * distanceFromTarget;
 
         //Camera Collision
-        if (Physics.Raycast(m_Target.position, -transform.forward, out var hit, distanceFromTarget, m_CollisionMask))
+        if (Physics.Raycast(m_Target.position, -transform.forward, out var hit, distanceFromTarget, m_CollisionMask, QueryTriggerInteraction.Ignore))
             desiredPosition = hit.point + transform.forward * m_CameraComp.nearClipPlane;
 
-        transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * m_InterpolationSpeed);
-
+        transform.position = m_IsAiming ? desiredPosition : Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * m_InterpolationSpeed);
         HandleCameraComponentPosition();
-
     }
 
     protected virtual void HandleCameraComponentPosition()
@@ -239,7 +237,7 @@ public class ThirdPersonCamera : BaseCamera
 
 
     private Quaternion GetCameraQuaternion() => Quaternion.Euler(GetPitchAndYaw());
-  
+
 
     protected override void DoRotation()
     {
@@ -250,9 +248,9 @@ public class ThirdPersonCamera : BaseCamera
 
         if (m_AutoRecentre)
         {
-            if (PlayerController.Instance && 
-                !IsPlayerMovingCamera() && 
-                !PlayerController.Instance.CameraMoved 
+            if (PlayerController.Instance &&
+                !IsPlayerMovingCamera() &&
+                !PlayerController.Instance.CameraMoved
                 && m_CameraHasNotMovedForExtendedPeriod)
             {
                 DoIdleCamera();
@@ -268,11 +266,17 @@ public class ThirdPersonCamera : BaseCamera
             m_Yaw += PlayerController.Instance.CameraXY.x * dSensitivity;
             m_Pitch -= PlayerController.Instance.CameraXY.y * dSensitivity;
             m_Pitch = Mathf.Clamp(m_Pitch, m_PitchLimits.x, m_PitchLimits.y);
-
         }
 
-        transform.rotation = Quaternion.Lerp(transform.rotation, GetCameraQuaternion(), Time.deltaTime * m_InterpolationSpeed);
-        m_LastCameraRotation = GetPitchAndYaw();
+        if (PlayerController.Instance != null && PlayerController.Instance.IsAiming)
+        {
+            transform.rotation = GetCameraQuaternion();
+        }
+        else
+        {
+            transform.rotation = m_IsAiming ? GetCameraQuaternion() :  Quaternion.Lerp(transform.rotation, GetCameraQuaternion(), Time.deltaTime * m_InterpolationSpeed);
+            m_LastCameraRotation = GetPitchAndYaw();
+        }
     }
 }
 

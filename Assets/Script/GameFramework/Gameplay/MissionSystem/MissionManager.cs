@@ -1,11 +1,12 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using MyBox;
 using static ObjectiveType;
 
 public class MissionManager : MonoBehaviour
 {
+    [SerializeField] string m_MissionTitle = "TEST_MISSION";
+
     [SerializeField] Objective[] m_Objectives;
 
     Objective m_CurrentObjective;
@@ -15,7 +16,10 @@ public class MissionManager : MonoBehaviour
     private bool m_MissionComplete;
     private int m_CurrentObjectiveIndex;
     private int m_CompletedObjectives;
-    public static event Action OnMissionComplete;
+    public static event Action<string> OnMissionComplete;
+
+    //<Objective description for player>
+    public static event Action<string> OnNextObjective;
 
     [SerializeField] bool m_DebugMission;
     [ConditionalField("m_DebugMission", false, true)] public int m_DebugObjectiveIndex = -1;
@@ -26,7 +30,37 @@ public class MissionManager : MonoBehaviour
         if (InteractiveMusicManager.Instance)
             InteractiveMusicManager.Instance.StartSoundTrack();
 
+        InitialiseObjective();
+
         GetNextObjective();
+    }
+
+    private void InitialiseObjective()
+    {
+        //Make sure values are right
+
+        for(int i = 0; i < m_Objectives.Length; i++)
+        {
+            switch(m_Objectives[i].objectiveType)
+            {
+                case GET_PICKUP:
+                case GET_IN_VEHICLE:
+                case KILL_CHARACTER:
+                case KILL_MULTIPLE_CHARACTERS:
+
+                    if (m_Objectives[i].TargetCharacter)
+                        m_Objectives[i].TargetCharacter.b_IsInvolvedInMission = true;
+                    if (m_Objectives[i].TargetVehicle)
+                        m_Objectives[i].TargetVehicle.b_IsInvolvedInMission = true;
+                    if (m_Objectives[i].TargetCharacters.Length > 0)
+                        for (int j = 0; j < m_Objectives[i].TargetCharacters.Length; j++)
+                            m_Objectives[i].TargetCharacters[j].b_IsInvolvedInMission = true;
+                    if (m_Objectives[i].TargetPickup)
+                        m_Objectives[i].TargetPickup.b_IsInvolvedInMission = true;
+
+                    break;
+            }
+        }
     }
 
     private void OnEnable()
@@ -71,6 +105,9 @@ public class MissionManager : MonoBehaviour
             Debug.Log("Mission Complete : " + m_TimeElapsed.GetFloatStopWatchFormat());
             if (InteractiveMusicManager.Instance)
                 InteractiveMusicManager.Instance.StopSoundTrack();
+
+            OnMissionComplete?.Invoke(m_MissionTitle);
+
             return;
         }
         else
@@ -79,6 +116,8 @@ public class MissionManager : MonoBehaviour
 
             if (InteractiveMusicManager.Instance)
                 InteractiveMusicManager.Instance.SetIntensity(m_CurrentObjective.interactiveMusicIntensity);
+
+            OnNextObjective?.Invoke(m_CurrentObjective.descriptionForPlayer);
         }
     }
 
@@ -108,7 +147,20 @@ public class MissionManager : MonoBehaviour
                     if (m_CurrentObjective.TargetCharacter)
                     {
                         Gizmos.color = Color.red;
-                        Gizmos.DrawSphere(m_CurrentObjective.TargetCharacter.transform.position + Vector3.up * 1.8f, 0.25F);
+                        Gizmos.DrawSphere(m_CurrentObjective.TargetCharacter.transform.position + Vector3.up * 2.0F, 0.25F);
+                    }
+                    break;
+
+
+                case KILL_MULTIPLE_CHARACTERS:
+                    if (m_CurrentObjective.TargetCharacters.Length > 0)
+                    {
+                        Gizmos.color = Color.red;
+
+                        foreach(BaseCharacter character in m_CurrentObjective.TargetCharacters)
+                        {
+                            Gizmos.DrawSphere(character.transform.position + Vector3.up * 2.0F, 0.25F);
+                        }
                     }
                     break;
 
@@ -128,16 +180,18 @@ public class Objective
 
     public MusicIntensity interactiveMusicIntensity;
 
+    public string descriptionForPlayer;
+
     private bool m_IsComplete = false;
 
     [ConditionalField("objectiveType", false, GET_PICKUP)] public BasePickup TargetPickup;
     [ConditionalField("objectiveType", false, KILL_CHARACTER)] public BaseCharacter TargetCharacter;
-    [ConditionalField("objectiveType", false, KILL_MULTIPLE_CHARACTERS)] public BaseCharacter[] TargetCharacters;
     [ConditionalField("objectiveType", false, GET_IN_VEHICLE)] public Vehicle TargetVehicle;
     [ConditionalField("objectiveType", false, GO_TO_DESTINATION)] public Transform TargetDestination;
     [ConditionalField("objectiveType", false, GO_TO_DESTINATION)] public float MinDistance;
     [ConditionalField("objectiveType", false, LEAVE_THE_AREA)] public Transform AreaCentreTransform;
     [ConditionalField("objectiveType", false, LEAVE_THE_AREA)] public float areaRadius;
+    [ConditionalField("objectiveType", false, KILL_MULTIPLE_CHARACTERS)] public BaseCharacter[] TargetCharacters;
 
     public void OnEnable()
     {
@@ -188,10 +242,11 @@ public class Objective
                 int num_of_dead_characters = 0;
 
                 foreach(BaseCharacter character in TargetCharacters)
-                    if (character && character.TryGetComponent<HealthComponent>(out var healthComp))
+                {
+                    if (character.TryGetComponent<HealthComponent>(out var healthComp) && healthComp.IsDead)
                         num_of_dead_characters++;
-   
-                //all the characters are dead.
+                }
+
                 if (num_of_dead_characters >= TargetCharacters.Length)
                     return true;
 

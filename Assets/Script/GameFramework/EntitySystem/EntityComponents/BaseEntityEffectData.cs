@@ -1,19 +1,11 @@
-﻿using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using UnityEngine;
 
-[CreateAssetMenu(fileName = "EntityEffectData", menuName = "Game/Entity/Entity Effect Data")]
-public class EntityEffectData : ScriptableObject
+public class BaseEntityEffectData : ScriptableObject
 {
-    public string entityName;
-
-    public EntityCollisionFXData CollisionFX;
-
+    public string EntityName;
     public bool CanReactToBullets;
-    
-    public EntityShotFXData ShotFX;
 }
+
 
 [System.Serializable]
 public struct EntityCollisionFXData

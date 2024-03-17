@@ -11,7 +11,8 @@
 /[Aa]sets/UMS_LODs/*
 /[Aa]ssets/[Pp]refabs
 /[Aa]ssets/Scriptable/
-Assets/UMS_LODs/*
+/[Aa]ssets/UMS_LODs/*
+/[Aa]ssets/Plugins/
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class EntityManager : MonoBehaviour
 {
+    // <ID, Actual Entity>
     public readonly List<Entity> m_EntitiesInScene = new();
 
     public static EntityManager Instance;
@@ -35,25 +36,28 @@ public class EntityManager : MonoBehaviour
     private void OnEntityAddedToWorld(Entity new_entity)
     {
         if (m_EntitiesInScene != null)
+        {
             m_EntitiesInScene.Add(new_entity);
+        }
         else
         {
-            Debug.LogError("Entity list on the entity manager is NULL");
+            Debug.LogError("Entity Dictionary on the entity manager is NULL");
         }
     }
 
 
     //This method gets rid of any entities that leave the world and
     //could potentially cause performance issues if kept for no reason.
-    private void OnEntityOutOfWorld(Entity entityToBeDeleted)
+    private void OnEntityOutOfWorld(Entity entity)
     {
-        if (entityToBeDeleted == null)
-            return;
-
-        if (m_EntitiesInScene != null && m_EntitiesInScene.Count > 0)
+        foreach (Entity ent in m_EntitiesInScene)
         {
-            m_EntitiesInScene.Remove(entityToBeDeleted);
-            Destroy(entityToBeDeleted.gameObject);
+            if (ent == entity)
+            {
+                Destroy(entity.gameObject);
+                m_EntitiesInScene.Remove(ent);
+                break;
+            }
         }
     }
 
@@ -61,27 +65,19 @@ public class EntityManager : MonoBehaviour
     //this only works if the entity has a collider on it.
     public void ClearEntitiesInArea(Vector3 position, float radius)
     {
-        Collider[] entityCols = Physics.OverlapSphere(position, radius);
+        Collider[] entityCols = null;
 
-        foreach (Collider col in entityCols)
+        Physics.OverlapBoxNonAlloc(position, Vector3.one * radius, entityCols);
+
+        if (entityCols != null && entityCols.Length > 0)
         {
-            if (col.TryGetComponent<Entity>(out var entity))
+            foreach (Collider col in entityCols)
             {
-                OnEntityOutOfWorld(entity);
+                if (col.TryGetComponent<Entity>(out var entity))
+                {
+                    OnEntityOutOfWorld(entity);
+                }
             }
         }
     }
-
-    /*
-    //This gets all instances of entities in the scene.
-    private void FindAllEntitiesInScene()
-    {
-        Entity[] entities = FindObjectsOfType<Entity>();
-
-        for (int i = 0; i < entities.Length; i++)
-        {
-            m_EntitiesInScene.Add(entities[i]);
-        }
-    }
-    */
 }

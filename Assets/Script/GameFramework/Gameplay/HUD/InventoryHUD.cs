@@ -1,7 +1,7 @@
 using UnityEngine.UI;
 using UnityEngine;
 
-public class InventoryHUD : HUD
+public class InventoryHUD : BaseHUD
 {
     [Header("----------General----------")]
     [SerializeField] Button m_PrimaryWeaponButton;
@@ -52,11 +52,15 @@ public class InventoryHUD : HUD
     {
         //TODO : PLAY SOUND
         m_HUDObject.SetActive(false);
+
+        Cursor.visible = false;
     }
 
     private void OnInventoryHoldOpen()
     {
         //TODO : PLAY SOUND
         m_HUDObject.SetActive(true);
+
+        Cursor.visible = true;
     }
 }

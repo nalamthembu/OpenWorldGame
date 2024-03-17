@@ -20,7 +20,10 @@ public class VehicleBodyKitManager : MonoBehaviour
     private void Awake()
     {
         vehicle = GetComponent<Vehicle>();
+    }
 
+    private void Start()
+    {
         InitialiseBodyKit();
     }
 

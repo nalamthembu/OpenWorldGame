@@ -151,7 +151,7 @@ public class WheelFX : MonoBehaviour
             }
         }
         else
-            SoundManager.Instance.PlayInGameSound(wheelRoadNoiseID, m_RoadNoiseSource, true);
+            SoundManager.Instance.PlayInGameSound("WheelFX_RoadNoise", m_RoadNoiseSource, true);
 
         m_RoadNoiseSource.pitch = Mathf.Lerp(1, currentMaxRoadNoisePitch, (m_WheelCollider.rpm / minRPMB4RoadNoise));
         m_RoadNoiseSource.volume = Mathf.SmoothStep(0, 1.0F, Mathf.Floor(m_WheelCollider.rpm) / minRPMB4RoadNoise);
@@ -170,8 +170,7 @@ public class WheelFX : MonoBehaviour
                 return;
             }
         }
-        else
-            SoundManager.Instance.PlayInGameSound(wheelSkidID, m_SkidSource, true);
+        SoundManager.Instance.PlayInGameSound("WheelFX_Skid", m_RoadNoiseSource, true);
 
         m_SkidSource.pitch = Mathf.Lerp(1, currentSkidMaxPitch, m_CurrentFrictionValue / 1);
         m_SkidSource.volume = Mathf.Lerp(0, 1.0F, m_CurrentFrictionValue / 1);

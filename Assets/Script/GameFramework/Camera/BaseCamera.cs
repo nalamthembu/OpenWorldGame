@@ -6,6 +6,7 @@ using UnityEditor;
 /// <summary>
 /// This is the base class for the various types of cameras such as the ThirdPersonCamera.
 /// </summary>
+[RequireComponent(typeof(SphereCollider))]
 public class BaseCamera : MonoBehaviour
 {
     [HideInInspector] public bool m_DebugCameraEnabled;
@@ -20,6 +21,8 @@ public class BaseCamera : MonoBehaviour
     protected Camera m_CameraComp;
 
     public Camera CameraComponent { get { return m_CameraComp; } }
+
+    protected SphereCollider m_TriggerCollider;
 
     /// <summary>
     /// This is the index of which camera setting this camera is using from m_CameraSettingsData.
@@ -120,6 +123,10 @@ public class BaseCamera : MonoBehaviour
         {
             m_CurrentCameraSettings = m_CameraSettingsData.cameraSettings[m_CameraSettingsIndex];
         }
+
+        
+        if (TryGetComponent(out m_TriggerCollider))
+            m_TriggerCollider.isTrigger = true;
     }
 
 

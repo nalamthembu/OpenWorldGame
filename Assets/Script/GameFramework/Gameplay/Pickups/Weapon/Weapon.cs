@@ -90,8 +90,10 @@ public class Weapon : BasePickup
         base.OnTriggerStay(other);
     }
 
-    public void SetOwner(BaseCharacter owner)
+    public override void SetOwner(Entity owner)
     {
+        Owner = owner;
+
         if (owner)
         {
             Animator ownerAnimator = owner.GetComponent<Animator>();

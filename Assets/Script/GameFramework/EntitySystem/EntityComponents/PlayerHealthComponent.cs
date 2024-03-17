@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public class PlayerHealthComponent : HealthComponent
 {
@@ -8,7 +9,7 @@ public class PlayerHealthComponent : HealthComponent
 
     public static event Action OnTakeDamage;
 
-    public override void TakeDamage(float fDamage, Entity Instigator, Entity DamageCauser)
+    public override void TakeDamage(float fDamage, GameObject Instigator, GameObject DamageCauser, bool IsHeadshot)
     {
         base.TakeDamage(fDamage, Instigator, DamageCauser);
 

@@ -57,6 +57,10 @@ public class PlayerController : MonoBehaviour
             Destroy(gameObject);
         }
 
+        Cursor.visible = false;
+
+        Cursor.lockState = CursorLockMode.Confined;
+
         m_PlayerInput = new();
 
         //Setup callbacks

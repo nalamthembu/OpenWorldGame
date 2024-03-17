@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Controller = PlayerController;
 
-public class PlayerStateMachine : MonoBehaviour
+public class PlayerStateMachine : BaseCharacterStateMachine
 {
     [SerializeField] bool m_DebugAiming;
 
@@ -14,9 +14,7 @@ public class PlayerStateMachine : MonoBehaviour
         Right
     };
 
-    Animator m_Animator;
-
-    PlayerCharacter m_Player;
+    PlayerCharacter m_PlayerCharacter;
 
     public PlayerState currentState;
     public IdleState idleState = new();
@@ -26,23 +24,11 @@ public class PlayerStateMachine : MonoBehaviour
     public CrouchState crouchState = new();
     public ProneState proneState = new();
 
-    [SerializeField] float randomiseIdleTimer = 5;
-    [SerializeField] int IdleAnimationCount = 3;
-
-    public static event System.Action NotCrouchedOrProne;
-
-    public PlayerCharacter PlayerCharacter { get { return m_Player; } }
-    public bool IsRunning { get; private set; }
-    public bool IsCrouchedOrProne { get; private set; }
-    public float PlayerSpeed { get; private set; }
-    public Animator Animator { get { return m_Animator; } }
-    public float InputMagnitude { get; private set; }
-    public float Rotation { get; private set; }
-    public float RandomiseIdleTimer { get { return randomiseIdleTimer; } }
-
     [HideInInspector] public string editorString;
 
     public static PlayerStateMachine Instance;
+
+    public static event System.Action NotCrouchedOrProne;
 
     public Vector2 InputDirection { get; private set; }
 
@@ -58,7 +44,8 @@ public class PlayerStateMachine : MonoBehaviour
         }
 
         m_Animator = GetComponent<Animator>();
-        m_Player = GetComponent<PlayerCharacter>();
+        m_Character = GetComponent<PlayerCharacter>();
+        m_PlayerCharacter = m_Character as PlayerCharacter;
     }
 
     private void Start() => SwitchState(idleState);
@@ -102,7 +89,7 @@ public class PlayerStateMachine : MonoBehaviour
             //Jumping
             m_Animator.SetBool(GameStrings.IS_JUMPING, Controller.Instance.JumpPressed);
             //IsGrounded
-            m_Animator.SetBool(GameStrings.IS_GROUNDED, m_Player.IsGrounded());
+            m_Animator.SetBool(GameStrings.IS_GROUNDED, m_PlayerCharacter.IsGrounded());
 
             if (PlayerWeaponHandler.Instance)
             {
@@ -116,13 +103,13 @@ public class PlayerStateMachine : MonoBehaviour
 
                 bool isAiming = equippedWeapon != null && Controller.Instance != null && Controller.Instance.IsAiming || m_DebugAiming;
 
-                m_Player.IsAiming = isAiming;
-                m_Player.IsFiring = isAiming && Controller.Instance.IsFiring;
+                m_Character.IsAiming = isAiming;
+                m_Character.IsFiring = isAiming && Controller.Instance.IsFiring;
 
                 m_Animator.SetBool(GameStrings.IS_RIFLE, equippedWeapon != null && equippedWeaponGunData.WeaponClass == WeaponClassification.Rifle);
                 m_Animator.SetBool(GameStrings.IS_PISTOL, equippedWeapon != null && equippedWeaponGunData.WeaponClass == WeaponClassification.Pistol);
-                m_Animator.SetBool(GameStrings.IS_AIMING, m_Player.IsAiming);
-                m_Animator.SetBool(GameStrings.IS_FIRING, m_Player.IsFiring);
+                m_Animator.SetBool(GameStrings.IS_AIMING, m_Character.IsAiming);
+                m_Animator.SetBool(GameStrings.IS_FIRING, m_Character.IsFiring);
             }
 
 
@@ -130,13 +117,13 @@ public class PlayerStateMachine : MonoBehaviour
             {
                 //Speed, Rotation, InputX/Y Gets Set regardless of whether or not we are moving.
                 m_Animator.SetFloat(GameStrings.SPEED,
-                    Controller.Instance.RunHeld ? m_Player.RunSpeed : m_Player.WalkSpeed,
-                    m_Player.SpeedSmoothTime, Time.deltaTime);
+                    Controller.Instance.RunHeld ? m_PlayerCharacter.RunSpeed : m_PlayerCharacter.WalkSpeed,
+                    m_PlayerCharacter.SpeedSmoothTime, Time.deltaTime);
 
                 m_Animator.SetFloat(GameStrings.INPUT_X, InputDirection.x,
-                    m_Player.SpeedSmoothTime / 2, Time.deltaTime);
+                    m_PlayerCharacter.SpeedSmoothTime / 2, Time.deltaTime);
                 m_Animator.SetFloat(GameStrings.INPUT_Y, InputDirection.y,
-                    m_Player.SpeedSmoothTime / 2, Time.deltaTime);
+                    m_PlayerCharacter.SpeedSmoothTime / 2, Time.deltaTime);
 
 
                 if (ThirdPersonCamera.Instance)
@@ -165,7 +152,7 @@ public class PlayerStateMachine : MonoBehaviour
             //Set Rotation
             m_Animator.SetFloat(GameStrings.TARGET_ROTATION,
                 Mathf.DeltaAngle(transform.eulerAngles.y, Rotation),
-                m_Player.RotationSmoothTime / 2, Time.deltaTime);
+                m_PlayerCharacter.RotationSmoothTime / 2, Time.deltaTime);
 
         }
     }
@@ -185,7 +172,7 @@ public class PlayerStateMachine : MonoBehaviour
         m_Animator.SetBool(GameStrings.RU, CheckWhichFootIsUp() == FootUp.Right);
     }
 
-    public void RotatePlayerToFaceCameraDirection(bool IsProne = false) => m_Player.DoRotation(Rotation, IsProne);
+    public void RotatePlayerToFaceCameraDirection(bool IsProne = false) => m_PlayerCharacter.DoRotation(Rotation, IsProne);
     
     protected FootUp CheckWhichFootIsUp()
     {

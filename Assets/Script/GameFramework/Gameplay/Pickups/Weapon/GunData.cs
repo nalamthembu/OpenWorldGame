@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Audio;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -11,8 +13,26 @@ public class GunData : BaseWeaponData
     public FireType FireType;
     public WeaponClassification WeaponClass;
     public GameObject BulletPrefab;
-    public string fireShotAudioID, fireShotOutDoorTailID, fireShotIndoorTailID;
     [HideInInspector] [Min(0.1f)] public float FireRateInSeconds;
+    public float ReloadTime = 2.167f;
+    public GunSound GunSound;
+    public AudioMixerGroup mixerGroup;
+}
+
+[System.Serializable]
+public class GunSound
+{
+    [SerializeField] AudioClip[] Shot;
+    [SerializeField] AudioClip[] IndoorShot;
+    [SerializeField] AudioClip[] ShotTail;
+    [SerializeField] AudioClip[] ShotIndoorTail;
+    [SerializeField] AudioClip Sweetener;
+
+    public AudioClip GetShotClip() => Shot[Random.Range(0, Shot.Length)];
+    public AudioClip GetShotTail() => ShotTail[Random.Range(0, ShotTail.Length)];
+    public AudioClip GetShotIndoorTail() => ShotIndoorTail[Random.Range(0, ShotIndoorTail.Length)];
+    public AudioClip GetSweetener() => Sweetener;
+    public AudioClip GetIndoorShot() => IndoorShot[Random.Range(0, IndoorShot.Length)];
 }
 
 
