@@ -81,7 +81,7 @@ public class CharacterHitReactorComponent : MonoBehaviour, IEntityComponent
                     collision.gameObject,
                     collision.gameObject);
 
-                PlaySound(audio_id, 5);
+                PlaySound(audio_id, 3);
             }
         }
     }

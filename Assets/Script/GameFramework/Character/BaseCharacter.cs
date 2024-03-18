@@ -25,6 +25,9 @@ public class BaseCharacter : Entity
         Right
     };
 
+    protected NavMeshAgent m_Agent;
+    protected NavMeshPath m_NavMeshPath;
+
     protected Animator m_Animator;
 
     [SerializeField] CharacterAnimationData m_animData;

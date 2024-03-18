@@ -5922,7 +5922,7 @@ Transform:
   m_GameObject: {fileID: 120710807}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0016838607, y: 0.04074951, z: -0.04125199, w: 0.99831605}
-  m_LocalPosition: {x: 33.94739, y: 0.14475918, z: 0.14365771}
+  m_LocalPosition: {x: 33.94739, y: 0.14474821, z: 0.14366153}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12705,7 +12705,7 @@ Transform:
   m_GameObject: {fileID: 233913550}
   serializedVersion: 2
   m_LocalRotation: {x: 0.85767007, y: 0.507213, z: 0.039752707, w: -0.0745436}
-  m_LocalPosition: {x: -37.712368, y: -0.00022888184, z: 0.00035113096}
+  m_LocalPosition: {x: -37.712387, y: 0.000015735626, z: 0.000054895878}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17929,7 +17929,7 @@ Transform:
   m_GameObject: {fileID: 299632939}
   serializedVersion: 2
   m_LocalRotation: {x: -0.55114263, y: -0.43736118, z: 0.5182937, w: -0.48613662}
-  m_LocalPosition: {x: -23.37154, y: -0.7856188, z: -19.098886}
+  m_LocalPosition: {x: -23.37153, y: -0.7856178, z: -19.098886}
   m_LocalScale: {x: 0.9999998, y: 1, z: 0.9999998}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -18131,7 +18131,7 @@ Transform:
   m_GameObject: {fileID: 300442919}
   serializedVersion: 2
   m_LocalRotation: {x: -2.4156162e-17, y: -0.035830766, z: 1.6679253e-15, w: 0.9993579}
-  m_LocalPosition: {x: -27.114882, y: -0.00001003081, z: -0.037992243}
+  m_LocalPosition: {x: -27.114555, y: -0.0000061416067, z: -0.038160726}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20377,7 +20377,7 @@ Transform:
   m_GameObject: {fileID: 335226516}
   serializedVersion: 2
   m_LocalRotation: {x: -0.43736115, y: 0.5511426, z: 0.48613662, w: 0.51829374}
-  m_LocalPosition: {x: -23.371807, y: -0.7855015, z: 19.09917}
+  m_LocalPosition: {x: -23.37182, y: -0.7855997, z: 19.099005}
   m_LocalScale: {x: 1.0000001, y: 0.9999999, z: 0.9999999}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -21872,8 +21872,9 @@ GameObject:
   - component: {fileID: 355395848}
   - component: {fileID: 355395853}
   - component: {fileID: 355395852}
-  - component: {fileID: 355395850}
   - component: {fileID: 355395849}
+  - component: {fileID: 355395855}
+  - component: {fileID: 355395854}
   m_Layer: 0
   m_Name: CharacterAI (7)
   m_TagString: Untagged
@@ -21930,31 +21931,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 36438919}
---- !u!114 &355395850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 355395846}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &355395852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21988,6 +21964,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &355395854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355395846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &355395855
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355395846}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &357548520
 GameObject:
   m_ObjectHideFlags: 0
@@ -24585,7 +24608,7 @@ Transform:
   m_GameObject: {fileID: 404985836}
   serializedVersion: 2
   m_LocalRotation: {x: 0.4611367, y: -0.5360532, z: -0.4611367, w: 0.5360532}
-  m_LocalPosition: {x: 0, y: 0.8762761, z: 0}
+  m_LocalPosition: {x: 0, y: 0.876276, z: 0}
   m_LocalScale: {x: 0.01, y: 0.009999999, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -26290,7 +26313,7 @@ Transform:
   m_GameObject: {fileID: 430121725}
   serializedVersion: 2
   m_LocalRotation: {x: 0.4620389, y: -0.5352757, z: -0.4620389, w: -0.5352757}
-  m_LocalPosition: {x: -40.415394, y: 6.1367855, z: 0.00023167692}
+  m_LocalPosition: {x: -40.415398, y: 6.136688, z: 0.000065622095}
   m_LocalScale: {x: 1, y: 0.9999997, z: 0.99999964}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -28119,7 +28142,7 @@ Transform:
   m_GameObject: {fileID: 469134883}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0016838459, y: 0.040749516, z: -0.041251983, w: 0.99831605}
-  m_LocalPosition: {x: -33.947147, y: -0.14492728, z: -0.14372636}
+  m_LocalPosition: {x: -33.947304, y: -0.1449113, z: -0.143631}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -28714,7 +28737,7 @@ Transform:
   m_GameObject: {fileID: 483414243}
   serializedVersion: 2
   m_LocalRotation: {x: 0.6443776, y: 0.024462784, z: -0.0047376063, w: 0.76430136}
-  m_LocalPosition: {x: -39.930943, y: 0.0004734993, z: 0.00020122528}
+  m_LocalPosition: {x: -39.93094, y: 0.00013971329, z: 0.000011920929}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -29101,8 +29124,10 @@ GameObject:
   - component: {fileID: 486151229}
   - component: {fileID: 486151234}
   - component: {fileID: 486151233}
-  - component: {fileID: 486151231}
   - component: {fileID: 486151230}
+  - component: {fileID: 486151236}
+  - component: {fileID: 486151235}
+  - component: {fileID: 486151237}
   m_Layer: 0
   m_Name: TEST_DUMMY
   m_TagString: Untagged
@@ -29159,31 +29184,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 494324493}
---- !u!114 &486151231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 486151227}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &486151233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29217,6 +29217,69 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &486151235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 486151227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &486151236
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 486151227}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &486151237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 486151227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a657d0a2bb1ca9e4e97adeb8fc8f8fbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AuditoryPerception:
+    m_MaxPerceptonDistance: 10
+    m_StimulantLocation: {x: 0, y: 0, z: 0}
+    transform: {fileID: 0}
 --- !u!1 &486321120
 GameObject:
   m_ObjectHideFlags: 0
@@ -32204,8 +32267,9 @@ GameObject:
   - component: {fileID: 540731002}
   - component: {fileID: 540731007}
   - component: {fileID: 540731006}
-  - component: {fileID: 540731004}
   - component: {fileID: 540731003}
+  - component: {fileID: 540731009}
+  - component: {fileID: 540731008}
   m_Layer: 0
   m_Name: CharacterAI (8)
   m_TagString: Untagged
@@ -32262,31 +32326,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 1779847008}
---- !u!114 &540731004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 540731000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &540731006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32320,6 +32359,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &540731008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540731000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &540731009
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 540731000}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &541525914
 GameObject:
   m_ObjectHideFlags: 0
@@ -38422,8 +38508,9 @@ GameObject:
   - component: {fileID: 681326618}
   - component: {fileID: 681326623}
   - component: {fileID: 681326622}
-  - component: {fileID: 681326620}
   - component: {fileID: 681326619}
+  - component: {fileID: 681326625}
+  - component: {fileID: 681326624}
   m_Layer: 0
   m_Name: CharacterAI (10)
   m_TagString: Untagged
@@ -38480,31 +38567,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 1242088346}
---- !u!114 &681326620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 681326616}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &681326622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38538,6 +38600,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &681326624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 681326616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &681326625
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 681326616}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &681698643
 GameObject:
   m_ObjectHideFlags: 0
@@ -40087,8 +40196,9 @@ GameObject:
   - component: {fileID: 702382854}
   - component: {fileID: 702382859}
   - component: {fileID: 702382858}
-  - component: {fileID: 702382856}
   - component: {fileID: 702382855}
+  - component: {fileID: 702382861}
+  - component: {fileID: 702382860}
   m_Layer: 0
   m_Name: CharacterAI (10)
   m_TagString: Untagged
@@ -40145,31 +40255,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 1469182880}
---- !u!114 &702382856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 702382852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &702382858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40203,6 +40288,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &702382860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702382852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &702382861
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702382852}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &702461532
 GameObject:
   m_ObjectHideFlags: 0
@@ -41628,8 +41760,9 @@ GameObject:
   - component: {fileID: 738842304}
   - component: {fileID: 738842309}
   - component: {fileID: 738842308}
-  - component: {fileID: 738842306}
   - component: {fileID: 738842305}
+  - component: {fileID: 738842311}
+  - component: {fileID: 738842310}
   m_Layer: 0
   m_Name: CharacterAI (9)
   m_TagString: Untagged
@@ -41686,31 +41819,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 277507482}
---- !u!114 &738842306
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 738842302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &738842308
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41744,6 +41852,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &738842310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738842302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &738842311
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738842302}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &740436818
 GameObject:
   m_ObjectHideFlags: 0
@@ -44320,7 +44475,7 @@ Transform:
   m_GameObject: {fileID: 814510248}
   serializedVersion: 2
   m_LocalRotation: {x: 0.9950197, y: -0.09967883, z: -0, w: 0}
-  m_LocalPosition: {x: -10.393247, y: 0.00015124682, z: 0.00021634623}
+  m_LocalPosition: {x: -10.39326, y: 0.000058114536, z: 0.00005029142}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -46903,8 +47058,9 @@ GameObject:
   - component: {fileID: 885672385}
   - component: {fileID: 885672390}
   - component: {fileID: 885672389}
-  - component: {fileID: 885672387}
   - component: {fileID: 885672386}
+  - component: {fileID: 885672392}
+  - component: {fileID: 885672391}
   m_Layer: 0
   m_Name: CharacterAI (6)
   m_TagString: Untagged
@@ -46961,31 +47117,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 449740053}
---- !u!114 &885672387
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 885672383}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &885672389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47019,6 +47150,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &885672391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 885672383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &885672392
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 885672383}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &886504415
 GameObject:
   m_ObjectHideFlags: 0
@@ -50018,8 +50196,8 @@ MonoBehaviour:
     AreaCentreTransform: {fileID: 0}
     areaRadius: 0
     TargetCharacters:
-    - {fileID: 1027922163}
-    - {fileID: 355395850}
+    - {fileID: 0}
+    - {fileID: 0}
   - objectiveType: 2
     interactiveMusicIntensity: 1
     descriptionForPlayer: Get in the <color=yellow>warehouse</color>
@@ -50042,12 +50220,12 @@ MonoBehaviour:
     AreaCentreTransform: {fileID: 0}
     areaRadius: 0
     TargetCharacters:
-    - {fileID: 1898442057}
-    - {fileID: 540731004}
-    - {fileID: 1467584098}
-    - {fileID: 702382856}
-    - {fileID: 885672387}
-    - {fileID: 738842306}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
   - objectiveType: 2
     interactiveMusicIntensity: 0
     descriptionForPlayer: Head out the <color=yellow>front door</color>.
@@ -50070,10 +50248,10 @@ MonoBehaviour:
     AreaCentreTransform: {fileID: 0}
     areaRadius: 0
     TargetCharacters:
-    - {fileID: 1139541524}
-    - {fileID: 681326620}
-    - {fileID: 1270579562}
-    - {fileID: 1387480612}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
   - objectiveType: 4
     interactiveMusicIntensity: 0
     descriptionForPlayer: Leave the area.
@@ -52467,8 +52645,9 @@ GameObject:
   - component: {fileID: 1027922161}
   - component: {fileID: 1027922166}
   - component: {fileID: 1027922165}
-  - component: {fileID: 1027922163}
   - component: {fileID: 1027922162}
+  - component: {fileID: 1027922168}
+  - component: {fileID: 1027922167}
   m_Layer: 0
   m_Name: CharacterAI (6)
   m_TagString: Untagged
@@ -52525,31 +52704,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 245538081}
---- !u!114 &1027922163
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1027922159}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &1027922165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52583,6 +52737,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1027922167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027922159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &1027922168
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027922159}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1032779717
 GameObject:
   m_ObjectHideFlags: 0
@@ -57855,7 +58056,7 @@ Transform:
   m_GameObject: {fileID: 1124311269}
   serializedVersion: 2
   m_LocalRotation: {x: 0.85767007, y: 0.507213, z: 0.039752707, w: -0.0745436}
-  m_LocalPosition: {x: 37.712326, y: 0.00013971329, z: 0.00003272295}
+  m_LocalPosition: {x: 37.71231, y: 0.00007247925, z: -0.00014722347}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -58518,8 +58719,9 @@ GameObject:
   - component: {fileID: 1139541522}
   - component: {fileID: 1139541527}
   - component: {fileID: 1139541526}
-  - component: {fileID: 1139541524}
   - component: {fileID: 1139541523}
+  - component: {fileID: 1139541529}
+  - component: {fileID: 1139541528}
   m_Layer: 0
   m_Name: CharacterAI (8)
   m_TagString: Untagged
@@ -58576,31 +58778,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 897147720}
---- !u!114 &1139541524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1139541520}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &1139541526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58634,6 +58811,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1139541528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139541520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &1139541529
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139541520}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1145259525
 GameObject:
   m_ObjectHideFlags: 0
@@ -61822,7 +62046,7 @@ Transform:
   m_GameObject: {fileID: 1199160740}
   serializedVersion: 2
   m_LocalRotation: {x: -9.685131e-17, y: -0.035830766, z: -1.0612489e-15, w: 0.9993579}
-  m_LocalPosition: {x: 27.114355, y: -0.000003955327, z: 0.03805209}
+  m_LocalPosition: {x: 27.114517, y: -0.0000034333207, z: 0.038160823}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -62021,7 +62245,7 @@ Transform:
   m_GameObject: {fileID: 1200677639}
   serializedVersion: 2
   m_LocalRotation: {x: 0.6443777, y: 0.024462765, z: -0.004737597, w: 0.76430136}
-  m_LocalPosition: {x: 39.93093, y: -0.00013923645, z: 0.000010967255}
+  m_LocalPosition: {x: 39.930923, y: -0.00013971329, z: 0.000009536743}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -66687,8 +66911,9 @@ GameObject:
   - component: {fileID: 1270579560}
   - component: {fileID: 1270579565}
   - component: {fileID: 1270579564}
-  - component: {fileID: 1270579562}
   - component: {fileID: 1270579561}
+  - component: {fileID: 1270579567}
+  - component: {fileID: 1270579566}
   m_Layer: 0
   m_Name: CharacterAI (9)
   m_TagString: Untagged
@@ -66745,31 +66970,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 606503920}
---- !u!114 &1270579562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1270579558}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &1270579564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66803,6 +67003,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1270579566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270579558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &1270579567
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270579558}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1271230658
 GameObject:
   m_ObjectHideFlags: 0
@@ -72334,8 +72581,9 @@ GameObject:
   - component: {fileID: 1387480610}
   - component: {fileID: 1387480615}
   - component: {fileID: 1387480614}
-  - component: {fileID: 1387480612}
   - component: {fileID: 1387480611}
+  - component: {fileID: 1387480617}
+  - component: {fileID: 1387480616}
   m_Layer: 0
   m_Name: CharacterAI (11)
   m_TagString: Untagged
@@ -72392,31 +72640,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 2070813098}
---- !u!114 &1387480612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1387480608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &1387480614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72450,6 +72673,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1387480616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387480608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &1387480617
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387480608}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1388433507
 GameObject:
   m_ObjectHideFlags: 0
@@ -76209,8 +76479,9 @@ GameObject:
   - component: {fileID: 1467584096}
   - component: {fileID: 1467584101}
   - component: {fileID: 1467584100}
-  - component: {fileID: 1467584098}
   - component: {fileID: 1467584097}
+  - component: {fileID: 1467584103}
+  - component: {fileID: 1467584102}
   m_Layer: 0
   m_Name: CharacterAI (7)
   m_TagString: Untagged
@@ -76267,31 +76538,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 1698468681}
---- !u!114 &1467584098
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1467584094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &1467584100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76325,6 +76571,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1467584102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467584094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &1467584103
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467584094}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1469182878
 GameObject:
   m_ObjectHideFlags: 0
@@ -77800,7 +78093,7 @@ Transform:
   m_GameObject: {fileID: 1499067486}
   serializedVersion: 2
   m_LocalRotation: {x: -0.70587176, y: 0.041775163, z: -0.06415934, w: 0.7041901}
-  m_LocalPosition: {x: 4.115782, y: -2.6920776, z: 9.896694}
+  m_LocalPosition: {x: 4.1157994, y: -2.6920803, z: 9.896694}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -85136,7 +85429,7 @@ Transform:
   m_GameObject: {fileID: 1646260369}
   serializedVersion: 2
   m_LocalRotation: {x: 0.99518615, y: -0.09800271, z: 0.00000002668323, w: 0.000000032624552}
-  m_LocalPosition: {x: -18.15115, y: 0.00030374527, z: 0.00040577725}
+  m_LocalPosition: {x: -18.151155, y: 0.00011396408, z: 0.000073667616}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -95090,7 +95383,7 @@ Transform:
   m_GameObject: {fileID: 1824886783}
   serializedVersion: 2
   m_LocalRotation: {x: 0.041775122, y: 0.70587176, z: -0.7041901, w: -0.064159326}
-  m_LocalPosition: {x: 4.115782, y: -2.6919777, z: -9.89646}
+  m_LocalPosition: {x: 4.1157503, y: -2.692068, z: -9.896626}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -99757,8 +100050,9 @@ GameObject:
   - component: {fileID: 1898442055}
   - component: {fileID: 1898442060}
   - component: {fileID: 1898442059}
-  - component: {fileID: 1898442057}
   - component: {fileID: 1898442056}
+  - component: {fileID: 1898442062}
+  - component: {fileID: 1898442061}
   m_Layer: 0
   m_Name: CharacterAI (5)
   m_TagString: Untagged
@@ -99815,31 +100109,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CharacterSpeechData: {fileID: 11400000, guid: 499eb4483e981794284d931a18ff5807, type: 2}
   m_SpeechOrigin: {fileID: 1341322149}
---- !u!114 &1898442057
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1898442053}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01b39e10a67ad5a44a8805f5d9804634, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MinY: -1000
-  b_IsOnFire: 0
-  b_IsDamaged: 0
-  b_IsExploding: 0
-  b_HasExploded: 0
-  Owner: {fileID: 0}
-  b_IsInvolvedInMission: 0
-  b_DespawnsAfterDeath: 1
-  f_DespawnTime: 100
-  b_CanBeDamaged: 1
-  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
-  m_WalkSpeed: 7
-  m_RunSpeed: 2
 --- !u!114 &1898442059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99873,6 +100142,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1898442061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1898442053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d15d75da0773f764b9a3cad07a92f1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MinY: -1000
+  b_IsOnFire: 0
+  b_IsDamaged: 0
+  b_IsExploding: 0
+  b_HasExploded: 0
+  Owner: {fileID: 0}
+  b_IsInvolvedInMission: 0
+  b_DespawnsAfterDeath: 1
+  f_DespawnTime: 60
+  b_CanBeDamaged: 0
+  m_animData: {fileID: 11400000, guid: c31dc1a13a2a66e478d3db6e997a3a7f, type: 2}
+  m_WalkSpeed: 0
+  m_RunSpeed: 0
+--- !u!195 &1898442062
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1898442053}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1898799442
 GameObject:
   m_ObjectHideFlags: 0

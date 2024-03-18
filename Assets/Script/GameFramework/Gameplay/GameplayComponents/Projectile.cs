@@ -99,7 +99,7 @@ public class Projectile : Entity
             if (this is Bullet)
             {
                 if (SoundManager.Instance != null)
-                    SoundManager.Instance.PlayInGameSound("BulletFX_Ricochet", firstContact.point, true, 5);
+                    SoundManager.Instance.PlayInGameSound("BulletFX_Ricochet", firstContact.point, true, 2);
             }
         }
 

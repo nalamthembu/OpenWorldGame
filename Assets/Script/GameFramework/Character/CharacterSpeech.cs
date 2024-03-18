@@ -38,7 +38,8 @@ public class CharacterSpeech : MonoBehaviour
     }
 
     #region Event Subscription
-    private void OnEnable()
+    private void OnEnable() => SubscribeToEvents();
+    private void SubscribeToEvents()
     {
         //Subscribe to events
         if (m_AttachedCharacter.TryGetComponent<HealthComponent>(out var health))
@@ -49,8 +50,7 @@ public class CharacterSpeech : MonoBehaviour
             health.OnEntityTakeDamage += OnCharacterTookDamage;
         }
     }
-
-    private void OnDisable()
+    private void UnSubscribeFromEvents()
     {
         //Unsubscribe to events
         if (m_AttachedCharacter.TryGetComponent<HealthComponent>(out var health))
@@ -61,7 +61,9 @@ public class CharacterSpeech : MonoBehaviour
             health.OnEntityTakeDamage -= OnCharacterTookDamage;
         }
     }
+    private void OnDisable() => UnSubscribeFromEvents();
     #endregion
+
     private void Start()
     {
         if (m_CharacterSpeechData == null)
