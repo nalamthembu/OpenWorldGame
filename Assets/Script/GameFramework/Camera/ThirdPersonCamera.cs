@@ -48,12 +48,14 @@ public class ThirdPersonCamera : BaseCamera
     { 
         m_CurrentCameraSettings = m_CameraSettingsData.ProneSettings;
         m_UsingProneCamSettings = true;
+        m_UsingCrouchCamSettings = false;
     }
 
     private void OnPlayerCrouch()
     {
         m_CurrentCameraSettings = m_CameraSettingsData.CrouchSettings;
         m_UsingCrouchCamSettings = true;
+        m_UsingProneCamSettings = false;
     }
 
     protected override void Start()
@@ -98,7 +100,10 @@ public class ThirdPersonCamera : BaseCamera
     private void OnPlayerOnFoot()
     {
         m_CurrentCameraSettings = m_CameraSettingsData.cameraSettings[m_CameraSettingsIndex];
+
+        //Reset crouch and prone
         m_UsingProneCamSettings = false;
+        m_UsingCrouchCamSettings = false;
     }
 
     protected override void OnDisable()

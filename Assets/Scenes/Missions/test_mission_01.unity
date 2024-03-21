@@ -29127,7 +29127,6 @@ GameObject:
   - component: {fileID: 486151230}
   - component: {fileID: 486151236}
   - component: {fileID: 486151235}
-  - component: {fileID: 486151237}
   m_Layer: 0
   m_Name: TEST_DUMMY
   m_TagString: Untagged
@@ -29144,7 +29143,7 @@ Transform:
   m_GameObject: {fileID: 486151227}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.504, z: -0, w: 0.86370367}
-  m_LocalPosition: {x: -13.29, y: 3.35, z: 29.44}
+  m_LocalPosition: {x: -15.891, y: 4.239, z: 1.805}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -29264,22 +29263,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &486151237
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 486151227}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a657d0a2bb1ca9e4e97adeb8fc8f8fbf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AuditoryPerception:
-    m_MaxPerceptonDistance: 10
-    m_StimulantLocation: {x: 0, y: 0, z: 0}
-    transform: {fileID: 0}
 --- !u!1 &486321120
 GameObject:
   m_ObjectHideFlags: 0
@@ -50122,7 +50105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &960709575
 Transform:
   m_ObjectHideFlags: 0
@@ -50196,8 +50179,8 @@ MonoBehaviour:
     AreaCentreTransform: {fileID: 0}
     areaRadius: 0
     TargetCharacters:
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: 1027922167}
+    - {fileID: 355395854}
   - objectiveType: 2
     interactiveMusicIntensity: 1
     descriptionForPlayer: Get in the <color=yellow>warehouse</color>
@@ -50220,12 +50203,12 @@ MonoBehaviour:
     AreaCentreTransform: {fileID: 0}
     areaRadius: 0
     TargetCharacters:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: 1898442061}
+    - {fileID: 540731008}
+    - {fileID: 1467584102}
+    - {fileID: 702382860}
+    - {fileID: 885672391}
+    - {fileID: 738842310}
   - objectiveType: 2
     interactiveMusicIntensity: 0
     descriptionForPlayer: Head out the <color=yellow>front door</color>.
@@ -50248,10 +50231,10 @@ MonoBehaviour:
     AreaCentreTransform: {fileID: 0}
     areaRadius: 0
     TargetCharacters:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: 1139541528}
+    - {fileID: 681326624}
+    - {fileID: 1270579566}
+    - {fileID: 1387480616}
   - objectiveType: 4
     interactiveMusicIntensity: 0
     descriptionForPlayer: Leave the area.
@@ -57866,7 +57849,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1116388567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86135,7 +86118,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3715877214281553040, guid: 016d07278330c1f45b353a3bbd11564a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -11.87
+      value: 11.08
       objectReference: {fileID: 0}
     - target: {fileID: 3715877214281553040, guid: 016d07278330c1f45b353a3bbd11564a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -86143,7 +86126,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3715877214281553040, guid: 016d07278330c1f45b353a3bbd11564a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 32.66
+      value: 56.73
       objectReference: {fileID: 0}
     - target: {fileID: 3715877214281553040, guid: 016d07278330c1f45b353a3bbd11564a, type: 3}
       propertyPath: m_LocalRotation.w

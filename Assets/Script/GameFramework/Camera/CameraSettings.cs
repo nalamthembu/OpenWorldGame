@@ -11,7 +11,7 @@ public class CameraSettings
 
     public float distanceFromTarget = 3;
 
-    public float fieldOfView;
+    [Min(0)] public float fieldOfView;
 
     public Vector2 xyOffset;
 
@@ -21,5 +21,5 @@ public class CameraSettings
 
     public Vector2 xyAimOffset;
 
-    public float fieldOfViewAiming;
+    [Min(0)] public float fieldOfViewAiming;
 }

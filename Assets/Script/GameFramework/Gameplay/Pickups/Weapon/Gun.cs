@@ -27,6 +27,15 @@ public class Gun : Weapon
     public Transform LeftHandIK { get { return m_LeftHandIK; } }
     public bool IsReloading { get { return m_IsReloading; } }
 
+    //This gun can be reloaded if the current clip is less than the max & we have additional ammo to fill that clip.
+    public bool CanReload { get { return m_CurrClip < m_GunData.MaxClip && m_RemainingAmmo > 0; } }
+
+    //Is there anything left in the clip?
+    public bool ShouldReload { get { return m_CurrClip <= 0; } }
+
+    //There is a bullet in the clip
+    public bool HasBulletsInClip { get { return m_CurrClip > 0; } }
+
     //Waiting for the character to let go of the trigger (semi-autos only)
     private bool m_WaitingForTriggerReset;
 
@@ -85,7 +94,7 @@ public class Gun : Weapon
         if (m_IsReloading)
             return;
 
-        if (m_RemainingAmmo <= 0)
+        if (!CanReload)
         { //theres nothing left.
             OnGunIsEmpty?.Invoke(this);
             return;
@@ -101,9 +110,9 @@ public class Gun : Weapon
 
         float timer = 0;
 
-        m_IsReloading = true;
-
         OnReload?.Invoke(this);
+
+        m_IsReloading = true;
 
         while (timer < reloadDelay)
         {
@@ -112,15 +121,15 @@ public class Gun : Weapon
             yield return new WaitForEndOfFrame();
         }
 
-        if (m_RemainingAmmo > 0)
+        m_IsReloading = false;
+
+        if (ShouldReload && CanReload)
         {
             if (m_RemainingAmmo >= m_GunData.MaxClip)
             {
                 m_CurrClip = m_GunData.MaxClip;
 
                 m_RemainingAmmo -= m_CurrClip;
-
-                m_IsReloading = false;
 
                 OnDoneReloading?.Invoke(this);
 
@@ -132,8 +141,6 @@ public class Gun : Weapon
                 m_CurrClip = m_RemainingAmmo;
 
                 m_RemainingAmmo -= m_CurrClip;
-
-                m_IsReloading = false;
 
                 OnDoneReloading?.Invoke(this);
 
@@ -156,7 +163,7 @@ public class Gun : Weapon
         //CHECK IF EQUIPPED AND OWNER IS AIMING
         if (Owner != null && Owner is BaseCharacter ownerCharacter && IsEquipped && ownerCharacter.IsAiming)
         {
-            if (m_CurrClip <= 0 && m_RemainingAmmo > 0)
+            if (ShouldReload && CanReload)
                 Reload();
 
             //IF THIS WEAPON IS SEMI-AUTO & IF THE OWNER IS FIRING, FIRE.
@@ -208,7 +215,7 @@ public class Gun : Weapon
         if (m_IsReloading)
             return;
 
-        if (m_CurrClip > 0)
+        if (HasBulletsInClip)
         {
             //FIRE A PROJECTILE
             if (m_GunData.BulletPrefab)
@@ -291,7 +298,7 @@ public class Gun : Weapon
     protected virtual void PlayShotSound()
     {
         //Detect Occulusion
-        Vector3 startPosition = m_BulletSpawn.position + m_BulletSpawn.forward * 1.25F;
+        Vector3 startPosition = m_BulletSpawn.position + m_BulletSpawn.forward;
         Vector3 endPosition = m_BulletSpawn.position + Vector3.up * 100;
         bool IsThereASurfaceAboveTheGun = Physics.Linecast(startPosition, endPosition, out _, -1, QueryTriggerInteraction.Ignore);
 
@@ -299,6 +306,11 @@ public class Gun : Weapon
         m_ShotFireSource.clip = m_GunData.GunSound.GetShotClip();
         m_ShotTailSource.clip = IsThereASurfaceAboveTheGun ? m_GunData.GunSound.GetShotIndoorTail() : m_GunData.GunSound.GetShotTail();
         m_SweetenerSource.clip = m_GunData.GunSound.GetSweetener();
+
+        //Randomise Pitch
+        m_ShotFireSource.pitch = Random.Range(0.95F, 1.15F);
+        m_ShotTailSource.pitch = Random.Range(0.95F, 1.15F);
+        m_SweetenerSource.pitch = Random.Range(0.95F, 1.15F);
 
         //Play Sweetener 
         //Play Gunshot Sound
@@ -328,7 +340,7 @@ public class Gun : Weapon
         base.OnCollisionEnter(collision);
 
         //If the gun hits the ground hard, there should be a slight chance it misfires.
-        if (collision.relativeVelocity.magnitude > 10)
+        if (collision.impulse.magnitude >= 10)
         {
             bool willMisFire = Random.Range(0, 1) <= 0.50; /*%*/
 
@@ -345,8 +357,10 @@ public class Gun : Weapon
 
         //Reload weapon onPickup
 
-        if (m_CurrClip <= 0)
+        if (ShouldReload && CanReload)
             Reload();
+        else
+            Debug.Log("The player picked up an empty gun.");
     }
 }
 

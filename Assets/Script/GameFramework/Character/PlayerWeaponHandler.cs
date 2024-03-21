@@ -29,10 +29,35 @@ public class PlayerWeaponHandler : BaseCharacterWeaponHandler
         base.Awake();
     }
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+
+        PlayerController.OnReload += ManualReload;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnEnable();
+        PlayerController.OnReload -= ManualReload;
+    }
+
+    protected override void ManualReload()
+    {
+        base.ManualReload();
+
+        if (GetEquippedWeapon() == null)
+            return;
+
+        if (!GetEquippedWeapon().IsReloading && GetEquippedWeapon().CanReload)
+            GetEquippedWeapon().Reload();
+    }
+
     protected override void Update()
     {
         base.Update();
 
+        //TODO : Make this work with AI as well.
         //Holster the weapon if we go prone
         if (PlayerStateMachine.Instance && PlayerStateMachine.Instance.currentState is ProneState)
         {

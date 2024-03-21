@@ -15,6 +15,14 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
     float m_IKWeightVelRef;
     const float IKWEIGHTSMOOTHTIME = 0.25F;
 
+    protected virtual void Awake() => m_ThisCharacter = GetComponent<BaseCharacter>();
+
+    protected virtual void OnEnable() => Gun.OnReload += OnGunBeginReload;
+
+    protected virtual void OnDisable() => Gun.OnReload -= OnGunBeginReload;
+
+    protected virtual void ManualReload() { /* used by child classes */ }
+
     public Gun GetEquippedWeapon()
     {
         if (m_PrimaryWeapon && m_PrimaryWeapon.IsEquipped)
@@ -26,22 +34,7 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
             return null;
     }
 
-    protected virtual void Awake() 
-    {
-        m_ThisCharacter = GetComponent<BaseCharacter>();
-    }
-
-    protected virtual void OnEnable()
-    {
-        Gun.OnReload += OnGunBeginReload;
-    }
-
-    protected virtual void OnDisable()
-    {
-        Gun.OnReload -= OnGunBeginReload;
-    }
-
-    private void OnGunBeginReload(Gun targetGun)
+    protected virtual void OnGunBeginReload(Gun targetGun)
     {
         bool TargetGunIsEquippedWeapon = targetGun == GetEquippedWeapon();
 
@@ -53,7 +46,7 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
 
     protected virtual void Update() { /* used by child classes */ }
 
-    private void OnAnimatorIK(int layerIndex)
+    protected virtual void OnAnimatorIK(int layerIndex)
     {
         if (!GetEquippedWeapon())
             return;

@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
     public static event Action OnInventoryClose;
     public static event Action OnStartAim;
     public static event Action OnStopAim;
+    public static event Action OnReload;
 
     private void Awake()
     {
@@ -72,6 +73,12 @@ public class PlayerController : MonoBehaviour
 
     private void WeaponControlCallBacks()
     {
+        //Reload (Circle / R)
+        m_PlayerInput.CharacterControls.Reload.performed += ctx =>
+        {
+            OnReload?.Invoke();
+        };
+
         //AIMING
         m_PlayerInput.CharacterControls.Aim.performed += ctx =>
         {
