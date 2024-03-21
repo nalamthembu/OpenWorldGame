@@ -2,21 +2,15 @@ using UnityEngine;
 
 public class BehaviourTreeExecutor :MonoBehaviour
 {
-    BehaviourTree tree;
+    [SerializeField] BehaviourTree tree;
 
-    private void Start()
+    private void Start() => InitialiseBehaviourTree();
+
+    private void InitialiseBehaviourTree ()
     {
-        tree = ScriptableObject.CreateInstance<BehaviourTree>();
+        //SETUP
 
-        var log = ScriptableObject.CreateInstance<DebugLogNode>();
-
-        log.message = "Hello";
-
-        var loop = ScriptableObject.CreateInstance<RepeatNode>();
-
-        loop.child = log;
-
-        tree.rootNode = loop;
+        tree = tree.Clone();
     }
 
     private void Update()

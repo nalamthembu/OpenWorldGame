@@ -3,7 +3,7 @@ using UnityEngine;
 public class WaitNode : ActionNode
 {
     public float duration = 1.0F;
-    public float startTime;
+    [HideInInspector] public float startTime;
 
     protected override void OnStart() => startTime = Time.time;
 

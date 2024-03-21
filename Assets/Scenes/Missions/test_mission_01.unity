@@ -29127,6 +29127,7 @@ GameObject:
   - component: {fileID: 486151230}
   - component: {fileID: 486151236}
   - component: {fileID: 486151235}
+  - component: {fileID: 486151237}
   m_Layer: 0
   m_Name: TEST_DUMMY
   m_TagString: Untagged
@@ -29263,6 +29264,19 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &486151237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 486151227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cbf76be579a98d43a9719d43bb74e90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tree: {fileID: 11400000, guid: b20e5931ac2c7fa44b2b8f8ac1e50720, type: 2}
 --- !u!1 &486321120
 GameObject:
   m_ObjectHideFlags: 0
@@ -50105,7 +50119,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &960709575
 Transform:
   m_ObjectHideFlags: 0
@@ -57849,7 +57863,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1116388567
 MonoBehaviour:
   m_ObjectHideFlags: 0

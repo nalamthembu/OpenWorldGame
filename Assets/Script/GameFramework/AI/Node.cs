@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public abstract class Node : ScriptableObject
@@ -9,8 +10,11 @@ public abstract class Node : ScriptableObject
         Success
     }
 
-    public State state = State.Running;
-    public bool started = false;
+    //These are to be hidden from the designer.
+    [HideInInspector] public State state = State.Running;
+    [HideInInspector] public bool started = false;
+    [HideInInspector] public string guid; //Asset Identification.
+    [HideInInspector] public Vector2 position;
 
     public State Update()
     {
@@ -30,6 +34,8 @@ public abstract class Node : ScriptableObject
 
         return state;
     }
+
+    public virtual Node Clone() => Instantiate(this);
 
     protected abstract void OnStart();
     protected abstract void OnStop();
