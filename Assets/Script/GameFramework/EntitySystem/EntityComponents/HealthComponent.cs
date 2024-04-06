@@ -66,8 +66,34 @@ public class HealthComponent : MonoBehaviour, IEntityComponent
             return;
 
         var RagdollTransform = m_FallBehaviour.puppetMaster.targetRoot;
-        Physics.Raycast(RagdollTransform.position + transform.up * 1.25F, Vector3.down, out var hit, 100, m_FallBehaviour.raycastLayers, QueryTriggerInteraction.Ignore);
-        m_InitialHeight = hit.distance;
+
+        float avgHeight = 0;
+
+        Vector3 centre = RagdollTransform.position + transform.up * 1.25F;
+
+        Vector3[] origins = new Vector3[]
+        {
+            centre,
+            centre + transform.forward,
+            centre + -transform.forward,
+            centre + -transform.right,
+            centre + transform.right
+        };
+
+        for (int i = 0; i < origins.Length; i++)
+        {
+            if (Physics.Raycast(origins[i], Vector3.down, out var hit, 100, m_FallBehaviour.raycastLayers, QueryTriggerInteraction.Ignore))
+            {
+                avgHeight += hit.distance;
+
+                Debug.DrawLine(origins[i], hit.point, Color.green);
+            }
+        }
+
+        avgHeight /= origins.Length;
+
+        m_InitialHeight = avgHeight;
+        
         CharacterIsFalling = true;
         OnBeginFall?.Invoke(m_InitialHeight);
     }
@@ -79,8 +105,10 @@ public class HealthComponent : MonoBehaviour, IEntityComponent
 
         print($"impulse : {collision.collision.impulse.magnitude}");
 
-        if (m_InitialHeight > 2 && SoundManager.Instance != null)
+        if (m_InitialHeight > 1.25F && SoundManager.Instance != null)
             SoundManager.Instance.PlayInGameSound("CharFX_HighImpactThud", collision.collision.contacts[0].point, true, 3);
+
+        print(m_InitialHeight);
         
         float damage = collision.collision.impulse.magnitude * m_FallDamageMultiplier;
         damage = Mathf.Clamp(damage, 0, m_MaxFallDamage);

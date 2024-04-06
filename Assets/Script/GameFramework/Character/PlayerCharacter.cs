@@ -51,16 +51,6 @@ public class PlayerCharacter : BaseCharacter
         }
     }
 
-    public bool IsGrounded()
-    {
-        Vector3 start = transform.position + Vector3.up * 0.1F;
-        Vector3 end = transform.position + -transform.up * 0.2F;
-
-        Debug.DrawLine(start, end, Color.green);
-
-        return Physics.Linecast(start, end);
-    }
-
     public void Jump()
     {
         if (IsGrounded())

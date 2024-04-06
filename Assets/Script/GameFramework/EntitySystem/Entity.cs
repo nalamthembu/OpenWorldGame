@@ -18,7 +18,7 @@ public class Entity : MonoBehaviour
     [HideInInspector] public bool b_IsDamaged; //Could be used for showing visible damage on an object (example : a damaged television screen)
     [HideInInspector] public bool b_IsExploding; //In the process of exploding.
     [HideInInspector] public bool b_HasExploded; //Has finished exploding.
-    [HideInInspector] public Entity Owner = null; //This would be used for vehicles, guns and/or pickups.
+    [HideInInspector] public Entity Owner { get; protected set; } //This would be used for vehicles, guns and/or pickups.
     [HideInInspector] public bool b_IsInvolvedInMission; //If this is true, it will not be deleted under any circumstance during a mission.
     [HideInInspector] public bool b_DespawnsAfterDeath = true; //True by default.
     [HideInInspector] public float f_DespawnTime = 60; //seconds
@@ -27,7 +27,7 @@ public class Entity : MonoBehaviour
     public static event Action<Entity> OnOutOfWorld;
     public static event Action<Entity> OnAddToWorld;
                                                                      
-    private void OnEntityDeath() => StartCoroutine(DespawnAfterDelay(f_DespawnTime));
+    protected void OnEntityDeath() => StartCoroutine(DespawnAfterDelay(f_DespawnTime));
 
     protected virtual IEnumerator DespawnAfterDelay(float delay)
     {

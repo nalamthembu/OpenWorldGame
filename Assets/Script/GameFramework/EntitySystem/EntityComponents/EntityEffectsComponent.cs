@@ -14,19 +14,25 @@ public class EntityEffectsComponent : MonoBehaviour
     #region Event Subscription
     private void OnEnable()
     {
-        //Subscribe to events
-        if (m_AttachedEntity.TryGetComponent<HealthComponent>(out var health))
+        if (m_AttachedEntity != null)
         {
-            health.OnEndFall += OnEndOfFall;
+            //Subscribe to events
+            if (m_AttachedEntity.TryGetComponent<HealthComponent>(out var health))
+            {
+                health.OnEndFall += OnEndOfFall;
+            }
         }
     }
 
     private void OnDisable()
     {
-        //Unsubscribe to events
-        if (m_AttachedEntity.TryGetComponent<HealthComponent>(out var health))
+        if (m_AttachedEntity)
         {
-            health.OnEndFall -= OnEndOfFall;
+            //Unsubscribe to events
+            if (m_AttachedEntity.TryGetComponent<HealthComponent>(out var health))
+            {
+                health.OnEndFall -= OnEndOfFall;
+            }
         }
     }
     #endregion
@@ -45,12 +51,12 @@ public class EntityEffectsComponent : MonoBehaviour
     {
         ContactPoint firstContact = collision.contacts[0];
 
-        if (firstContact.impulse.sqrMagnitude < 5 * 5)
+        if (firstContact.impulse.sqrMagnitude <= 1.25 * 1.25)
             return;
 
         Collider otherCollider = firstContact.otherCollider;
 
-        string audio_id = string.Empty;
+        string audio_id;
 
         switch (m_AttachedEntity)
         {
@@ -82,6 +88,18 @@ public class EntityEffectsComponent : MonoBehaviour
                 }
 
                 return;
+
+            default: //Probably NULL
+
+                var fx = m_EntityFX as EntityEffectDataObject;
+
+                if (fx != null)
+                {
+                    audio_id = fx.CollisionFX.collisionSoundID;
+                    PlaySound(audio_id, 1.25F);
+                }
+
+                break;
         }
     }
 

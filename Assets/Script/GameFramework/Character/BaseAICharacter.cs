@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(HealthComponent))]
 public class BaseAICharacter : BaseCharacter
@@ -9,8 +8,10 @@ public class BaseAICharacter : BaseCharacter
         base.Awake();
     }
 
-    protected virtual void MoveTo(Vector3 position)
+    protected override void Update()
     {
+        base.Update();
 
+        HandleNavMeshAgent();
     }
 }

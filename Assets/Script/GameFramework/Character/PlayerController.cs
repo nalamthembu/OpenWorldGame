@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour
     public static event Action OnStartAim;
     public static event Action OnStopAim;
     public static event Action OnReload;
+    public static event Action OnQuickSwap;
 
     private void Awake()
     {
@@ -73,6 +74,12 @@ public class PlayerController : MonoBehaviour
 
     private void WeaponControlCallBacks()
     {
+        //Quick Swap (LB, L1, 2)
+        m_PlayerInput.CharacterControls.QuickWeaponSwap.performed += ctx =>
+        {
+            OnQuickSwap?.Invoke();
+        };
+
         //Reload (Circle / R)
         m_PlayerInput.CharacterControls.Reload.performed += ctx =>
         {

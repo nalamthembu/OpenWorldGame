@@ -151,8 +151,6 @@ public class CharacterSpeech : MonoBehaviour
 
                 m_SpeechOrigin.Play(); //OUCH!
 
-                Debug.Log(painLevel);
-
                 m_IsFalling = false;
             }
         }

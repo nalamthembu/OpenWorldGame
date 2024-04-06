@@ -32,25 +32,16 @@ public class PlayerWeaponHandler : BaseCharacterWeaponHandler
     protected override void OnEnable()
     {
         base.OnEnable();
-
         PlayerController.OnReload += ManualReload;
+        PlayerController.OnQuickSwap += QuickSwapWeapon;
     }
+
 
     protected override void OnDisable()
     {
         base.OnEnable();
         PlayerController.OnReload -= ManualReload;
-    }
-
-    protected override void ManualReload()
-    {
-        base.ManualReload();
-
-        if (GetEquippedWeapon() == null)
-            return;
-
-        if (!GetEquippedWeapon().IsReloading && GetEquippedWeapon().CanReload)
-            GetEquippedWeapon().Reload();
+        PlayerController.OnQuickSwap -= QuickSwapWeapon;
     }
 
     protected override void Update()

@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using RootMotion.Dynamics; //PuppetMaster Active Ragdoll Physics (Dependency)
 using Random = UnityEngine.Random;
+using UnityEngine.InputSystem.HID;
+using WorldCreatorEngine.Utilities;
 
 public enum CharacterState
 {
@@ -15,7 +17,6 @@ public enum CharacterState
 [RequireComponent(typeof(CharacterSpeech))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(BaseCharacterWeaponHandler))]
-[RequireComponent(typeof(NavMeshAgent))]
 public class BaseCharacter : Entity
 {
     #region Properties
@@ -25,8 +26,7 @@ public class BaseCharacter : Entity
         Right
     };
 
-    protected NavMeshAgent m_Agent;
-    protected NavMeshPath m_NavMeshPath;
+    protected NavMeshAgent m_NavMeshAgent;
 
     protected Animator m_Animator;
 
@@ -35,6 +35,12 @@ public class BaseCharacter : Entity
     [SerializeField][Range(1, 7)] protected float m_WalkSpeed, m_RunSpeed;
 
     private PuppetMaster m_PuppetMasterComponent;
+
+    [SerializeField] private BehaviourFall m_FallBehaviour;
+
+    protected HealthComponent m_HealthComponent;
+
+    [SerializeField] protected LayerMask m_GroundLayers = -1;
 
     public PuppetMaster PuppetMaster { get { return m_PuppetMasterComponent; } }
 
@@ -49,12 +55,17 @@ public class BaseCharacter : Entity
 
     public bool IsAiming { get; set; }
     public bool IsFiring { get; set; }
+    public bool CharacterIsGrounded { get; private set; }
+
+    public HealthComponent GetHealthComponent() => m_HealthComponent;
 
     #endregion
 
     protected override void Awake()
     {
         base.Awake();
+
+        m_HealthComponent = GetComponent<HealthComponent>();
 
         m_PuppetMasterComponent = GetComponentInChildren<PuppetMaster>();
 
@@ -70,6 +81,24 @@ public class BaseCharacter : Entity
         b_CanBeDamaged = true;
     }
 
+    protected void HandleNavMeshAgent()
+    {
+        if (m_NavMeshAgent)
+        {
+            if (GetHealthComponent().CharacterIsFalling || GetHealthComponent().IsDead)
+            {
+                m_NavMeshAgent.isStopped = true;
+
+                if (GetHealthComponent().IsDead)
+                {
+                    m_NavMeshAgent.enabled = false;
+                }
+
+                Debug.Log("Stopping Nav Mesh Agent, the ragdoll is active.");
+            }
+        }
+    }
+
     public override void OnShot(Projectile projectile, Entity OwnerOfProjectile)
     {
         base.OnShot(projectile, OwnerOfProjectile);
@@ -82,6 +111,21 @@ public class BaseCharacter : Entity
     {
         base.Start();
         OnSpawned?.Invoke(this);
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        //Don't do anything if you're dead.
+        if (GetHealthComponent().IsDead)
+            return;
+
+        if (!IsGrounded() && GetHealthComponent() != null && m_FallBehaviour != null)
+        {
+            //FALL
+            m_FallBehaviour.Activate();
+        }
     }
 
     public override void Teleport(Vector3 position)
@@ -122,5 +166,23 @@ public class BaseCharacter : Entity
             return FootUp.Left;
         else
             return FootUp.Right;
+    }
+
+    public bool IsGrounded()
+    {
+        Transform RagdollTransform = null;
+
+        if (m_FallBehaviour)
+            RagdollTransform = m_FallBehaviour.puppetMaster.targetRoot;
+
+        Vector3 origin = m_FallBehaviour ? RagdollTransform.position + transform.up * 0.2F : transform.position + transform.up * 0.2F;
+
+        bool isGrounded = Physics.Linecast(origin, origin + Vector3.down * 0.25f, out var hit, m_GroundLayers, QueryTriggerInteraction.Ignore);
+
+        Debug.DrawLine(origin, hit.point, Color.green);
+
+        CharacterIsGrounded = isGrounded;
+
+        return isGrounded;
     }
 }

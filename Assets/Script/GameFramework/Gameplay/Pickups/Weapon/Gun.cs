@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using Random = UnityEngine.Random;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -15,10 +16,18 @@ public class Gun : Weapon
     [SerializeField] ParticleSystem m_MuzzleFlash;
     [SerializeField] ParticleSystem m_BulletShellFX;
     [SerializeField] float m_Spread = 0;
+    [SerializeField] GameObject m_MagInstance;
+    [SerializeField] LayerMask m_MagExclusionLayers;
+
+    Animator m_Animator;
+
+    Vector3 m_MagInstanceOriginalLocalPos;
+    Quaternion m_MagInstanceOriginalLocalRotation;
 
     AudioSource m_ShotFireSource;
     AudioSource m_ShotTailSource;
     AudioSource m_SweetenerSource;
+    AudioSource m_GunMechanicSource;
 
     protected int m_CurrClip, m_RemainingAmmo;
     private GunData m_GunData;
@@ -49,8 +58,16 @@ public class Gun : Weapon
     {
         base.Awake();
 
+        m_Animator = GetComponent<Animator>();
+
         if (m_WeaponData != null)
             m_GunData = (GunData)m_WeaponData;
+
+        if (m_MagInstance)
+        {
+            m_MagInstanceOriginalLocalPos = m_MagInstance.transform.localPosition;
+            m_MagInstanceOriginalLocalRotation = m_MagInstance.transform.localRotation;
+        }
 
         InitialiseAudioSources();
     }
@@ -87,6 +104,13 @@ public class Gun : Weapon
         m_SweetenerSource.outputAudioMixerGroup = m_GunData.mixerGroup;
         m_SweetenerSource.playOnAwake = false;
         m_SweetenerSource.volume = 1;
+
+        //Shot Mechanics
+        m_GunMechanicSource = gameObject.AddComponent<AudioSource>();
+        m_GunMechanicSource.outputAudioMixerGroup = m_GunData.mixerGroup;
+        m_GunMechanicSource.playOnAwake = false;
+        m_GunMechanicSource.spatialBlend = 1;
+        m_GunMechanicSource.volume = 1;
     }
 
     public void Reload()
@@ -98,6 +122,11 @@ public class Gun : Weapon
         { //theres nothing left.
             OnGunIsEmpty?.Invoke(this);
             return;
+        }
+
+        if (m_Animator && Owner != null)
+        {
+            m_Animator.SetTrigger("Reload");
         }
 
         StartCoroutine(ReloadSequence(m_GunData.ReloadTime));
@@ -217,6 +246,10 @@ public class Gun : Weapon
 
         if (HasBulletsInClip)
         {
+            //Animate
+            if (m_Animator)
+                m_Animator.SetTrigger("Shot");
+
             //FIRE A PROJECTILE
             if (m_GunData.BulletPrefab)
             {
@@ -306,19 +339,99 @@ public class Gun : Weapon
         m_ShotFireSource.clip = m_GunData.GunSound.GetShotClip();
         m_ShotTailSource.clip = IsThereASurfaceAboveTheGun ? m_GunData.GunSound.GetShotIndoorTail() : m_GunData.GunSound.GetShotTail();
         m_SweetenerSource.clip = m_GunData.GunSound.GetSweetener();
+        m_GunMechanicSource.clip = m_GunData.GunSound.GetShotMechanics();
 
         //Randomise Pitch
         m_ShotFireSource.pitch = Random.Range(0.95F, 1.15F);
         m_ShotTailSource.pitch = Random.Range(0.95F, 1.15F);
         m_SweetenerSource.pitch = Random.Range(0.95F, 1.15F);
+        m_GunMechanicSource.pitch = Random.Range(0.95F, 1.15F);
 
         //Play Sweetener 
         //Play Gunshot Sound
         //Play Gunshot Tail Sound
+        //Play Shot Mechanic Sound
         m_ShotFireSource.Play();
         m_ShotTailSource.Play();
         m_SweetenerSource.Play();
+        m_GunMechanicSource.Play();
     }
+
+    #region RELOAD_ANIMATION
+
+    public void DropMagClone()
+    {
+        if (m_MagInstance == null)
+            return;
+
+        GameObject clonedMag = Instantiate(m_MagInstance, m_MagInstance.transform.position, m_MagInstance.transform.rotation);
+        MeshCollider clonedMeshCol = clonedMag.AddComponent<MeshCollider>();
+        Rigidbody clonedRb = clonedMag.AddComponent<Rigidbody>();
+        clonedRb.interpolation = RigidbodyInterpolation.Interpolate;
+        clonedRb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        clonedMeshCol.convex = true;
+
+        //Don't Collider with characters
+        clonedMeshCol.excludeLayers = m_MagExclusionLayers;
+
+        //Make Visible
+        if (!clonedMag.activeSelf)
+            clonedMag.SetActive(true);
+
+        //Throw to the side
+        clonedRb.AddForce(-transform.right * 2, ForceMode.Impulse);
+
+        //Play Clip Out Sound
+        if (m_GunData.GunSound.GetClipOut() != null)
+        {
+            m_GunMechanicSource.clip = m_GunData.GunSound.GetClipOut();
+            m_GunMechanicSource.Play();
+        }
+
+        //Destroy it after sometime
+        Destroy(clonedMag, 15);
+
+        //Make Instance Vanish
+        m_MagInstance.gameObject.SetActive(false);
+
+        Debug.Log("Dropped Mag Clone");
+    }
+
+    public void SpawnMagAtOwnerHand()
+    {
+        if (m_MagInstance != null && Owner is BaseCharacter ownerCharacter)
+        {
+            m_MagInstance.SetActive(true);
+            m_MagInstance.transform.SetParent(ownerCharacter.Animator.GetBoneTransform(HumanBodyBones.LeftHand), true);
+            m_MagInstance.transform.localPosition = m_MagInstance.transform.localEulerAngles = Vector3.zero;
+        }
+    }
+
+    public void AttachMagToGun()
+    {
+        if (m_MagInstance == null) return;
+
+        m_MagInstance.transform.SetParent(transform, true);
+        m_MagInstance.transform.SetLocalPositionAndRotation(m_MagInstanceOriginalLocalPos, m_MagInstanceOriginalLocalRotation);
+
+        if (m_GunData.GunSound.GetClipIn() != null)
+        {
+            //Play Clip In
+            m_GunMechanicSource.clip = m_GunData.GunSound.GetClipIn();
+            m_GunMechanicSource.Play();
+        }
+    }
+
+    public void PlayChamberSound(int part)
+    {
+        if (m_GunData.GunSound.GetChamber(part) != null)
+        {
+            m_GunMechanicSource.clip = m_GunData.GunSound.GetChamber(part);
+            m_GunMechanicSource.Play();
+        }
+    }
+
+    #endregion
 
     public void AddAmmo(int amount) => m_RemainingAmmo += amount;
 

@@ -27,12 +27,20 @@ public class GunSound
     [SerializeField] AudioClip[] ShotTail;
     [SerializeField] AudioClip[] ShotIndoorTail;
     [SerializeField] AudioClip Sweetener;
+    [SerializeField] AudioClip[] ShotMechanics;
+    [SerializeField] AudioClip[] clipOut;
+    [SerializeField] AudioClip[] clipIn;
+    [SerializeField] AudioClip[] chamberPartOneAndTwo;
 
     public AudioClip GetShotClip() => Shot[Random.Range(0, Shot.Length)];
     public AudioClip GetShotTail() => ShotTail[Random.Range(0, ShotTail.Length)];
     public AudioClip GetShotIndoorTail() => ShotIndoorTail[Random.Range(0, ShotIndoorTail.Length)];
     public AudioClip GetSweetener() => Sweetener;
     public AudioClip GetIndoorShot() => IndoorShot[Random.Range(0, IndoorShot.Length)];
+    public AudioClip GetShotMechanics() => ShotMechanics[Random.Range(0, ShotMechanics.Length)];
+    public AudioClip GetClipOut() => clipOut[Random.Range(0, clipOut.Length)];
+    public AudioClip GetClipIn() => clipIn[Random.Range(0, clipIn.Length)];
+    public AudioClip GetChamber(int part) => chamberPartOneAndTwo[part - 1];
 }
 
 

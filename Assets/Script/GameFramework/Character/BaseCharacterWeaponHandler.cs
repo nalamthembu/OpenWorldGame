@@ -21,7 +21,14 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
 
     protected virtual void OnDisable() => Gun.OnReload -= OnGunBeginReload;
 
-    protected virtual void ManualReload() { /* used by child classes */ }
+    protected virtual void ManualReload()
+    {
+        if (GetEquippedWeapon() == null)
+            return;
+
+        if (!GetEquippedWeapon().IsReloading && GetEquippedWeapon().CanReload)
+            GetEquippedWeapon().Reload();
+    }
 
     public Gun GetEquippedWeapon()
     {
@@ -32,6 +39,26 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
             return m_SecondaryWeapon;
         else
             return null;
+    }
+
+    //Quickly swap to other weapon (used when the character is in eminent danger and reloading would be too slow)
+    public void QuickSwapWeapon()
+    {
+        if (GetEquippedWeapon() == null)
+            return;
+
+        if (GetEquippedWeapon() == m_PrimaryWeapon)
+        {
+            //Swap to secondary 
+            m_PrimaryWeapon.HolsterWeapon();
+            m_SecondaryWeapon.EquipWeapon();
+        }
+        else
+        {
+            //Swap to primary 
+            m_PrimaryWeapon.EquipWeapon();
+            m_SecondaryWeapon.HolsterWeapon();
+        }
     }
 
     protected virtual void OnGunBeginReload(Gun targetGun)
