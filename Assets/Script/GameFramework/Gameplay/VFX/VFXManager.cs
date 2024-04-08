@@ -25,7 +25,7 @@ public class VFXManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
             m_debugSlowMo = !m_debugSlowMo;
 
-        Time.timeScale = m_debugSlowMo ? 0.25f : 1;
+        Time.timeScale = m_debugSlowMo ? 0.5f : 1;
 
     }
 

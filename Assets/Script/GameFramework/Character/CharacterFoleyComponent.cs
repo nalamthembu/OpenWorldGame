@@ -11,6 +11,8 @@ public class CharacterFoleyComponent : MonoBehaviour, IEntityComponent
 
     BaseCharacterStateMachine m_CharacterStateMachine;
 
+    AudioListener m_AudioListener;
+
     private void Awake()
     {
         if (m_FoleyData == null)
@@ -19,6 +21,8 @@ public class CharacterFoleyComponent : MonoBehaviour, IEntityComponent
             enabled = false;
             return;
         }
+
+        m_AudioListener = FindObjectOfType<AudioListener>();
 
         InitialiseAudioSources();
 
@@ -32,11 +36,25 @@ public class CharacterFoleyComponent : MonoBehaviour, IEntityComponent
         m_FootstepSource.playOnAwake = false;
         m_FootstepSource.outputAudioMixerGroup = m_FoleyData.GetAudioMixerGroup();
         m_FootstepSource.volume = 1f;
-        m_FootstepSource.minDistance = 6.0F;
+        m_FootstepSource.minDistance = 5.0F;
+        m_FootstepSource.maxDistance = 10.0F;
     }
 
     public void PlayFootstepSound()
     {
+        float distFromAudioListener = Vector3.Distance(m_AudioListener.transform.position, transform.position);
+
+        bool FootStepIsTooFarToBeHeard = (distFromAudioListener >= m_FootstepSource.maxDistance);
+
+        m_FootstepSource.enabled = !FootStepIsTooFarToBeHeard;
+
+        if (!m_FootstepSource.enabled)
+            return;
+
+        float t = distFromAudioListener / m_FootstepSource.minDistance;
+
+        m_FootstepSource.volume = Mathf.InverseLerp(1, 0, t);
+
         SurfaceType surface = SurfaceType.Generic;
         PaceType pace = default;
 

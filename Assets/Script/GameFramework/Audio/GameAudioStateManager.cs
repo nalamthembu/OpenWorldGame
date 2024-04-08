@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Audio;
 
 public class GameAudioStateManager : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class GameAudioStateManager : MonoBehaviour
     [SerializeField] float m_NormalStateTransitionTime = 2.5F;
     [Tooltip("How fast we transition from whatever state to no sound except UI state")]
     [SerializeField] float m_FrontendOnlyTransitionTime = 3.0F;
+
+    [SerializeField] AudioMixer m_AudioMixer;
 
     bool m_HasPlayedCloseToDeathSound = false;
 
@@ -38,6 +41,11 @@ public class GameAudioStateManager : MonoBehaviour
         LevelManager.OnLoadingComplete -= OnLoadingComplete;
         GameManager.OnGamePaused -= OnGamePaused;
         GameManager.OnGameResume -= OnGameResume;
+    }
+
+    private void Update()
+    {
+        m_AudioMixer.SetFloat("MasterPitch", Time.timeScale);
     }
 
     private void OnGameResume() => SwitchToNormalGameSound();

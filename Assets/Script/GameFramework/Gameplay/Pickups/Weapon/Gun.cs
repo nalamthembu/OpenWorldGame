@@ -3,6 +3,8 @@ using System.Collections;
 using System;
 using Random = UnityEngine.Random;
 using System.Collections.Generic;
+using UnityEngine.Events;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -18,6 +20,7 @@ public class Gun : Weapon
     [SerializeField] float m_Spread = 0;
     [SerializeField] GameObject m_MagInstance;
     [SerializeField] LayerMask m_MagExclusionLayers;
+    [SerializeField] LayerMask m_BulletInteractionLayers;
 
     Animator m_Animator;
 
@@ -110,6 +113,7 @@ public class Gun : Weapon
         m_GunMechanicSource.outputAudioMixerGroup = m_GunData.mixerGroup;
         m_GunMechanicSource.playOnAwake = false;
         m_GunMechanicSource.spatialBlend = 1;
+        m_GunMechanicSource.minDistance = 2;
         m_GunMechanicSource.volume = 1;
     }
 
@@ -268,7 +272,7 @@ public class Gun : Weapon
                         //Middle of the screen.
                         Ray ray = ThirdPersonCamera.Instance.CameraComponent.ViewportPointToRay(new(0.5f, 0.5f));
 
-                        if (Physics.Raycast(ray, out var hit))
+                        if (Physics.Raycast(ray, out var hit, float.MaxValue, m_BulletInteractionLayers, QueryTriggerInteraction.Ignore))
                             target = hit.point;
                         else
                             target = ray.GetPoint(m_GunData.range);

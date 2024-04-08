@@ -36,6 +36,8 @@ public class BaseCharacter : Entity
 
     private PuppetMaster m_PuppetMasterComponent;
 
+    [SerializeField] BehaviourPuppet m_BehaviourPuppet;
+
     [SerializeField] private BehaviourFall m_FallBehaviour;
 
     protected HealthComponent m_HealthComponent;
@@ -116,6 +118,10 @@ public class BaseCharacter : Entity
     protected override void Update()
     {
         base.Update();
+
+        // Keep the agent disabled while the puppet is unbalanced.
+        if (m_NavMeshAgent && m_BehaviourPuppet)
+            m_NavMeshAgent.enabled = m_BehaviourPuppet.state == BehaviourPuppet.State.Puppet;
 
         //Don't do anything if you're dead.
         if (GetHealthComponent().IsDead)
