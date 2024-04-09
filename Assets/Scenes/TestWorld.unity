@@ -11912,7 +11912,7 @@ GameObject:
   - component: {fileID: 1270579566}
   - component: {fileID: 1270579568}
   - component: {fileID: 1270579569}
-  - component: {fileID: 1270579570}
+  - component: {fileID: 1270579572}
   m_Layer: 0
   m_Name: CharacterAI (9)
   m_TagString: Untagged
@@ -12081,46 +12081,27 @@ MonoBehaviour:
   m_FootInteractiveLayers:
     serializedVersion: 2
     m_Bits: 4097
---- !u!114 &1270579570
+--- !u!114 &1270579572
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1270579558}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d7b55c7ecdb49a4a89fa5e6f9022861, type: 3}
+  m_Script: {fileID: 11500000, guid: 025776e8590eff74f9b8e63ace8375b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startWhenEnabled: 1
-  asynchronousLoad: 0
-  pauseWhenDisabled: 0
-  restartWhenComplete: 0
-  logTaskChanges: 0
-  group: 0
-  resetValuesOnRestart: 0
-  externalBehavior: {fileID: 0}
-  mBehaviorSource:
-    behaviorName: Behavior
-    behaviorDescription: 
-    mTaskData:
-      types: []
-      parentIndex: 
-      startIndex: 
-      variableStartIndex: 
-      JSONSerialization: '{"EntryTask":{"Type":"BehaviorDesigner.Runtime.Tasks.EntryTask","NodeData":{"Offset":"(-82.9867554,-293.740417)"},"ID":0,"Name":"Entry","Instant":true},"RootTask":{"Type":"BehaviorDesigner.Runtime.Tasks.Selector","NodeData":{"Offset":"(-2.98675537,136.259583)"},"ID":1,"Name":"Selector","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Sequence","NodeData":{"Offset":"(-111.986755,115.259583)"},"ID":2,"Name":"Sequence","Instant":true,"AbortTypeabortType":"None","Children":[{"Type":"BehaviorDesigner.Runtime.Tasks.Unity.UnityPhysics.Linecast","NodeData":{"Offset":"(-136.986755,130.259583)"},"ID":3,"Name":"Linecast","Instant":true,"SharedVector3startPosition":{"Type":"BehaviorDesigner.Runtime.SharedVector3","Name":null,"Vector3mValue":"(0,0,0)"},"SharedVector3endPosition":{"Type":"BehaviorDesigner.Runtime.SharedVector3","Name":null,"IsShared":true,"IsDynamic":true,"Vector3mValue":"(0,0,0)"},"LayerMasklayerMask":-1}]}]}}'
-      fieldSerializationData:
-        typeName: []
-        fieldNameHash: 
-        startIndex: 
-        dataPosition: 
-        unityObjects: []
-        byteData: 
-        byteDataArray: 
-      Version: 1.7.7
-  gizmoViewMode: 2
-  showBehaviorDesignerGizmo: 1
+  m_Mood: 0
+  m_RunSpeed: 7
+  m_WalkSpeed: 1.5
+  IdleState:
+    IdleInterval: {x: 5, y: 10}
+  WanderState:
+    maxDistance: 50
+    minDistanceFromTarget: 3
+    WanderDuration: 10
 --- !u!1001 &1276369476
 PrefabInstance:
   m_ObjectHideFlags: 0
