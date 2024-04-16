@@ -21,8 +21,6 @@ public abstract class PlayerState
 
 public class IdleState : PlayerState
 {
-    float idleRandomiseTimer;
-
     public override void OnCheckStateSwitch(PlayerStateMachine stateMachine)
     {
         if (stateMachine.InputMagnitude > 0)
@@ -46,9 +44,7 @@ public class IdleState : PlayerState
     }
 
     public override void OnEnter(PlayerStateMachine stateMachine)
-    {
-        idleRandomiseTimer = 0;
-    }
+    { }
 
     public override void OnExit(PlayerStateMachine stateMachine)
     {
@@ -57,23 +53,8 @@ public class IdleState : PlayerState
 
     public override void OnUpdate(PlayerStateMachine stateMachine)
     {
-        HandleRandomIdleAnimation(stateMachine);
-
         stateMachine.RotatePlayerToFaceCameraDirection();
-
         OnCheckStateSwitch(stateMachine);
-    }
-
-    private void HandleRandomIdleAnimation(PlayerStateMachine stateMachine)
-    {
-        idleRandomiseTimer += Time.deltaTime;
-
-        if (idleRandomiseTimer >= stateMachine.RandomiseIdleTimer)
-        {
-            stateMachine.RandomiseIdleAnimation();
-
-            idleRandomiseTimer = 0;
-        }
     }
 }
 

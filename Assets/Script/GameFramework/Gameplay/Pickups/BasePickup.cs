@@ -90,6 +90,17 @@ public class BasePickup : Entity
         }
     }
 
+    public virtual void DoGenericCharacterPickup(BaseCharacter character)
+    {
+        m_IsPickedUp = true;
+
+        Owner = character;
+
+        Debug.Log("Character picked up a " + GetType().Name);
+
+        m_SphereCollider.enabled = false;
+    }
+
     protected virtual void OnTriggerEnter(Collider other) => OnEnterPickupRadius?.Invoke(this);
 
     protected virtual void OnTriggerExit(Collider other) => OnExitPickupRadius?.Invoke(this);

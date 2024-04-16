@@ -15,6 +15,8 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
     float m_IKWeightVelRef;
     const float IKWEIGHTSMOOTHTIME = 0.25F;
 
+    public bool HasAnyWeapon() => PrimaryWeapon || SecondaryWeapon;
+
     protected virtual void Awake() => m_ThisCharacter = GetComponent<BaseCharacter>();
 
     protected virtual void OnEnable() => Gun.OnReload += OnGunBeginReload;
@@ -39,6 +41,16 @@ public class BaseCharacterWeaponHandler : MonoBehaviour
             return m_SecondaryWeapon;
         else
             return null;
+    }
+
+    public void EquipFirstAvailableWeapon()
+    {
+        if (m_PrimaryWeapon != null)
+            m_PrimaryWeapon.EquipWeapon();
+        else if (SecondaryWeapon != null)
+            m_SecondaryWeapon.EquipWeapon();
+        else
+        Debug.Log("No weapons available");
     }
 
     //Quickly swap to other weapon (used when the character is in eminent danger and reloading would be too slow)

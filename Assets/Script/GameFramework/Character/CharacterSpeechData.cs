@@ -5,6 +5,7 @@ using UnityEngine.Audio;
 public class CharacterSpeechData : ScriptableObject
 {
     [SerializeField] PainWaveTable[] painWaveTable;
+    [SerializeField] ReactionSpeech[] reactions;
     [SerializeField] Vocalisation[] vocalisations;
     [SerializeField] AudioMixerGroup mixergroup;
 
@@ -21,6 +22,19 @@ public class CharacterSpeechData : ScriptableObject
         return null;
     }
 
+    public ReactionSpeech GetReactionSpeech(ReactionType reactionType)
+    {
+        foreach (var r in reactions)
+        {
+            if (r.Type == reactionType)
+                return r;
+        }
+
+        Debug.LogError($"Could not find sound from vocalisation type {reactionType}");
+
+        return null;
+    }
+
     public Vocalisation GetVocalisation(VocalisationType vocalisationType)
     {
         foreach(var v in vocalisations)
@@ -33,6 +47,17 @@ public class CharacterSpeechData : ScriptableObject
 
         return null;
     }
+}
+
+public enum ReactionType
+{
+    TakeCover,
+    CoverMe,
+    ICoverYou,
+    DrawGun,
+    Chase,
+    LostTarget,
+    FoundTarget
 }
 
 public enum VocalisationType
@@ -82,4 +107,14 @@ public class PainWaveTable
 //TODO : Mission Speech
 
 
-//TODO : Reaction Speech
+// Reaction Speech
+[System.Serializable]
+public class ReactionSpeech
+{
+    public string Name;
+    public ReactionType Type;
+    public AudioClip[] audioClips;
+
+    public ReactionType ReactionType { get { return Type; } }
+    public AudioClip GetRandomReactionClip() => audioClips[Random.Range(0, audioClips.Length)];
+}

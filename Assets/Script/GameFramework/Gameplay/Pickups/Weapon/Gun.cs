@@ -2,9 +2,6 @@
 using System.Collections;
 using System;
 using Random = UnityEngine.Random;
-using System.Collections.Generic;
-using UnityEngine.Events;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,28 +10,29 @@ using UnityEditor;
 public class Gun : Weapon
 {
     [Header("----------General----------")]
-    [SerializeField] Transform m_LeftHandIK;
-    [SerializeField] Transform m_BulletSpawn;
+    [SerializeField] Transform      m_LeftHandIK;
+    [SerializeField] Transform      m_BulletSpawn;
     [SerializeField] ParticleSystem m_MuzzleFlash;
     [SerializeField] ParticleSystem m_BulletShellFX;
-    [SerializeField] float m_Spread = 0;
-    [SerializeField] GameObject m_MagInstance;
-    [SerializeField] LayerMask m_MagExclusionLayers;
-    [SerializeField] LayerMask m_BulletInteractionLayers;
+    [SerializeField] float          m_BulletSpread = 0;
+    [SerializeField] GameObject     m_MagInstance;
+    [SerializeField] LayerMask      m_MagExclusionLayers;
+    [SerializeField] LayerMask      m_BulletInteractionLayers;
 
-    Animator m_Animator;
+    public LayerMask GetBulletInteractionLayers => m_BulletInteractionLayers;
 
-    Vector3 m_MagInstanceOriginalLocalPos;
-    Quaternion m_MagInstanceOriginalLocalRotation;
+    Animator    m_Animator;
+    Vector3     m_MagInstanceOriginalLocalPos;
+    Quaternion  m_MagInstanceOriginalLocalRotation;
 
     AudioSource m_ShotFireSource;
     AudioSource m_ShotTailSource;
     AudioSource m_SweetenerSource;
     AudioSource m_GunMechanicSource;
 
-    protected int m_CurrClip, m_RemainingAmmo;
+    protected int   m_CurrClip, m_RemainingAmmo;
     private GunData m_GunData;
-    private bool m_IsReloading;
+    private bool    m_IsReloading;
 
     public Transform LeftHandIK { get { return m_LeftHandIK; } }
     public bool IsReloading { get { return m_IsReloading; } }
@@ -50,6 +48,9 @@ public class Gun : Weapon
 
     //Waiting for the character to let go of the trigger (semi-autos only)
     private bool m_WaitingForTriggerReset;
+
+    //AI Target
+    public Vector3 AITarget { get; set; }
 
     public static event Action<Gun> OnReload;
     public static event Action<Gun> OnDoneReloading;
@@ -78,13 +79,10 @@ public class Gun : Weapon
     protected override void Start()
     {
         base.Start();
+      
+        m_RemainingAmmo = Random.Range(30, 900);
+        Reload();
 
-        if (Owner == null)
-        {
-            m_RemainingAmmo = Random.Range(30, 900);
-
-            Reload();
-        }
     }
 
     protected virtual void InitialiseAudioSources()
@@ -265,6 +263,7 @@ public class Gun : Weapon
 
                 Vector3 target = m_BulletSpawn.forward * m_GunData.range;
 
+                // Player Targeting 
                 if (Owner == PlayerCharacter.Instance)
                 {
                     if (ThirdPersonCamera.Instance)
@@ -273,17 +272,24 @@ public class Gun : Weapon
                         Ray ray = ThirdPersonCamera.Instance.CameraComponent.ViewportPointToRay(new(0.5f, 0.5f));
 
                         if (Physics.Raycast(ray, out var hit, float.MaxValue, m_BulletInteractionLayers, QueryTriggerInteraction.Ignore))
+                        {
                             target = hit.point;
+                        }
                         else
                             target = ray.GetPoint(m_GunData.range);
                     }
+                }
+                // AI Targeting
+                else if (Owner != null && Owner != PlayerCharacter.Instance)
+                {
+                    target = AITarget;
                 }
 
                 Vector3 lookDir = (target - m_BulletSpawn.position).normalized;
 
                 //Calculate Bullet Spread
-                float xSpread = Random.Range(-m_Spread, m_Spread);
-                float ySpread = Random.Range(-m_Spread, m_Spread);
+                float xSpread = Random.Range(-m_BulletSpread, m_BulletSpread);
+                float ySpread = Random.Range(-m_BulletSpread, m_BulletSpread);
                 Vector3 lookDirWithSpread = lookDir + (Vector3)new(xSpread, ySpread);
 
                 //Spawn Bullet
@@ -336,11 +342,15 @@ public class Gun : Weapon
     {
         //Detect Occulusion
         Vector3 startPosition = m_BulletSpawn.position + m_BulletSpawn.forward;
-        Vector3 endPosition = m_BulletSpawn.position + Vector3.up * 100;
+        Vector3 endPosition = m_BulletSpawn.position + Vector3.up * 10.0F;
         bool IsThereASurfaceAboveTheGun = Physics.Linecast(startPosition, endPosition, out _, -1, QueryTriggerInteraction.Ignore);
 
+        float sqrDistFromCamera = (ThirdPersonCamera.Instance.transform.position - startPosition).sqrMagnitude;
+
+        float maxDistanceSqr = 8 * 8;
+
         //Set Clips
-        m_ShotFireSource.clip = m_GunData.GunSound.GetShotClip();
+        m_ShotFireSource.clip = sqrDistFromCamera > maxDistanceSqr ? m_GunData.GunSound.GetDistanceShot() : m_GunData.GunSound.GetShotClip();
         m_ShotTailSource.clip = IsThereASurfaceAboveTheGun ? m_GunData.GunSound.GetShotIndoorTail() : m_GunData.GunSound.GetShotTail();
         m_SweetenerSource.clip = m_GunData.GunSound.GetSweetener();
         m_GunMechanicSource.clip = m_GunData.GunSound.GetShotMechanics();
@@ -350,6 +360,10 @@ public class Gun : Weapon
         m_ShotTailSource.pitch = Random.Range(0.95F, 1.15F);
         m_SweetenerSource.pitch = Random.Range(0.95F, 1.15F);
         m_GunMechanicSource.pitch = Random.Range(0.95F, 1.15F);
+
+        //Change Spatial Blend if this is not the player
+        m_ShotTailSource.spatialBlend = m_SweetenerSource.spatialBlend = Owner is not PlayerCharacter ? 1 : 0;
+        m_ShotFireSource.minDistance = m_ShotTailSource.minDistance = Owner is not PlayerCharacter ? 10 : 5;
 
         //Play Sweetener 
         //Play Gunshot Sound
@@ -396,7 +410,7 @@ public class Gun : Weapon
         Destroy(clonedMag, 15);
 
         //Make Instance Vanish
-        m_MagInstance.gameObject.SetActive(false);
+        m_MagInstance.SetActive(false);
 
         Debug.Log("Dropped Mag Clone");
     }

@@ -3,8 +3,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using RootMotion.Dynamics; //PuppetMaster Active Ragdoll Physics (Dependency)
 using Random = UnityEngine.Random;
-using UnityEngine.InputSystem.HID;
-using WorldCreatorEngine.Utilities;
 
 public enum CharacterState
 {
@@ -26,40 +24,39 @@ public class BaseCharacter : Entity
         Right
     };
 
-    protected NavMeshAgent m_NavMeshAgent;
-
-    protected Animator m_Animator;
-
     [SerializeField] CharacterAnimationData m_animData;
 
     [SerializeField][Range(1, 7)] protected float m_WalkSpeed, m_RunSpeed;
-
-    private PuppetMaster m_PuppetMasterComponent;
 
     [SerializeField] BehaviourPuppet m_BehaviourPuppet;
 
     [SerializeField] private BehaviourFall m_FallBehaviour;
 
+    [SerializeField] protected LayerMask  m_GroundLayers = -1;
+
     protected HealthComponent m_HealthComponent;
 
-    [SerializeField] protected LayerMask m_GroundLayers = -1;
+    protected NavMeshAgent m_NavMeshAgent;
 
+    protected Animator m_Animator;
+
+    // Ragdoll Behaviour 
+
+    private PuppetMaster m_PuppetMasterComponent;
     public PuppetMaster PuppetMaster { get { return m_PuppetMasterComponent; } }
 
     public CharacterState CharacterState { get; protected set; }
-
-    public static event Action<BaseCharacter> OnSpawned;
-
     protected virtual void OnEnabled() { }
     protected virtual void OnDisabled() { }
 
     public Animator Animator { get { return m_Animator; } }
-
     public bool IsAiming { get; set; }
     public bool IsFiring { get; set; }
     public bool CharacterIsGrounded { get; private set; }
 
     public HealthComponent GetHealthComponent() => m_HealthComponent;
+
+    public static event Action<BaseCharacter> OnSpawned;
 
     #endregion
 

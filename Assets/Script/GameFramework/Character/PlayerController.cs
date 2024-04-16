@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : BaseCharacterController
 {
     //Stores instance of player input.
     PlayerInput m_PlayerInput;

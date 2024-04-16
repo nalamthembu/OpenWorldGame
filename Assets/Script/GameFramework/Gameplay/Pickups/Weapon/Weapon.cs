@@ -123,6 +123,22 @@ public class Weapon : BasePickup
         }
     }
 
+    public override void DoGenericCharacterPickup(BaseCharacter character)
+    {
+        base.DoGenericCharacterPickup(character);
+
+        BaseCharacterWeaponHandler weaponHandler = character.GetComponent<BaseCharacterWeaponHandler>();
+
+        if (weaponHandler)
+        {
+            weaponHandler.AddWeapon(this);
+        }
+
+        //Disable collider and rigidbody
+
+        SetSimulatePhysics(false);
+    }
+
     protected override void DoPlayerPickUp()
     {
         base.DoPlayerPickUp();
@@ -142,4 +158,6 @@ public class Weapon : BasePickup
             SetSimulatePhysics(false);
         }
     }
+
+
 }

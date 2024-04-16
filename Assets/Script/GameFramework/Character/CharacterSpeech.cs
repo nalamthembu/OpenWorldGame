@@ -31,7 +31,6 @@ public class CharacterSpeech : MonoBehaviour
             m_SpeechOrigin.maxDistance = 50.0F;
             m_SpeechOrigin.playOnAwake = false;
             m_SpeechOrigin.outputAudioMixerGroup = m_CharacterSpeechData.GetMixerGroup();
-            m_SpeechOrigin.spread = 360.0F;
         }
 
         m_AttachedCharacter = GetComponent<BaseCharacter>();
@@ -125,7 +124,7 @@ public class CharacterSpeech : MonoBehaviour
     {
         if (m_SpeechOrigin)
         {
-            var waveTable = m_CharacterSpeechData.GetPainWaveTable(fromHeadshot? PainLevel.Death_Headshot : PainLevel.Death);
+            var waveTable = m_CharacterSpeechData.GetPainWaveTable(fromHeadshot ? PainLevel.Death_Headshot : PainLevel.Death);
 
             m_SpeechOrigin.clip = waveTable.GetRandomPainClip();
 
@@ -153,6 +152,21 @@ public class CharacterSpeech : MonoBehaviour
 
                 m_IsFalling = false;
             }
+        }
+    }
+
+    public void DoReaction(ReactionType reactionType)
+    {
+        ReactionSpeech reaction = m_CharacterSpeechData.GetReactionSpeech(reactionType);
+
+        if (reaction != null && m_SpeechOrigin != null)
+        {
+            m_SpeechOrigin.clip = reaction.GetRandomReactionClip();
+
+            m_SpeechOrigin.pitch = Random.Range(0.95f, 1.025f);
+
+            if (!m_SpeechOrigin.isPlaying)
+                m_SpeechOrigin.Play();
         }
     }
 }

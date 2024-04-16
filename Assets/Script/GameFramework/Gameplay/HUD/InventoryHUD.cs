@@ -53,6 +53,8 @@ public class InventoryHUD : BaseHUD
         //TODO : PLAY SOUND
         m_HUDObject.SetActive(false);
 
+        Time.timeScale = 1;
+
         Cursor.visible = false;
     }
 
@@ -60,6 +62,8 @@ public class InventoryHUD : BaseHUD
     {
         //TODO : PLAY SOUND
         m_HUDObject.SetActive(true);
+
+        Time.timeScale = 0.25F;
 
         Cursor.visible = true;
     }

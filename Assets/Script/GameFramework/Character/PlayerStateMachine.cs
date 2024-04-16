@@ -2,7 +2,6 @@
 using UnityEditor;
 #endif
 using UnityEngine;
-using Controller = PlayerController;
 
 public class PlayerStateMachine : BaseCharacterStateMachine
 {
@@ -32,8 +31,10 @@ public class PlayerStateMachine : BaseCharacterStateMachine
 
     public Vector2 InputDirection { get; private set; }
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         if (Instance == null)
         {
             Instance = this;
@@ -43,15 +44,16 @@ public class PlayerStateMachine : BaseCharacterStateMachine
             Destroy(gameObject);
         }
 
-        m_Animator = GetComponent<Animator>();
         m_Character = GetComponent<PlayerCharacter>();
         m_PlayerCharacter = m_Character as PlayerCharacter;
     }
 
     private void Start() => SwitchState(idleState);
-    
-    private void Update()
+
+    protected override void Update()
     {
+        base.Update();
+
         if (m_Animator)
         {
             //Set Player Speed to match animation speed.
@@ -59,23 +61,20 @@ public class PlayerStateMachine : BaseCharacterStateMachine
         }
 
         SetInputValues();
-        SetAnimationValues();
 
-        if (currentState != null)
-            currentState.OnUpdate(this);
-
+        currentState?.OnUpdate(this);
     }
 
     private void SetInputValues()
     {
-        if (Controller.Instance)
+        if (PlayerController.Instance)
         {
-            InputMagnitude = Controller.Instance.PlayerMovement.normalized.magnitude;
-            InputDirection = Controller.Instance.PlayerMovement.normalized;
+            InputMagnitude = PlayerController.Instance.PlayerMovement.normalized.magnitude;
+            InputDirection = PlayerController.Instance.PlayerMovement.normalized;
         }
     }
 
-    private void SetAnimationValues()
+    protected override void SetAnimationValues()
     {
 
         if (m_Animator)
@@ -83,17 +82,17 @@ public class PlayerStateMachine : BaseCharacterStateMachine
             //Input
             m_Animator.SetFloat(GameStrings.INPUT_MAGNITUDE, InputMagnitude);
             //Crouching
-            m_Animator.SetBool(GameStrings.IS_CROUCHING, Controller.Instance.IsCrouched);
+            m_Animator.SetBool(GameStrings.IS_CROUCHING, PlayerController.Instance.IsCrouched);
             //Going Prone
-            m_Animator.SetBool(GameStrings.IS_PRONE, Controller.Instance.IsProne);
+            m_Animator.SetBool(GameStrings.IS_PRONE, PlayerController.Instance.IsProne);
             //Jumping
-            m_Animator.SetBool(GameStrings.IS_JUMPING, Controller.Instance.JumpPressed);
+            m_Animator.SetBool(GameStrings.IS_JUMPING, PlayerController.Instance.JumpPressed);
             //IsGrounded
             m_Animator.SetBool(GameStrings.IS_GROUNDED, m_PlayerCharacter.IsGrounded());
 
-            if (PlayerWeaponHandler.Instance)
+            if (m_WeaponHandler)
             {
-                Gun equippedWeapon = PlayerWeaponHandler.Instance.GetEquippedWeapon();
+                Gun equippedWeapon = m_WeaponHandler.GetEquippedWeapon();
                 GunData equippedWeaponGunData = null;
 
                 if (equippedWeapon)
@@ -101,10 +100,10 @@ public class PlayerStateMachine : BaseCharacterStateMachine
                     equippedWeaponGunData = (GunData)equippedWeapon.WeaponData;
                 }
 
-                bool isAiming = equippedWeapon != null && Controller.Instance != null && Controller.Instance.IsAiming || m_DebugAiming;
+                bool isAiming = equippedWeapon != null && PlayerController.Instance != null && PlayerController.Instance.IsAiming || m_DebugAiming;
 
                 m_Character.IsAiming = isAiming;
-                m_Character.IsFiring = isAiming && Controller.Instance.IsFiring;
+                m_Character.IsFiring = isAiming && PlayerController.Instance.IsFiring;
 
                 m_Animator.SetBool(GameStrings.IS_RIFLE, equippedWeapon != null && equippedWeaponGunData.WeaponClass == WeaponClassification.Rifle);
                 m_Animator.SetBool(GameStrings.IS_PISTOL, equippedWeapon != null && equippedWeaponGunData.WeaponClass == WeaponClassification.Pistol);
@@ -113,11 +112,11 @@ public class PlayerStateMachine : BaseCharacterStateMachine
             }
 
 
-            if (Controller.Instance)
+            if (PlayerController.Instance)
             {
                 //Speed, Rotation, InputX/Y Gets Set regardless of whether or not we are moving.
                 m_Animator.SetFloat(GameStrings.SPEED,
-                    Controller.Instance.RunHeld ? m_PlayerCharacter.RunSpeed : m_PlayerCharacter.WalkSpeed,
+                    PlayerController.Instance.RunHeld ? m_PlayerCharacter.RunSpeed : m_PlayerCharacter.WalkSpeed,
                     m_PlayerCharacter.SpeedSmoothTime, Time.deltaTime);
 
                 m_Animator.SetFloat(GameStrings.INPUT_X, InputDirection.x,
@@ -139,9 +138,9 @@ public class PlayerStateMachine : BaseCharacterStateMachine
                         ThirdPersonCamera.Instance.transform.eulerAngles.y;
 
                     //if player is aiming a weapon
-                    if (Controller.Instance.IsAiming &&
-                        PlayerWeaponHandler.Instance &&
-                        PlayerWeaponHandler.Instance.GetEquippedWeapon())
+                    if (PlayerController.Instance.IsAiming &&
+                        m_WeaponHandler &&
+                        m_WeaponHandler.GetEquippedWeapon())
                     {
                         //match camera rotation 1:1
                         Rotation = ThirdPersonCamera.Instance.transform.eulerAngles.y;
@@ -156,8 +155,6 @@ public class PlayerStateMachine : BaseCharacterStateMachine
 
         }
     }
-
-    public void RandomiseIdleAnimation() =>m_Animator.SetInteger(GameStrings.IDLE_INDEX, Random.Range(0, IdleAnimationCount));
     
     public void ResetFeet()
     {

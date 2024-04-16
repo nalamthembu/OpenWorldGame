@@ -1,17 +1,14 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AIController : MonoBehaviour
+public class AIController : BaseCharacterController
 {
-    Animator m_Animator;
-
     NavMeshAgent m_NavMeshAgent;
     [SerializeField] bool debug;
     [SerializeField] Transform debug_target;
 
     private void Awake()
     {
-        m_Animator = GetComponent<Animator>();
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
     }
 
@@ -19,21 +16,22 @@ public class AIController : MonoBehaviour
     {
         if (m_NavMeshAgent != null)
         {
-            Animate();
-
             if (debug)
                 m_NavMeshAgent.SetDestination(debug_target.position);
         }
     }
 
-    private void Animate()
+    public Vector2 GetInputDirection()
     {
-        float angle = Vector3.Angle(transform.position, debug_target.position);
+        // Get the velocity of the NavMeshAgent
+        Vector3 velocity = m_NavMeshAgent.velocity;
 
-        float agentSpeed = m_NavMeshAgent.velocity.magnitude;
-        m_Animator.SetFloat(GameStrings.INPUT_MAGNITUDE, m_NavMeshAgent.velocity.normalized.magnitude);
-        m_Animator.SetFloat(GameStrings.TARGET_ROTATION, angle, 0.25f, Time.deltaTime);
-        m_Animator.SetFloat(GameStrings.SPEED, agentSpeed, 1, Time.deltaTime);
-        m_Animator.SetBool(GameStrings.LU, agentSpeed <= 0);
+        // Convert the velocity from world space to local space
+        Vector3 localVelocity = transform.InverseTransformDirection(velocity);
+
+        // Normalize the local velocity to get a directional Vector2
+        Vector2 directionalVector = new Vector2(localVelocity.x, localVelocity.z).normalized;
+
+        return directionalVector;
     }
 }

@@ -23,6 +23,7 @@ public class GunData : BaseWeaponData
 public class GunSound
 {
     [SerializeField] AudioClip[] Shot;
+    [SerializeField] AudioClip[] DistanceShot;
     [SerializeField] AudioClip[] IndoorShot;
     [SerializeField] AudioClip[] ShotTail;
     [SerializeField] AudioClip[] ShotIndoorTail;
@@ -41,6 +42,7 @@ public class GunSound
     public AudioClip GetClipOut() => clipOut[Random.Range(0, clipOut.Length)];
     public AudioClip GetClipIn() => clipIn[Random.Range(0, clipIn.Length)];
     public AudioClip GetChamber(int part) => chamberPartOneAndTwo[part - 1];
+    public AudioClip GetDistanceShot() => DistanceShot[Random.Range(0, DistanceShot.Length)];
 }
 
 
