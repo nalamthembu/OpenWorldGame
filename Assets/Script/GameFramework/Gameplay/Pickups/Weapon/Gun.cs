@@ -2,6 +2,8 @@
 using System.Collections;
 using System;
 using Random = UnityEngine.Random;
+using OWFramework.AI;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -18,6 +20,9 @@ public class Gun : Weapon
     [SerializeField] GameObject     m_MagInstance;
     [SerializeField] LayerMask      m_MagExclusionLayers;
     [SerializeField] LayerMask      m_BulletInteractionLayers;
+
+    private AISenseAuditoryStimuli m_AuditoryStimuli;   // NPCS can hear this.
+    private AISenseVisualStimuli m_VisualStimuli;       // NPCS can see this
 
     public LayerMask GetBulletInteractionLayers => m_BulletInteractionLayers;
 
@@ -74,6 +79,10 @@ public class Gun : Weapon
         }
 
         InitialiseAudioSources();
+
+        // Initialise AI Stimulators
+        m_AuditoryStimuli = GetComponent<AISenseAuditoryStimuli>();
+        m_VisualStimuli = GetComponent<AISenseVisualStimuli>();
     }
 
     protected override void Start()
@@ -245,6 +254,10 @@ public class Gun : Weapon
     {
         if (m_IsReloading)
             return;
+
+        // Stimulate any NPCs in the area
+        if (m_AuditoryStimuli)
+            m_AuditoryStimuli.StimulateNearbyAI();
 
         if (HasBulletsInClip)
         {

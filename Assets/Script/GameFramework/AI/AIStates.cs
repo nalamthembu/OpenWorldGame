@@ -9,10 +9,8 @@ namespace OWFramework
     {
         Idle,
         Wandering,
-        Chase,
-        Follow,
-        AimAtTarget,
-        FireAtTarget
+        Shock,
+        Flee
     };
 
     // Idle State (Stand around and do nothing)
@@ -20,36 +18,95 @@ namespace OWFramework
     [System.Serializable]
     public class AIIdle : BaseAIState
     {
-        [SerializeField] Vector2 IdleInterval = new(5, 10);
-        float calculatedInterval;
-        float idleTimer = 0;
+        [SerializeField] bool       m_ReactToDistubance;
+        [SerializeField] bool       m_DoNotWander = false;
+        [SerializeField] Vector2    IdleInterval = new(5, 10);
+
+        private Transform   transform;
+        float               calculatedInterval;
+        float               idleTimer = 0;
+        BaseAIStateMachine  stateMachine;
 
         public override void OnCheckTransition(BaseAIStateMachine machine)
         {
-            idleTimer += Time.deltaTime;
-
-            if (idleTimer >= calculatedInterval)
+            if (!m_DoNotWander)
             {
-                idleTimer = 0;
-                calculatedInterval = CalculateInterval();
+                idleTimer += Time.deltaTime;
 
-                //Switch to Wandering State
-                machine.SwitchState(AIStateEnum.Wandering);
+                if (idleTimer >= calculatedInterval)
+                {
+                    idleTimer = 0;
+                    calculatedInterval = CalculateInterval();
+
+                    //Switch to Wandering State
+                    machine.SwitchState(AIStateEnum.Wandering);
+                }
             }
         }
+
         public override void OnEnter(BaseAIStateMachine machine)
         {
             calculatedInterval = CalculateInterval();
 
+            // SET MACHINE
+            if (!stateMachine)
+                stateMachine = machine;
+
             // Stop the character from moving.
             machine.SetNavigationEnabled(false);
 
+            // React to disturbance - sub to events
+            if (m_ReactToDistubance)
+            {
+                machine.PerceptionSensor.OnAuditoryContactMade += OnHeardSomething;
+                machine.PerceptionSensor.OnPhysicalContactMade += OnPhysicalContactMade;
+                machine.PerceptionSensor.OnVisualContactMade += OnVisualContactMade;
+                Debug.Log("Subbed to all sensory inputs!");
+            }
+
+            transform = machine.transform;
         }
+
+        private void OnHeardSomething(AISenseAuditoryStimuli stimuli)
+        {
+            Debug.Log("Heard something!");
+
+            switch (stateMachine.NPCType)
+            {
+                case NPCType.Civvie:
+
+                    if (stimuli.ThreatType == ThreatType.IsAThreat)
+                    {
+                        NPCReactToDanger(stimuli.transform.position, stateMachine);
+                        Debug.Log("Heard a threat!");
+                    }
+                    break;
+
+
+                    // TODO : Have Hostiles react to threats by charging at them.
+
+                    // TODO : Have Hostiles react to non-threats by investigating.
+            }
+        }
+
+        private void OnPhysicalContactMade() { }
+
+        private void OnVisualContactMade(AISenseVisualStimuli stimuli) { }
+
         public override void OnExit(BaseAIStateMachine machine)
         {
             // Enable the character to move.
             machine.SetNavigationEnabled(true);
+
+            // Unsub from events
+            if (m_ReactToDistubance)
+            {
+                machine.PerceptionSensor.OnAuditoryContactMade -= OnHeardSomething;
+                machine.PerceptionSensor.OnPhysicalContactMade -= OnPhysicalContactMade;
+                machine.PerceptionSensor.OnVisualContactMade -= OnVisualContactMade;
+            }
         }
+
         private float CalculateInterval() => Random.Range(IdleInterval.x, IdleInterval.y);
         public override void OnUpdate(BaseAIStateMachine machine) { }
     }
@@ -62,12 +119,14 @@ namespace OWFramework
         [SerializeField] float maxDistance;
         [SerializeField] float minDistanceFromTarget;
         [SerializeField] float WanderDuration;
+        [SerializeField] bool  m_ReactToDistubance;
 
         //Private Members
-        Vector3     calculatedRandomPosition;
-        Vector3     centre; // This is used during random point calculations.
-        Transform   aiTransform; // This is the AI Attached to this State Machine.
-        float       wanderTimer;
+        Vector3             calculatedRandomPosition;
+        Vector3             centre; // This is used during random point calculations.
+        Transform           transform; // This is the AI Attached to this State Machine.
+        float               wanderTimer;
+        BaseAIStateMachine  stateMachine;
 
         public override void OnCheckTransition(BaseAIStateMachine machine)
         {
@@ -85,8 +144,8 @@ namespace OWFramework
 
         public override void OnEnter(BaseAIStateMachine machine)
         {
-            if (aiTransform == null)
-                aiTransform = machine.transform;
+            if (transform == null)
+                transform = machine.transform;
 
             centre = machine.Agent.transform.position;
 
@@ -96,7 +155,35 @@ namespace OWFramework
             // Calculate New Destination
             CalculateRandomPosition();
             GoToCalculatedPosition(machine.Agent);
+
+            // React to disturbance - sub to events
+            if (m_ReactToDistubance)
+            {
+                machine.PerceptionSensor.OnAuditoryContactMade += OnHeardSomething;
+                machine.PerceptionSensor.OnPhysicalContactMade += OnPhysicalContactMade;
+                machine.PerceptionSensor.OnVisualContactMade += OnVisualContactMade;
+            }
         }
+
+        private void OnHeardSomething(AISenseAuditoryStimuli stimuli)
+        {
+            switch (stateMachine.NPCType)
+            {
+                case NPCType.Civvie:
+
+                    if (stimuli.ThreatType == ThreatType.IsAThreat)
+                        NPCReactToDanger(stimuli.transform.position, stateMachine);
+                    break;
+
+                    // TODO : Have Hostiles react to threats by charging at them.
+
+                    // TODO : Have Hostiles react to non-threats by investigating.
+            }
+        }
+
+        private void OnPhysicalContactMade() { }
+
+        private void OnVisualContactMade(AISenseVisualStimuli stimuli) { }
 
         public override void OnUpdate(BaseAIStateMachine machine)
         {
@@ -156,275 +243,35 @@ namespace OWFramework
         }
     }
 
-    // Chase State (Target is running)
-
+    // Shock State (Heard or saw something threatening)
     [System.Serializable]
-    public class AIChase : BaseAIState
+    public class AIShock : BaseAIState
     {
-        [SerializeField] bool   m_ShouldBeRunning;
-        [SerializeField] bool   m_SearchIfLostTarget;
-        [SerializeField] bool   m_ShouldAnnounceTargetLocation;
-        [SerializeField] bool   m_ShootAtTarget;
-        [SerializeField] float  m_IdealDistance; // How close should I be before switching states?
-        float m_DistFromTarget;
-
-        #region DEBUG_OPTIONS
-        [SerializeField] bool m_DebugSwitchToIdle;
-        #endregion
-
         public override void OnCheckTransition(BaseAIStateMachine machine)
         {
-            if (!machine.GetCanSeePlayer(out var lastKnownPosition))
+            // TODO : Switch to Flee State
+
+            if (!machine.Animator.GetCurrentAnimatorStateInfo(0).IsName("React_Shock"))
             {
-                machine.Blackboard.SetValue(GameStrings.LAST_KNOWN_PLAYER_POSITION, lastKnownPosition);
-
-                // React
-                machine.CharacterSpeech.DoReaction(ReactionType.LostTarget);
-
-                // Should I search?
-                if (m_SearchIfLostTarget)
-                {
-                    // TODO : Switch to Search state.
-
-                    // DEBUG
-
-                    if (m_DebugSwitchToIdle)
-                        machine.SwitchState(AIStateEnum.Idle);
-                }
-            }
-
-            m_DistFromTarget = Vector3.Distance(machine.transform.position, lastKnownPosition);
-            if (m_ShootAtTarget && m_DistFromTarget <= m_IdealDistance)
-                machine.SwitchState(AIStateEnum.AimAtTarget);
-        }
-
-        public override void OnEnter(BaseAIStateMachine machine)
-        {
-            // Check if I should announce the targets location?
-
-            Debug.Log("Chasing Target!");
-
-            if (m_ShouldAnnounceTargetLocation)
-            {
-                // TODO : Play Speech (There he is!)
-
-                // TODO : Send out event to alert others.
-            }
-
-            // Should I run to the player?
-            machine.Agent.speed = m_ShouldBeRunning ? machine.RunSpeed : machine.WalkSpeed;
-        }
-
-        public override void OnExit(BaseAIStateMachine machine)
-        { }
-
-        public override void OnUpdate(BaseAIStateMachine machine)
-        {
-            if (!machine.GetCanSeePlayer(out var lastKnownPosition))
-                return;
-
-            machine.Agent.SetDestination(lastKnownPosition);
-
-        }
-    }
-
-    // Follow State (Follow the target, NPC behaviour)
-
-    [System.Serializable]
-    public class AIFollow : BaseAIState
-    {
-        [SerializeField] Transform  m_TargetTransform;
-        [SerializeField] float      m_MinDistance; // How close should I be, ideally?
-        [SerializeField] float      m_MaxDistance; // How far am I allowed to let the target be?
-        [SerializeField] bool       m_LookAtTarget; // Should I look at the target?
-        private BaseCharacter       m_TargetCharacter;
-        public bool GetShouldLookAtTarget() => m_LookAtTarget;
-        public Transform GetTargetTransform() => m_TargetTransform;
-        private bool m_TargetIsCharacter;
-
-        public bool IsTargetACharacter(out BaseCharacter Character)
-        {
-            Character = m_TargetIsCharacter ? m_TargetCharacter : null;
-
-            return m_TargetIsCharacter;
-        }
-
-        public override void OnCheckTransition(BaseAIStateMachine machine)
-        { }
-
-        public override void OnEnter(BaseAIStateMachine machine)
-        {
-            if (machine.Agent)
-                machine.Agent.stoppingDistance = m_MinDistance;
-
-            if (m_TargetTransform != null)
-            {
-                m_TargetCharacter = m_TargetTransform.GetComponent<BaseCharacter>();
-
-                m_TargetIsCharacter = m_TargetCharacter != null;
-            }
-        }
-
-        public override void OnExit(BaseAIStateMachine machine)
-        { }
-
-        public override void OnUpdate(BaseAIStateMachine machine)
-        {
-            machine.Agent.SetDestination(m_TargetTransform.position);
-
-            float sqrDist = Mathf.Abs((m_TargetTransform.position - machine.transform.position).sqrMagnitude);
-
-            machine.Agent.speed = sqrDist >= m_MaxDistance * m_MaxDistance ? machine.RunSpeed : machine.WalkSpeed;
-        }
-    }
-
-    // Search State (Go to the last known player position, look around the area for a set time, if you find nothing, give up and Wander)
-
-    // Investigate State (Investigate a noise or something you saw)
-
-    // Find Cover (Caused by High Danger, like getting shot at)
-
-    // Run and Gun (Trait of a fearless AI)
-
-    // Fire At Target - WHEN SHOT AT OR AIMED AT (Blind fire if Danger is high, if not in cover should where you are, If you get shot at, Find Cover)
-    // Aim At Target (Look at Target but don't shoot at them, useful for cops attempting to arrest someone)
-    [System.Serializable]
-    public class AIAimAtTarget : BaseAIState
-    {
-        [SerializeField] Transform  m_TargetTransform;
-        [SerializeField] GameObject m_WeaponPrefab;
-        [SerializeField] float      m_MinDistance; // How close should I be, ideally?
-        [SerializeField] float      m_MaxDistance; // How far am I allowed to let the target be?
-        [SerializeField][Min(0.1F)] float m_SpeedDivider = 2; // How much slower should we be when aiming?
-
-        float m_SqrDistanceFromTarget;
-
-        private Weapon m_WeaponInstance;
-        private AIAimingComponent m_AIAimingComponent;
-        private BaseCharacter m_TargetCharacter;
-        private BaseCharacterWeaponHandler m_TargetCharacterWeaponHandler;
-
-        public void SetTargetCharacter(BaseCharacter targetCharacter)
-        {
-            m_TargetCharacter = targetCharacter;
-
-            m_TargetCharacterWeaponHandler = m_TargetCharacter.GetComponent<BaseCharacterWeaponHandler>();
-
-            //Aim for the biggest spot on the character (ie. Chest - (CONNECTED TO THE SPINE BONE))
-
-            m_TargetTransform = m_TargetCharacter.Animator.GetBoneTransform(HumanBodyBones.Spine);
-        }
-
-        public override void OnCheckTransition(BaseAIStateMachine machine)
-        {
-            if (machine.CharacterSpeech && TargetIsFiringAtMe())
-            {
-                machine.CharacterSpeech.DoReaction(ReactionType.TakeCover);
-
-                //Switch to Find Cover State.
-            }
-
-            //If they're too far
-            if (Vector3.Distance(machine.transform.position, m_TargetTransform.position) >= m_MaxDistance)
-            {
-                // React
-                machine.CharacterSpeech.DoReaction(ReactionType.Chase);
-
-                // Chase them
-                machine.SwitchState(AIStateEnum.Chase);
+                machine.SwitchState(AIStateEnum.Idle);
             }
         }
 
         public override void OnEnter(BaseAIStateMachine machine)
         {
-            m_AIAimingComponent = machine.GetComponent<AIAimingComponent>();
+            // Stop Moving
+            machine.SetNavigationEnabled(false);
 
-            //Lets check if the assigned target is a character
-            if (m_TargetTransform.root.TryGetComponent<BaseCharacter>(out var characterComp))
-                SetTargetCharacter(characterComp);
+            // Trigger Shock Animation
+            machine.Animator.CrossFadeInFixedTime("React_Shock", 0.25F, 0);
 
-
-            if (machine.Agent)
-                machine.Agent.stoppingDistance = m_MinDistance;
-
-            if (machine.WeaponHandler)
-            {
-                if (!machine.WeaponHandler.HasAnyWeapon())
-                {
-                    machine.WeaponHandler.AddWeapon(m_WeaponInstance = Object.Instantiate(m_WeaponPrefab).GetComponent<Weapon>());
-
-                    m_WeaponInstance.DoGenericCharacterPickup(machine.Character);
-
-                    machine.WeaponHandler.EquipFirstAvailableWeapon();
-                }
-                else
-                {
-                    machine.WeaponHandler.EquipFirstAvailableWeapon();
-                }
-            }
+            // Express shock
+            machine.CharacterSpeech.DoReaction(ReactionType.Frightened);
         }
 
-        public override void OnExit(BaseAIStateMachine machine)
-        { }
+        public override void OnExit(BaseAIStateMachine machine) {/*DO NOTHING*/}
 
-
-        public override void OnUpdate(BaseAIStateMachine machine)
-        {
-            // Follow target
-
-            machine.Agent.SetDestination(m_TargetTransform.position);
-
-            m_SqrDistanceFromTarget = Mathf.Abs((m_TargetTransform.position - machine.transform.position).sqrMagnitude);
-
-            // Make sure we never divide by 0
-            if (m_SpeedDivider == 0)
-                m_SpeedDivider = 1.0F;
-
-            machine.Agent.speed = m_SqrDistanceFromTarget >= m_MaxDistance * m_MaxDistance ? machine.RunSpeed / m_SpeedDivider : machine.WalkSpeed / m_SpeedDivider;
-
-            Vector3 direction = (m_TargetTransform.position - machine.transform.position).normalized;
-
-            // Calculate the rotation without pitch and roll
-            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-
-            // Create a new rotation with the same yaw angle but no pitch or roll
-            Quaternion finalRotation = Quaternion.Euler(0, targetRotation.eulerAngles.y, 0);
-
-            // Apply the rotation to the machine's transform
-            machine.transform.rotation = finalRotation;
-
-            // Aim at target
-            m_AIAimingComponent.SetTargetPosition(m_TargetTransform.position);
-
-            // Animate & Camera XY
-            machine.Animator.SetFloat(GameStrings.CAMERA_X, m_AIAimingComponent.GetTargetRotation().x, 0.1F, Time.deltaTime);
-            machine.Animator.SetFloat(GameStrings.CAMERA_Y, m_AIAimingComponent.GetTargetRotation().y, 0.1F, Time.deltaTime);
-
-            // Shoot at the target if they threaten you.
-            if (ThereIsAThreat(machine.transform) && !machine.FireAtTarget)
-            {
-                machine.CharacterSpeech.DoReaction(ReactionType.DrawGun);
-                machine.FireAtTarget = true;
-            }
-        }
-
-        private bool TargetIsFiringAtMe() => m_TargetCharacter && m_TargetCharacter.IsFiring;
-
-        private bool ThereIsAThreat(Transform myTransform)
-        {
-            Gun characterGun = m_TargetCharacterWeaponHandler.GetEquippedWeapon();
-            bool targetHasAWeaponOut = m_TargetCharacter != null && m_TargetCharacterWeaponHandler != null && characterGun != null;
-            bool targetIsAimingAtMe = m_TargetCharacter.IsAiming &&
-                Physics.Linecast(characterGun.transform.position,
-                myTransform.position + myTransform.up * 0.5F,
-                characterGun.GetBulletInteractionLayers,
-                QueryTriggerInteraction.Ignore);
-
-            if (targetHasAWeaponOut && targetIsAimingAtMe)
-                return true;
-
-            return false;
-        }
+        public override void OnUpdate(BaseAIStateMachine machine) {/*DO NOTHING*/}
     }
 
     // Conversation State (Talk to another AI)

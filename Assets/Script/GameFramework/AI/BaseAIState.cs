@@ -1,7 +1,12 @@
+using UnityEditorInternal;
+using UnityEngine;
+
 namespace OWFramework.AI
 {
     public abstract class BaseAIState
     {
+        protected Vector3 m_LocationOfDanger;
+
         // What happens just before we enter the state.
         public abstract void OnEnter(BaseAIStateMachine machine);
 
@@ -16,5 +21,15 @@ namespace OWFramework.AI
 
         // Draw any needed Gizmos.
         public virtual void OnDrawGizmos() { }
+
+        public virtual void NPCReactToDanger(Vector3 sourceOfDanger, BaseAIStateMachine machine)
+        {
+            // Switch Mood to Scared
+            machine.SetMood(AIMood.Scared);
+            machine.SwitchState(AIStateEnum.Shock);
+            m_LocationOfDanger = sourceOfDanger;
+        }
+
+        public virtual void OnAnimateIK() { }
     }
 }

@@ -57,7 +57,8 @@ public enum ReactionType
     DrawGun,
     Chase,
     LostTarget,
-    FoundTarget
+    FoundTarget, 
+    Frightened
 }
 
 public enum VocalisationType

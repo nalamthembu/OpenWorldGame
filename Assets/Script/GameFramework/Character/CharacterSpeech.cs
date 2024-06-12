@@ -1,9 +1,11 @@
+using System.Collections;
 using UnityEngine;
 
 public class CharacterSpeech : MonoBehaviour
 {
     [SerializeField] CharacterSpeechData m_CharacterSpeechData;
     [SerializeField] AudioSource m_SpeechOrigin; //Where is the mouth?
+    [SerializeField] float m_ReactionTime = 0.25F;
     BaseCharacter m_AttachedCharacter;
 
     //Flags
@@ -154,9 +156,11 @@ public class CharacterSpeech : MonoBehaviour
             }
         }
     }
-
-    public void DoReaction(ReactionType reactionType)
+    public void DoReaction(ReactionType reactionType) => StartCoroutine(ReactionSequence(reactionType));
+    private IEnumerator ReactionSequence(ReactionType reactionType)
     {
+        yield return new WaitForSeconds(m_ReactionTime);
+
         ReactionSpeech reaction = m_CharacterSpeechData.GetReactionSpeech(reactionType);
 
         if (reaction != null && m_SpeechOrigin != null)

@@ -68,7 +68,7 @@ public class IntensitySettings
 {
 
     public MusicIntensity musicIntensity;
-    public float targetVolume;
+    [Range(0,1)] public float targetVolume;
     [Min(0.05F)] public float fadeTime;
 
     public IntensitySettings()

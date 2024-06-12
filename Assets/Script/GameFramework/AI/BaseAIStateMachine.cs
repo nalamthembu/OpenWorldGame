@@ -12,17 +12,27 @@ namespace OWFramework.AI
         Fearless
     };
 
+    public enum NPCType
+    {
+        Civvie,
+        Hostile,
+    };
+
     public class BaseAIStateMachine : BaseCharacterStateMachine
     {
         #region Private Properties
         protected BaseAIState m_CurrentState;
         protected BlackBoardComponent m_Blackboard = new();
         [SerializeField] protected AIMood m_Mood;
+        [SerializeField] protected NPCType m_Type;
         [SerializeField] protected float m_RunSpeed;
         [SerializeField] protected float m_WalkSpeed;
         [SerializeField] LayerMask m_VisibleLayers;
         [SerializeField] protected bool ShouldBeLookingForPlayer;
         private AIController m_Controller;
+        protected AIPerceptionSensor m_Sensor;
+        public AIPerceptionSensor PerceptionSensor { get { return m_Sensor; } }
+        public NPCType NPCType { get { return m_Type; } }
         #endregion
 
         #region Debugging
@@ -49,6 +59,7 @@ namespace OWFramework.AI
         public float RunSpeed { get { return m_RunSpeed; } }
         public BlackBoardComponent Blackboard { get {  return m_Blackboard; } }
         public AIMood GetMood() => m_Mood;
+        public void SetMood(AIMood new_mood) => m_Mood = new_mood;
         public NavMeshAgent Agent { get; protected set; }
         public void SetShouldLookoutForPlayer(bool status) => ShouldLookForPlayer = status;
         #endregion
@@ -60,6 +71,7 @@ namespace OWFramework.AI
             Agent = GetComponent<NavMeshAgent>();
             m_Animator = GetComponent<Animator>();
             m_Controller = GetComponent<AIController>();
+            m_Sensor = GetComponent<AIPerceptionSensor>();
         }
         
         protected virtual void Start() => InitialiseBlackboard();
@@ -109,57 +121,11 @@ namespace OWFramework.AI
                 m_CurrentState.OnUpdate(this);
                 m_CurrentState.OnCheckTransition(this);
             }
-
-            //Switch States if this AI should lookout for the player (look out as in do something when you seem them)
-            if (ShouldLookForPlayer)
-            {
-                if (GetCanSeePlayer(out _) && m_CurrentState is not AIChase)
-                {
-                    SwitchState(AIStateEnum.Chase);
-                }
-            }
-
-            #region Debug
-            if (m_DebugFollowTarget &&  m_CurrentState is not AIFollow)
-            {
-                SwitchState(AIStateEnum.Follow);
-            }
-
-            if (m_DebugAimAtTarget && m_CurrentState is not AIAimAtTarget)
-            {
-                SwitchState(AIStateEnum.AimAtTarget);
-            }
-            #endregion
         }
 
         protected virtual void OnDrawGizmos() => m_CurrentState?.OnDrawGizmos();
 
-        protected virtual void OnAnimatorIK()
-        {
-            if (m_CurrentState != null)
-            {
-                switch (m_CurrentState)
-                {
-                    case AIFollow follow_state:
-
-                        // Set look at target when following a target.
-
-                        if (m_Animator != null)
-                        {
-                            bool isTargetACharacter = follow_state.IsTargetACharacter(out var CharacterTarget);
-
-                            Vector3 targetPosition = isTargetACharacter ?
-                                CharacterTarget.Animator.GetBoneTransform(HumanBodyBones.Head).position :
-                                follow_state.GetTargetTransform().position;
-
-                            m_Animator.SetLookAtPosition(targetPosition);
-                            m_Animator.SetLookAtWeight(follow_state.GetShouldLookAtTarget() ? 1 : 0, 0, 0.35f, 0.25F);
-                        }
-
-                        break;
-                }
-            }
-        }
+        protected virtual void OnAnimatorIK() => m_CurrentState?.OnAnimateIK();
 
         protected override void SetAnimationValues()
         {
@@ -188,7 +154,7 @@ namespace OWFramework.AI
 
                 // TODO : Refine is Aiming
 
-                bool isAiming = equippedWeapon != null && m_CurrentState is AIAimAtTarget;
+                bool isAiming = equippedWeapon != null;
 
                 m_Character.IsAiming = isAiming;
 

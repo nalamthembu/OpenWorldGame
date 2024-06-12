@@ -21,6 +21,12 @@ namespace OWFramework.AI
         public static event Action<AIPerceptionSensor, AISenseVisualStimuli> OnSeenBySensor;
         public void OnSeen(AIPerceptionSensor sensor) => OnSeenBySensor?.Invoke(sensor, this);
 
+        private void Awake()
+        {
+            m_StimuliCollider = GetComponent<Collider>();
+        }
+
+        /*
         private void OnValidate()
         {
             if (m_StimuliCollider == null)
@@ -35,6 +41,6 @@ namespace OWFramework.AI
 
                 m_StimuliCollider.isTrigger = true;
             }
-        }
+        }*/
     }
 }

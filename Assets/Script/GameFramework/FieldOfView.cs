@@ -10,15 +10,19 @@ namespace OWFramework.AI
     {
         [SerializeField][Range(1, 100)] float m_ViewRadius;
         [SerializeField][Range(0, 360)] float m_ViewAngle;
+        [SerializeField][Range(0, 100)] float m_NoticeSpeed; // How fast do they notice?
         [SerializeField] LayerMask m_TargetMask;
         [SerializeField] LayerMask m_ObstacleMask;
+
+        float m_NoticeAmount; //How much do you notice what you're seeing.
+        public float NoticeAmount { get { return m_NoticeAmount; } }
 
         public float GetViewRadius() => m_ViewRadius;
         public float GetViewAngle() => m_ViewAngle;
         public void SetMasks(LayerMask targetMask, LayerMask obstacleMask)
         { m_TargetMask = targetMask; m_ObstacleMask = obstacleMask; }
 
-        // TODO : Retun all of them?
+        // TODO : Return all of them?
         // Returns the first visible Target
         public bool HasVisibleTarget(out Transform visibleTarget)
         {
@@ -42,10 +46,22 @@ namespace OWFramework.AI
 
                         visibleTarget = target;
 
+                        // Take notice of what you see.
+                        m_NoticeAmount += Time.deltaTime * (m_NoticeSpeed * 0.100F);
+
+                        // Clamp it.
+                        if (m_NoticeAmount > 1) m_NoticeAmount = 1;
+
                         return true;
                     }
                 }
             }
+
+            // Slowly lose track of what you saw
+            m_NoticeAmount -= Time.deltaTime;
+
+            // Clamp it
+            if (m_NoticeAmount <= 0) m_NoticeAmount = 0;
 
             return false;
         }
