@@ -6,6 +6,7 @@ namespace OWFramework.AI
     {
         [SerializeField] AIIdle m_IdleState = new();
         [SerializeField] AIShock m_ShockState = new();
+        [SerializeField] AIFlee m_FleeState = new();
 
         protected override void Awake()
         {
@@ -27,6 +28,9 @@ namespace OWFramework.AI
 
                 case AIStateEnum.Shock:
                     m_CurrentState = m_ShockState; break;
+
+                case AIStateEnum.Flee:
+                    m_CurrentState = m_FleeState; break;
             }
 
             m_CurrentState.OnEnter(this);

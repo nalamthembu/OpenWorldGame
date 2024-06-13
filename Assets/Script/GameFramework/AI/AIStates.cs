@@ -2,6 +2,7 @@ using OWFramework.AI;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using UnityEngine.AI;
+using UnityEngine.Profiling;
 
 namespace OWFramework
 {
@@ -189,16 +190,6 @@ namespace OWFramework
         {
             if (machine.Agent == null) return;
 
-            // Determine Speed Based on Mood
-            machine.Agent.speed = machine.GetMood() switch
-            {
-                AIMood.Relaxed => machine.WalkSpeed, // No worries, man.
-                AIMood.Fearless => machine.RunSpeed, // Fight 
-                AIMood.Scared => machine.RunSpeed, // Flight
-                AIMood.Alert => machine.RunSpeed / 2, // Just go for a light jog.
-                _ => machine.WalkSpeed
-            };
-
             // Keep finding a new random location to go to.
             if (machine.Agent.remainingDistance <= minDistanceFromTarget || machine.Agent.destination == null)
             {
@@ -247,23 +238,32 @@ namespace OWFramework
     [System.Serializable]
     public class AIShock : BaseAIState
     {
+        [SerializeField] float m_ShockDuration = 3;
+
+        float m_ShockTimer = 0;
+
         public override void OnCheckTransition(BaseAIStateMachine machine)
         {
             // TODO : Switch to Flee State
 
-            if (!machine.Animator.GetCurrentAnimatorStateInfo(0).IsName("React_Shock"))
+            m_ShockTimer += Time.deltaTime;
+
+            if (m_ShockTimer >= m_ShockDuration)
             {
-                machine.SwitchState(AIStateEnum.Idle);
+                machine.SwitchState(AIStateEnum.Flee);
             }
         }
 
         public override void OnEnter(BaseAIStateMachine machine)
         {
+            // Reset Shock Timer
+            m_ShockTimer = 0;
+
             // Stop Moving
             machine.SetNavigationEnabled(false);
 
             // Trigger Shock Animation
-            machine.Animator.CrossFadeInFixedTime("React_Shock", 0.25F, 0);
+            machine.Animator.CrossFadeInFixedTime("React_Shock", 0.25F, 2);
 
             // Express shock
             machine.CharacterSpeech.DoReaction(ReactionType.Frightened);
@@ -271,10 +271,51 @@ namespace OWFramework
 
         public override void OnExit(BaseAIStateMachine machine) {/*DO NOTHING*/}
 
-        public override void OnUpdate(BaseAIStateMachine machine) {/*DO NOTHING*/}
+        public override void OnUpdate(BaseAIStateMachine machine)
+        {
+            GetDangerLocInfo(machine, machine.transform.right, out var dot, out _);
+            machine.Animator.SetFloat("DANGER_DOT", dot);
+        }
     }
 
     // Conversation State (Talk to another AI)
 
     // Flee (No! F##K this, I'm out of here!)
+    [System.Serializable]
+    public class AIFlee : BaseAIState
+    {
+        [SerializeField] float m_MinDist = 10;
+        [SerializeField] float m_MaxDist = 25;
+        [SerializeField] float m_DistanceBeforeSwitching = 2.5F;
+
+        Vector3 m_SafePosition;
+
+        public override void OnCheckTransition(BaseAIStateMachine machine)
+        {
+            if (machine.Agent)
+            {
+                // We're close enough to switch states
+                if (machine.Agent.remainingDistance <= m_DistanceBeforeSwitching)
+                {
+                    machine.SwitchState(AIStateEnum.Idle);
+                }
+            }
+        }
+
+        public override void OnEnter(BaseAIStateMachine machine)
+        {
+            // Set mood if it isn't correct
+            if (machine.GetMood() != AIMood.Scared) machine.SetMood(AIMood.Scared);
+
+            m_SafePosition = GetRandomSafePosition(machine, machine.DangerLocation, m_MinDist, m_MaxDist);
+
+            machine.SetNavigationEnabled(true);
+
+            machine.GoToPosition(m_SafePosition);
+        }
+
+        public override void OnExit(BaseAIStateMachine machine) { }
+
+        public override void OnUpdate(BaseAIStateMachine machine) { }
+    }
 }

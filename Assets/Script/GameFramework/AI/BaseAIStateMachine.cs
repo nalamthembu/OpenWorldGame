@@ -33,6 +33,7 @@ namespace OWFramework.AI
         protected AIPerceptionSensor m_Sensor;
         public AIPerceptionSensor PerceptionSensor { get { return m_Sensor; } }
         public NPCType NPCType { get { return m_Type; } }
+        public Vector3 DangerLocation { get; set; }
         #endregion
 
         #region Debugging
@@ -64,6 +65,11 @@ namespace OWFramework.AI
         public void SetShouldLookoutForPlayer(bool status) => ShouldLookForPlayer = status;
         #endregion
 
+        public void GoToPosition(Vector3 position)
+        {
+            if (Agent != null)
+                Agent.SetDestination(position);
+        }
 
         protected override void Awake()
         {
@@ -120,6 +126,16 @@ namespace OWFramework.AI
             {
                 m_CurrentState.OnUpdate(this);
                 m_CurrentState.OnCheckTransition(this);
+
+                // Determine Speed Based on Mood
+                Agent.speed = GetMood() switch
+                {
+                    AIMood.Relaxed => WalkSpeed, // No worries, man.
+                    AIMood.Fearless => RunSpeed, // Fight 
+                    AIMood.Scared => RunSpeed, // Flight
+                    AIMood.Alert => RunSpeed / 2, // Just go for a light jog.
+                    _ => WalkSpeed
+                };
             }
         }
 
